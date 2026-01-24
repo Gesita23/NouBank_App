@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "237246174464",
+    "project_id": "noubank-aa20e",
+    "storage_bucket": "noubank-aa20e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:237246174464:android:7e0c495198f98895e24fe5",
+        "android_client_info": {
+          "package_name": "com.example.noubank"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCI_4t3lrLxQsEAWW9snfUW2UJiGeerS34"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
