@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+
 ///Design Constants///
 const Color primarypurple = Color.fromARGB(255, 13, 71, 161);
 const Color secondarypurple = Color.fromARGB(255, 21, 101, 192);
@@ -621,7 +622,6 @@ class SkeletonContainer extends StatelessWidget {
         color: Colors.grey[300],
         borderRadius: BorderRadius.circular(radius),
       ),
-
     );
   }
 }
