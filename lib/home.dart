@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-
-///Design Constants///
+/// DESIGN CONSTANTS ///
 const Color primarypurple = Color.fromARGB(255, 13, 71, 161);
 const Color secondarypurple = Color.fromARGB(255, 21, 101, 192);
 
-//Data model for action grid buttons
+/// ACTION GRID MODEL ///
 class ActionItem {
   final IconData icon;
   final String label;
@@ -18,7 +19,6 @@ class ActionItem {
   });
 }
 
-//List of action items displayed in the grid
 const List<ActionItem> actionItems = [
   ActionItem(
     icon: Icons.qr_code_scanner,
@@ -31,17 +31,16 @@ const List<ActionItem> actionItems = [
     iconColor: primarypurple,
   ),
   ActionItem(
-    icon: Icons.shopping_cart_checkout_outlined,
-    label: 'Shop',
+    icon: Icons.bar_chart_outlined,
+    label: 'Statistics',
     iconColor: primarypurple,
   ),
   ActionItem(icon: Icons.apps, label: 'Other', iconColor: primarypurple),
 ];
 
-//Homepage
+/// ================= HOME PAGE =================
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
   final String title;
 
   @override
@@ -52,197 +51,156 @@ class _MyHomePageState extends State<MyHomePage> {
   int selectedIndex = 0;
 
   void onItemTapped(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
-    print("Navigation Item Tapped:Index $index");
+    setState(() => selectedIndex = index);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-
       appBar: AppBar(
         toolbarHeight: 0,
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
-
       body: const HomePageContent(),
-
       bottomNavigationBar: _buildBottomNavigationBar(),
-      /* floatingActionButton: _buildFloatingActionButton(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,*/
     );
   }
 
-  //Bottom navigator bar
   Widget _buildBottomNavigationBar() {
-    return Container(
-      decoration: const BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 10,
-            offset: Offset(0, -2),
-          ),
-        ],
-      ),
-      child: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 10,
-        color: Colors.white,
-        elevation: 0,
-        child: SizedBox(
-          height: 65,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(Icons.home, 'Home', 0),
-              _buildNavItem(Icons.account_balance_wallet, 'Account', 1),
-              _buildNavItem(Icons.compare_arrows, 'Transact', 2),
-              _buildNavItem(Icons.credit_card, 'Cards', 3),
-              _buildNavItem(Icons.more_horiz, 'More', 4),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  //Build Individual navigation items
-  Widget _buildNavItem(IconData icon, String label, int index) {
-    final isSelected = selectedIndex == index;
-    final color = isSelected ? primarypurple : Colors.grey;
-
-    return InkWell(
-      onTap: () => onItemTapped(index),
-      borderRadius: BorderRadius.circular(12),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+    return BottomAppBar(
+      color: Colors.white,
+      elevation: 8,
+      child: SizedBox(
+        height: 65,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Icon(icon, color: color, size: 24),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                color: color,
-                fontSize: 12,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-              ),
-            ),
+            _navItem(Icons.home, 'Home', 0),
+            _navItem(Icons.account_balance_wallet, 'Account', 1),
+            _navItem(Icons.compare_arrows, 'Transact', 2),
+            _navItem(Icons.credit_card, 'Cards', 3),
+            _navItem(Icons.more_horiz, 'More', 4),
           ],
         ),
       ),
     );
   }
 
-  //Floating Action Button
-  /*Widget _buildFloatingActionButton() {
-    return Container(
-      width: 65,
-      height:65,
-      decoration:BoxDecoration(
-        shape:BoxShape.circle,
-        gradient:const LinearGradient(colors: [primarypurple,secondarypurple],
-         begin:Alignment.topLeft,
-         end:Alignment.bottomRight),
-         boxShadow:[
-          BoxShadow(
-            color:secondarypurple,
-            blurRadius:10,
-            offset: const Offset(0, 4),
-          )
-         ]
-      ),
-      child:FloatingActionButton(onPressed : () => onItemTapped(2),
-      backgroundColor: Colors.transparent,
-      elevation:0,
-      child: const Icon(
-        Icons.qr_code_scanner,
-        color:Colors.white,
-        size:28,
-      ),
-      
-      
-      ),
-    );
-  }*/
-} //endclass
+  Widget _navItem(IconData icon, String label, int index) {
+    final isSelected = selectedIndex == index;
+    final color = isSelected ? primarypurple : Colors.grey;
 
-//PAGE CONTENT LAYOUT//
-class HomePageContent extends StatelessWidget {
-  const HomePageContent({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const SingleChildScrollView(
+    return InkWell(
+      onTap: () => onItemTapped(index),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          HeaderSection(),
-          ActionGridSection(),
-          TransactionHistorySection(),
+          Icon(icon, color: color),
+          const SizedBox(height: 4),
+          Text(label, style: TextStyle(color: color, fontSize: 12)),
         ],
       ),
     );
   }
 }
 
-//Header Section
+/// ================= CONTENT =================
+class HomePageContent extends StatelessWidget {
+  const HomePageContent({super.key});
+
+  Future<Map<String, dynamic>?> _fetchUserData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return null;
+
+    final doc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+
+    return doc.data();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Map<String, dynamic>?>(
+      future: _fetchUserData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(color: primarypurple),
+          );
+        }
+
+        final data = snapshot.data ?? {};
+        final name = data['name'] ?? 'User';
+        final balance = (data['account_balance'] ?? 0).toString();
+        final income = (data['income'] ?? 0).toString();
+        final expenses = (data['expenses'] ?? 0).toString();
+
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              HeaderSection(
+                name: name,
+                balance: balance,
+                income: income,
+                expenses: expenses,
+              ),
+              const ActionGridSection(),
+              const TransactionHistorySection(),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// ================= HEADER =================
 class HeaderSection extends StatelessWidget {
-  const HeaderSection({super.key});
+  final String name;
+  final String balance;
+  final String income;
+  final String expenses;
+
+  const HeaderSection({super.key, required this.name, required this.balance,required this.income,required this.expenses});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 320,
       child: Stack(
-        clipBehavior: Clip.none,
         children: [
           Container(
             height: 200,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  Color.fromARGB(255, 37, 117, 207),
-                  Color.fromARGB(255, 38, 71, 121),
-                ],
+                colors: [Color(0xFF2575CF), Color(0xFF264779)],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
             ),
           ),
-
-          // greeting
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildTopBar(),
-                const SizedBox(height: 20),
-                _buildGreeting(),
-              ],
+              children: [_topBar(), const SizedBox(height: 20), _greeting()],
             ),
           ),
-
-          // Floating Balance Card
-          Positioned(top: 140, left: 20, right: 20, child: _buildBalanceCard()),
+          Positioned(top: 140, left: 20, right: 20, child: _balanceCard()),
         ],
       ),
     );
   }
 
-  // Top App Bar
-  Widget _buildTopBar() {
+  Widget _topBar() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text(
+      children: const [
+        Text(
           'NouBank',
           style: TextStyle(
             color: Colors.white,
@@ -250,45 +208,23 @@ class HeaderSection extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        Row(
-          children: [
-            _buildCircleIcon(Icons.chat_bubble_outline),
-            const SizedBox(width: 8),
-            _buildCircleIcon(Icons.notifications_none),
-          ],
-        ),
+        Icon(Icons.notifications_none, color: Colors.white),
       ],
     );
   }
 
-  // Circle Icon Button
-  Widget _buildCircleIcon(IconData icon) {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.white.withOpacity(0.25),
-      ),
-      padding: const EdgeInsets.all(8),
-      child: Icon(icon, color: Colors.white, size: 20),
-    );
-  }
-
-  // Greeting Section
-  Widget _buildGreeting() {
+  Widget _greeting() {
     return Row(
       children: [
-        const Icon(Icons.lock_outline, color: Colors.white, size: 24),
+        const Icon(Icons.lock_outline, color: Colors.white),
         const SizedBox(width: 8),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
+            const Text('Welcome!', style: TextStyle(color: Colors.white70)),
             Text(
-              'Welcome!',
-              style: TextStyle(color: Colors.white70, fontSize: 14),
-            ),
-            Text(
-              'Gesita Chady',
-              style: TextStyle(
+              name,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 21,
                 fontWeight: FontWeight.bold,
@@ -300,36 +236,23 @@ class HeaderSection extends StatelessWidget {
     );
   }
 
-  // Balance Card
-  Widget _buildBalanceCard() {
+  Widget _balanceCard() {
     return Container(
       height: 170,
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 33, 87, 168),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 12,
-            offset: Offset(0, 6),
-          ),
-        ],
-      ),
       padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: primarypurple,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 10)],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text('Total Balance', style: TextStyle(color: Colors.white70)),
-              Icon(Icons.more_horiz, color: Colors.white),
-            ],
-          ),
+          const Text('Total Balance', style: TextStyle(color: Colors.white70)),
           const SizedBox(height: 8),
-          const Text(
-            '\$2,957',
-            style: TextStyle(
+          Text(
+            '\$$balance',
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -338,18 +261,16 @@ class HeaderSection extends StatelessWidget {
           const Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              _IncomeExpense(
+            children: [
+              BalanceMiniItem(
                 icon: Icons.arrow_downward,
                 label: 'Income',
-                amount: '\$1,200',
-                color: Colors.transparent,
+                amount: '\$$income',
               ),
-              _IncomeExpense(
+              BalanceMiniItem(
                 icon: Icons.arrow_upward,
                 label: 'Expenses',
-                amount: '\$1,300',
-                color: Colors.transparent,
+                amount: '\$$expenses',
               ),
             ],
           ),
@@ -359,30 +280,72 @@ class HeaderSection extends StatelessWidget {
   }
 }
 
-// ===== Reusable Income / Expense Widget =====
-class _IncomeExpense extends StatelessWidget {
+/// ================= INCOME / EXPENSE =================
+class IncomeExpenseSummary extends StatelessWidget {
+  final String income;
+  final String expenses;
+
+  const IncomeExpenseSummary({
+    super.key,
+    required this.income,
+    required this.expenses,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _item(Icons.arrow_downward, 'Income', income, Colors.green),
+          _item(Icons.arrow_upward, 'Expenses', expenses, Colors.red),
+        ],
+      ),
+    );
+  }
+
+  Widget _item(IconData icon, String label, String amount, Color color) {
+    return Row(
+      children: [
+        CircleAvatar(
+          backgroundColor: color.withOpacity(0.2),
+          child: Icon(icon, color: color),
+        ),
+        const SizedBox(width: 8),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(label),
+            Text(
+              '\$$amount',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class BalanceMiniItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final String amount;
-  final Color color;
 
-  const _IncomeExpense({
+  const BalanceMiniItem({
+    super.key,
     required this.icon,
     required this.label,
     required this.amount,
-    required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        CircleAvatar(
-          radius: 14,
-          backgroundColor: color,
-          child: Icon(icon, color: Colors.white, size: 16),
-        ),
-        const SizedBox(width: 8),
+        Icon(icon, color: Colors.white),
+        const SizedBox(width: 6),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -390,13 +353,7 @@ class _IncomeExpense extends StatelessWidget {
               label,
               style: const TextStyle(color: Colors.white70, fontSize: 12),
             ),
-            Text(
-              amount,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            Text(amount, style: const TextStyle(color: Colors.white)),
           ],
         ),
       ],
@@ -622,6 +579,7 @@ class SkeletonContainer extends StatelessWidget {
         color: Colors.grey[300],
         borderRadius: BorderRadius.circular(radius),
       ),
+
     );
   }
 }
