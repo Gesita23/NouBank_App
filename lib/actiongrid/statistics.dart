@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 
 const Color primarypurple = Color.fromARGB(255, 13, 71, 161);
@@ -18,13 +16,13 @@ class StatisticsPage extends StatelessWidget {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon:const Icon (Icons.arrow_back,color:Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
         ),
       ),
-      body:const Center(
-        child:Text(
+      body: const Center(
+        child: Text(
           'Dollarss',
-          style:TextStyle(fontSize:36,fontWeight:FontWeight.bold)
+          style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
         ),
       ),
     );
