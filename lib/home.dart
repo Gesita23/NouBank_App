@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'bottom_nav.dart';
+import 'actiongrid/qr_scan.dart';
+import 'actiongrid/payments.dart';
+import 'actiongrid/statistics.dart';
+import 'actiongrid/other.dart';
 
-/// DESIGN CONSTANTS ///
+
+// DESIGN CONSTANTS
 const Color primarypurple = Color.fromARGB(255, 13, 71, 161);
 const Color secondarypurple = Color.fromARGB(255, 21, 101, 192);
 
-/// ACTION GRID MODEL ///
+// ACTION GRID MODEL
 class ActionItem {
   final IconData icon;
   final String label;
   final Color iconColor;
+  final String route;
 
   const ActionItem({
     required this.icon,
     required this.label,
     required this.iconColor,
+    required this.route,
   });
 }
 
@@ -24,21 +32,29 @@ const List<ActionItem> actionItems = [
     icon: Icons.qr_code_scanner,
     label: 'Scan to Pay',
     iconColor: primarypurple,
+    route:'/scan',
   ),
   ActionItem(
     icon: Icons.wallet_outlined,
     label: 'Payments',
     iconColor: primarypurple,
+    route:'/payments',
   ),
   ActionItem(
     icon: Icons.bar_chart_outlined,
     label: 'Statistics',
     iconColor: primarypurple,
+    route:'/statistics',
   ),
-  ActionItem(icon: Icons.apps, label: 'Other', iconColor: primarypurple),
+  ActionItem(
+    icon: Icons.apps, 
+    label: 'Other',
+    iconColor: primarypurple,
+    route:'/other',
+   ),
 ];
 
-/// ================= HOME PAGE =================
+/// navbar
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
   final String title;
@@ -48,10 +64,29 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int selectedIndex = 0;
+  int _selectedIndex = 0;
 
-  void onItemTapped(int index) {
-    setState(() => selectedIndex = index);
+  void _onItemTapped(int index) {
+    //Handle navigation to different pages
+    switch (index) {
+      case 0: //Already on Home, just update selected index
+        setState(() {
+          _selectedIndex = index;
+        });
+        break;
+      case 1:
+        Navigator.pushNamed(context, '/account');
+        break;
+      case 2:
+        Navigator.pushNamed(context, '/transactions');
+        break;
+      case 3:
+        Navigator.pushNamed(context, '/carts');
+        break;
+      case 4:
+        Navigator.pushNamed(context, '/more');
+        break;
+    }
   }
 
   @override
@@ -64,49 +99,15 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.transparent,
       ),
       body: const HomePageContent(),
-      bottomNavigationBar: _buildBottomNavigationBar(),
-    );
-  }
-
-  Widget _buildBottomNavigationBar() {
-    return BottomAppBar(
-      color: Colors.white,
-      elevation: 8,
-      child: SizedBox(
-        height: 65,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _navItem(Icons.home, 'Home', 0),
-            _navItem(Icons.account_balance_wallet, 'Account', 1),
-            _navItem(Icons.compare_arrows, 'Transact', 2),
-            _navItem(Icons.credit_card, 'Cards', 3),
-            _navItem(Icons.more_horiz, 'More', 4),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _navItem(IconData icon, String label, int index) {
-    final isSelected = selectedIndex == index;
-    final color = isSelected ? primarypurple : Colors.grey;
-
-    return InkWell(
-      onTap: () => onItemTapped(index),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: color),
-          const SizedBox(height: 4),
-          Text(label, style: TextStyle(color: color, fontSize: 12)),
-        ],
+      bottomNavigationBar: CustomBottomNavBar(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
     );
   }
 }
 
-/// ================= CONTENT =================
+/// content
 class HomePageContent extends StatelessWidget {
   const HomePageContent({super.key});
 
@@ -158,14 +159,20 @@ class HomePageContent extends StatelessWidget {
   }
 }
 
-/// ================= HEADER =================
+/// header
 class HeaderSection extends StatelessWidget {
   final String name;
   final String balance;
   final String income;
   final String expenses;
 
-  const HeaderSection({super.key, required this.name, required this.balance,required this.income,required this.expenses});
+  const HeaderSection({
+    super.key,
+    required this.name,
+    required this.balance,
+    required this.income,
+    required this.expenses,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -280,7 +287,7 @@ class HeaderSection extends StatelessWidget {
   }
 }
 
-/// ================= INCOME / EXPENSE =================
+/// income/exp
 class IncomeExpenseSummary extends StatelessWidget {
   final String income;
   final String expenses;
@@ -411,7 +418,7 @@ class ActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        print('Tapped ${item.label}');
+        Navigator.pushNamed(context, item.route);
       },
       borderRadius: BorderRadius.circular(15),
 
@@ -579,7 +586,6 @@ class SkeletonContainer extends StatelessWidget {
         color: Colors.grey[300],
         borderRadius: BorderRadius.circular(radius),
       ),
-
     );
   }
 }
