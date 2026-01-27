@@ -39,14 +39,14 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const MyHomePage(title: '',),
         //'/account': (context) => const AccountPage(),
        // '/transactions': (context) => const TransactionPage(),
-        '/carts': (context) => const CartsPage(),
+       // '/carts': (context) => const CartsPage(),
         //'/security': (context) => const SecurityPage(),
         //'/change_password': (context) => const ChangePasswordPage(),
 
 
         /////FOR ACTIONGRID/////
-        '/scan':(context) => const QrPaymentPage(),
-        '/statistics':(context) => const StatisticsPage(),
+       // '/scan':(context) => const QrPaymentPage(),
+       // '/statistics':(context) => const StatisticsPage(),
         
       },
 
