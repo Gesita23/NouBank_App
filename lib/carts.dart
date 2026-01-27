@@ -1,6 +1,6 @@
 
 //THIS IS A DEMO//
-/*
+
 import 'package:flutter/material.dart';
 
 const Color primarypurple = Color.fromARGB(255, 13, 71, 161);
@@ -30,4 +30,4 @@ class CartsPage extends StatelessWidget {
       ),
     );
   }
-}*/
+}
