@@ -610,22 +610,8 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
         ),
       );
 
-      // Return true to indicate success
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => TransactionReceiptPage(
-            transactionId: 'TXN${DateTime.now().millisecondsSinceEpoch}_sender', 
-            type: 'debit', 
-            description: 'QR Payment to ${widget.receiverUserName}', 
-            category: 'QR Payment', 
-            amount: amount,
-            timestamp: Timestamp.now(),
-            note: _noteController.text.isNotEmpty ? _noteController.text : null,
-            recipient: widget.receiverUserName,
-          )
-        )
-      );
+     Navigator.pushReplacementNamed(context, '/home');
+
 
 
     } catch (e) {

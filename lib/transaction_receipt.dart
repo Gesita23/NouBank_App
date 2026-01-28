@@ -282,7 +282,7 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Need help? Contact support@edbank.com',
+                  'Need help? Contact support@NouBank.com',
                   style: TextStyle(
                     color: Colors.grey[500],
                     fontSize: 11,

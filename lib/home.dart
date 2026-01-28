@@ -103,39 +103,32 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 /// content
-class HomePageContent extends StatelessWidget {
+class HomePageContent extends StatefulWidget {
   const HomePageContent({super.key});
+  @override State<HomePageContent> createState() => _HomePageContentState();
+}
 
-  Future<Map<String, dynamic>?> _fetchUserData() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return null;
-
-    final doc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .get();
-
-    return doc.data();
-  }
-
+class _HomePageContentState extends State<HomePageContent> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>?>(
-      future: _fetchUserData(),
+    return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseAuth.instance.currentUser != null
+          ? FirebaseFirestore.instance
+              .collection('users')
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .snapshots()
+          : Stream.empty(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(color: primarypurple),
-          );
+          return const Center(child: CircularProgressIndicator(color: primarypurple));
         }
-
-        final data = snapshot.data ?? {};
+        final data = snapshot.data?.data() as Map<String, dynamic>? ?? {};
         final name = data['name'] ?? 'User';
-        final balance = (data['account_balance'] ?? 0).toString();
-        final income = (data['income'] ?? 0).toString();
-        final expenses = (data['expenses'] ?? 0).toString();
-
+        final balance = (data['accountbalance'] ?? 0).toString();
+        final income = data['income'] ?? '0';
+        final expenses = data['expenses'] ?? '0';
         return SingleChildScrollView(
+          padding: const EdgeInsets.only(bottom: 16),
           child: Column(
             children: [
               HeaderSection(
@@ -153,6 +146,7 @@ class HomePageContent extends StatelessWidget {
     );
   }
 }
+
 
 /// header
 class HeaderSection extends StatelessWidget {
@@ -391,7 +385,7 @@ class ActionGridSection extends StatelessWidget {
               crossAxisCount: 4,
               mainAxisSpacing: 10,
               crossAxisSpacing: 10,
-              childAspectRatio: 0.8,
+              childAspectRatio: 0.905,
               children: actionItems
                   .map((item) => ActionButton(item: item))
                   .toList(),
