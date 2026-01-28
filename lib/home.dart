@@ -89,11 +89,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        toolbarHeight: 0,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-      ),
       body: const HomePageContent(),
       bottomNavigationBar: CustomBottomNavBar(
         selectedIndex: _selectedIndex,
@@ -185,12 +180,14 @@ class HeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final topPadding = MediaQuery.of(context).padding.top;
+    
     return SizedBox(
-      height: 320,
+      height: 320 + topPadding,
       child: Stack(
         children: [
           Container(
-            height: 200,
+            height: 200 + topPadding,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [Color(0xFF2575CF), Color(0xFF264779)],
@@ -200,7 +197,7 @@ class HeaderSection extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.fromLTRB(16, topPadding + 16, 16, 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -211,7 +208,7 @@ class HeaderSection extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 140,
+            top: 140 + topPadding,
             left: 20,
             right: 20,
             child: _balanceCard()
@@ -416,7 +413,7 @@ class ActionGridSection extends StatelessWidget {
               crossAxisCount: 4,
               mainAxisSpacing: 10,
               crossAxisSpacing: 10,
-              childAspectRatio: 0.905,
+              childAspectRatio: 0.9,
               children: actionItems
                   .map((item) => ActionButton(item: item))
                   .toList(),
