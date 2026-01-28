@@ -52,6 +52,7 @@ const List<ActionItem> actionItems = [
 /// navbar
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
+
   final String title;
 
   @override
@@ -102,31 +103,51 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-/// content
+/// content - FIXED VERSION WITH STREAMBUILDER
 class HomePageContent extends StatefulWidget {
   const HomePageContent({super.key});
-  @override State<HomePageContent> createState() => _HomePageContentState();
+
+  @override
+  State<HomePageContent> createState() => _HomePageContentState();
 }
 
 class _HomePageContentState extends State<HomePageContent> {
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    
+    if (user == null) {
+      return const Center(
+        child: Text('Please log in to view your account'),
+      );
+    }
+
     return StreamBuilder<DocumentSnapshot>(
-      stream: FirebaseAuth.instance.currentUser != null
-          ? FirebaseFirestore.instance
-              .collection('users')
-              .doc(FirebaseAuth.instance.currentUser!.uid)
-              .snapshots()
-          : Stream.empty(),
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator(color: primarypurple));
+          return const Center(
+            child: CircularProgressIndicator(color: primarypurple),
+          );
         }
+
+        if (snapshot.hasError) {
+          return Center(
+            child: Text('Error: ${snapshot.error}'),
+          );
+        }
+
         final data = snapshot.data?.data() as Map<String, dynamic>? ?? {};
+        
+        // FIXED: Convert all numeric values to String properly
         final name = data['name'] ?? 'User';
-        final balance = (data['accountbalance'] ?? 0).toString();
-        final income = data['income'] ?? '0';
-        final expenses = data['expenses'] ?? '0';
+        final balance = (data['account_balance'] ?? 0).toString();
+        final income = (data['income'] ?? 0).toString();
+        final expenses = (data['expenses'] ?? 0).toString();
+
         return SingleChildScrollView(
           padding: const EdgeInsets.only(bottom: 16),
           child: Column(
@@ -146,7 +167,6 @@ class _HomePageContentState extends State<HomePageContent> {
     );
   }
 }
-
 
 /// header
 class HeaderSection extends StatelessWidget {
@@ -183,10 +203,19 @@ class HeaderSection extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [_topBar(), const SizedBox(height: 20), _greeting()],
+              children: [
+                _topBar(),
+                const SizedBox(height: 20),
+                _greeting()
+              ],
             ),
           ),
-          Positioned(top: 140, left: 20, right: 20, child: _balanceCard()),
+          Positioned(
+            top: 140,
+            left: 20,
+            right: 20,
+            child: _balanceCard()
+          ),
         ],
       ),
     );
@@ -239,7 +268,9 @@ class HeaderSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: primarypurple,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 10)],
+        boxShadow: const [
+          BoxShadow(color: Colors.black26, blurRadius: 10)
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -410,7 +441,6 @@ class ActionButton extends StatelessWidget {
         Navigator.pushNamed(context, item.route);
       },
       borderRadius: BorderRadius.circular(15),
-
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -563,14 +593,18 @@ class TransactionHistorySection extends StatelessWidget {
     );
   }
 
-    // Section header with See All button
+  // Section header with See All button
   Widget _buildSectionHeader(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const Text(
           'Transaction History',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black
+          ),
         ),
         TextButton(
           onPressed: () {
@@ -578,7 +612,11 @@ class TransactionHistorySection extends StatelessWidget {
           },
           child: const Text(
             'See All',
-            style: TextStyle(fontSize: 16, color: primarypurple, fontWeight: FontWeight.w600),
+            style: TextStyle(
+              fontSize: 16,
+              color: primarypurple,
+              fontWeight: FontWeight.w600
+            ),
           ),
         )
       ],
@@ -728,7 +766,7 @@ class _TransactionRowSkeleton extends StatelessWidget {
   }
 }
 
-// 9. Utility Widget
+// Utility Widget
 class SkeletonContainer extends StatelessWidget {
   final double width;
   final double height;
