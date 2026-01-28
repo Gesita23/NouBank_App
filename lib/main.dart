@@ -4,8 +4,9 @@ import 'auth_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
-import 'carts.dart';
-import 'actiongrid/statistics.dart';
+/*import 'carts.dart';
+import 'actiongrid/statistics.dart';*/
+import 'transactions.dart';
 import 'actiongrid/qr_scan.dart';
 
 void main() async {
@@ -32,24 +33,21 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: const AuthWrapper(),
 
-
       //routes baby
       routes: {
         /////FOR NAVBAR/////
-        '/home': (context) => const MyHomePage(title: '',),
+        '/home': (context) => const MyHomePage(title: ''),
+
         //'/account': (context) => const AccountPage(),
-       // '/transactions': (context) => const TransactionPage(),
-       // '/carts': (context) => const CartsPage(),
+         '/transactions': (context) => const TransactionPage(),
+        // '/carts': (context) => const CartsPage(),
         //'/security': (context) => const SecurityPage(),
         //'/change_password': (context) => const ChangePasswordPage(),
 
-
         /////FOR ACTIONGRID/////
-       // '/scan':(context) => const QrPaymentPage(),
-       // '/statistics':(context) => const StatisticsPage(),
-        
+        '/scan':(context) => const QrPaymentPage(),
+        // '/statistics':(context) => const StatisticsPage(),
       },
-
     );
   }
 }
