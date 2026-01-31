@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-//const Color primaryBlue = Color(000080);
 const Color primaryBlue = Color(0xFF4364F7);
 const Color secondaryBlue = Color(0xFF00BFFF);
 
@@ -17,20 +16,21 @@ class _AuthScreenState extends State<AuthScreen> {
   bool isLogin = true;
   bool isPasswordVisible = false;
   bool isLoading = false;
-
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
-
+  final _phoneController = TextEditingController();
+  final _usernameController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  @override
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     _nameController.dispose();
+    _phoneController.dispose();
+    _usernameController.dispose();
     super.dispose();
   }
 
@@ -45,12 +45,30 @@ class _AuthScreenState extends State<AuthScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Authentication Error'),
-        content: Text(message),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Row(
+          children: const [
+            Icon(Icons.error_outline, color: Colors.red, size: 28),
+            SizedBox(width: 12),
+            Text('Error'),
+          ],
+        ),
+        content: Text(
+          message,
+          style: const TextStyle(fontSize: 15),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('OK'),
+            style: TextButton.styleFrom(
+              foregroundColor: primaryBlue,
+            ),
+            child: const Text(
+              'OK',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
           ),
         ],
       ),
@@ -67,6 +85,15 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
+  Future<bool> _checkUsernameAvailability(String username) async {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .where('username', isEqualTo: username.toLowerCase())
+        .limit(1)
+        .get();
+    return querySnapshot.docs.isEmpty;
+  }
+
   Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) {
       return;
@@ -76,80 +103,100 @@ class _AuthScreenState extends State<AuthScreen> {
       isLoading = true;
     });
 
-
-
     try {
       if (isLogin) {
-        //Login with email and password
+        // Login with email and password
         await _auth.signInWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text,
         );
         _showSuccessSnackbar('Welcome back!');
       } else {
-        //Sign up with email and password
+        // Check if username is available
+        final usernameAvailable = await _checkUsernameAvailability(
+          _usernameController.text.trim(),
+        );
+
+        if (!usernameAvailable) {
+          _showErrorDialog('Username already taken. Please choose another one.');
+          setState(() {
+            isLoading = false;
+          });
+          return;
+        }
+
+        // Sign up with email and password
         UserCredential userCredential = await _auth
             .createUserWithEmailAndPassword(
-              email: _emailController.text.trim(),
-              password: _passwordController.text,
-            );
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        );
 
-        //Update display name
+        // Update display name
         await userCredential.user?.updateDisplayName(
           _nameController.text.trim(),
         );
 
-        //Save user details to firstore
+        // Save user details to Firestore
         if (userCredential.user != null) {
-          //Get a reference to the 'users' collection
-          final userRef = FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid);
+          final userRef = FirebaseFirestore.instance
+              .collection('users')
+              .doc(userCredential.user!.uid);
 
-          //Data to save for the new user
           await userRef.set({
-            'uid' : userCredential.user!.uid,
-            'email' : _emailController.text.trim(),
-            'name': _nameController.text.trim(), //Stored from the sign up form
-            'account_balance': 0.0, //Default initial balance
-            'income':0.00,
-            'expenses':0.00,
+            'uid': userCredential.user!.uid,
+            'email': _emailController.text.trim(),
+            'name': _nameController.text.trim(),
+            'username': _usernameController.text.trim().toLowerCase(),
+            'phone': _phoneController.text.trim(),
+            'account_balance': 0.0,
+            'income': 0.00,
+            'expenses': 0.00,
+            'created_at': FieldValue.serverTimestamp(),
           });
         }
-        
+
         _showSuccessSnackbar('Account created successfully!');
       }
     } on FirebaseAuthException catch (e) {
       String errorMessage;
       switch (e.code) {
         case 'weak-password':
-          errorMessage = 'The password provided is too weak.';
+          errorMessage = 'Password is too weak. Please use at least 6 characters.';
           break;
         case 'email-already-in-use':
-          errorMessage = 'An account already exists for this email.';
+          errorMessage = 'This email is already registered. Please login instead.';
           break;
         case 'user-not-found':
-          errorMessage = 'No user found with this email.';
+          errorMessage = 'No account found with this email. Please sign up first.';
           break;
         case 'wrong-password':
-          errorMessage = 'Wrong password provided.';
+          errorMessage = 'Incorrect password. Please try again.';
           break;
         case 'invalid-email':
-          errorMessage = 'The email address is invalid.';
+          errorMessage = 'Invalid email address. Please check and try again.';
+          break;
+        case 'invalid-credential':
+          errorMessage = 'Invalid email or password. Please check your credentials.';
           break;
         case 'user-disabled':
-          errorMessage = 'This user account has been disabled.';
+          errorMessage = 'This account has been disabled. Contact support.';
           break;
         case 'too-many-requests':
-          errorMessage = 'Too many attempts. Please try again later.';
+          errorMessage = 'Too many failed attempts. Please try again later.';
           break;
         case 'operation-not-allowed':
-          errorMessage = 'Email/password accounts are not enabled.';
+          errorMessage = 'Email/password login is currently disabled.';
+          break;
+        case 'network-request-failed':
+          errorMessage = 'Network error. Please check your internet connection.';
           break;
         default:
-          errorMessage = e.message ?? 'An error occurred. Please try again.';
+          errorMessage = e.message ?? 'Login failed. Please try again.';
       }
       _showErrorDialog(errorMessage);
     } catch (e) {
-      _showErrorDialog('An unexpected error occurred. Please try again');
+      _showErrorDialog('An unexpected error occurred. Please try again.');
     } finally {
       if (mounted) {
         setState(() {
@@ -161,7 +208,6 @@ class _AuthScreenState extends State<AuthScreen> {
 
   Future<void> _resetPassword() async {
     final email = _emailController.text.trim();
-
     if (email.isEmpty) {
       _showErrorDialog('Please enter your email address first.');
       return;
@@ -174,13 +220,16 @@ class _AuthScreenState extends State<AuthScreen> {
       String errorMessage;
       switch (e.code) {
         case 'invalid-email':
-          errorMessage = 'No user found with this email.';
+          errorMessage = 'Invalid email address. Please check and try again.';
           break;
         case 'user-not-found':
-          errorMessage = 'No user found with this email.';
+          errorMessage = 'No account found with this email address.';
+          break;
+        case 'network-request-failed':
+          errorMessage = 'Network error. Please check your internet connection.';
           break;
         default:
-          errorMessage = e.message ?? 'Failed to send password reset email.';
+          errorMessage = e.message ?? 'Failed to send reset email. Please try again.';
       }
       _showErrorDialog(errorMessage);
     }
@@ -279,8 +328,8 @@ class _AuthScreenState extends State<AuthScreen> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 30),
-
-            //Name field (only for sign up)
+            
+            // Sign up fields
             if (!isLogin) ...[
               _buildTextField(
                 controller: _nameController,
@@ -293,9 +342,51 @@ class _AuthScreenState extends State<AuthScreen> {
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
+              _buildTextField(
+                controller: _usernameController,
+                label: 'Username',
+                icon: Icons.alternate_email,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter a username';
+                  }
+                  if (value.length < 3) {
+                    return 'Username must be at least 3 characters';
+                  }
+                  if (!RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(value)) {
+                    return 'Username can only contain letters, numbers, and underscores';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              _buildTextField(
+                controller: _phoneController,
+                label: 'Phone Number',
+                icon: Icons.phone_outlined,
+                keyboardType: TextInputType.phone,
+                maxLength: 8,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter your phone number';
+                  }
+                  // Remove any spaces or special characters
+                  final cleanPhone = value.replaceAll(RegExp(r'[^0-9]'), '');
+                  
+                  if (cleanPhone.length != 8) {
+                    return 'Phone number must be exactly 8 digits';
+                  }
+                  if (!cleanPhone.startsWith('5')) {
+                    return 'Phone number must start with 5';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
             ],
 
-            //Email field
+            // Email field
             _buildTextField(
               controller: _emailController,
               label: 'Email',
@@ -313,7 +404,7 @@ class _AuthScreenState extends State<AuthScreen> {
             ),
             const SizedBox(height: 16),
 
-            //Password field
+            // Password field
             _buildTextField(
               controller: _passwordController,
               label: 'Password',
@@ -330,7 +421,7 @@ class _AuthScreenState extends State<AuthScreen> {
               },
             ),
 
-            //Forgot password (only for login)
+            // Forgot password (only for login)
             if (isLogin) ...[
               const SizedBox(height: 8),
               Align(
@@ -365,14 +456,17 @@ class _AuthScreenState extends State<AuthScreen> {
     TextInputType keyboardType = TextInputType.text,
     bool isPassword = false,
     String? Function(String?)? validator,
+    int? maxLength,
   }) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
       obscureText: isPassword && !isPasswordVisible,
       validator: validator,
+      maxLength: maxLength,
       decoration: InputDecoration(
         labelText: label,
+        counterText: maxLength != null ? '' : null, // Hide counter
         prefixIcon: Icon(icon, color: primaryBlue),
         suffixIcon: isPassword
             ? IconButton(
@@ -433,7 +527,7 @@ class _AuthScreenState extends State<AuthScreen> {
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadiusGeometry.circular(12),
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
         child: isLoading

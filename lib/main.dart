@@ -4,10 +4,14 @@ import 'auth_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
-/*import 'carts.dart';
-import 'actiongrid/statistics.dart';*/
 import 'transactions.dart';
 import 'actiongrid/qr_scan.dart';
+import '../accounts.dart';
+import 'actiongrid/payments.dart';
+import 'package:noubank/actiongrid/send_to_contact.dart';
+import 'actiongrid/request_money.dart';
+import 'actiongrid/pay_bills.dart';
+import 'actiongrid/bank_transfer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,14 +42,19 @@ class MyApp extends StatelessWidget {
         /////FOR NAVBAR/////
         '/home': (context) => const MyHomePage(title: ''),
 
-        //'/account': (context) => const AccountPage(),
-         '/transactions': (context) => const TransactionPage(),
+        '/account': (context) => const AccountPage(),
+        '/transactions': (context) => const TransactionPage(),
         // '/carts': (context) => const CartsPage(),
         //'/security': (context) => const SecurityPage(),
         //'/change_password': (context) => const ChangePasswordPage(),
 
         /////FOR ACTIONGRID/////
-        '/scan':(context) => const QrPaymentPage(),
+        '/scan': (context) => const QrPaymentPage(),
+        '/payments': (context) => const PaymentsPage(),
+        '/send_to_contact': (context) => const SendToContactPage(),
+        '/request_money': (context) => const RequestMoneyPage(),
+        '/pay_bills': (context) => const PayBillsPage(),
+        '/bank_transfer': (context) => const BankTransferPage(),
         // '/statistics':(context) => const StatisticsPage(),
       },
     );

@@ -55,7 +55,7 @@ class _QrPaymentPageState extends State<QrPaymentPage>
         Navigator.pushReplacementNamed(context, '/transactions');
         break;
       case 3:
-        Navigator.pushReplacementNamed(context, '/carts');
+        Navigator.pushReplacementNamed(context, '/cards');
         break;
       case 4:
         Navigator.pushReplacementNamed(context, '/more');

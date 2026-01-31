@@ -1,11 +1,9 @@
-//transaction_page.dart
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import '../transaction_receipt.dart'; 
-
+import 'bottom_nav.dart';
+import 'transaction_receipt.dart';
 
 const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
 const Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
@@ -18,12 +16,37 @@ class TransactionPage extends StatefulWidget {
 }
 
 class _TransactionPageState extends State<TransactionPage> {
-  String _filterType = 'all'; 
+  String _filterType = 'all';
+  int _selectedIndex = 2; 
+
+  void _onItemTapped(int index) {
+    // Handle navigation
+    switch (index) {
+      case 0:
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        break;
+      case 1:
+        Navigator.pushNamed(context, '/account');
+        break;
+      case 2:
+        // Already on Transactions, just update selected index
+        setState(() {
+          _selectedIndex = index;
+        });
+        break;
+      case 3:
+        Navigator.pushNamed(context, '/carts');
+        break;
+      case 4:
+        Navigator.pushNamed(context, '/more');
+        break;
+    }
+  }
 
   Stream<QuerySnapshot> _getTransactionsStream(String userId) {
     Query query = FirebaseFirestore.instance
-      .collection('transactions')
-      .where('userId', isEqualTo: userId);
+        .collection('transactions')
+        .where('userId', isEqualTo: userId);
 
     //Apply filter if not 'all'
     if (_filterType != 'all') {
@@ -58,7 +81,7 @@ class _TransactionPageState extends State<TransactionPage> {
         ),
         backgroundColor: primaryBlue,
         leading: IconButton(
-          onPressed: () => Navigator.pop(context), 
+          onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back, color: Colors.white),
         ),
         elevation: 0,
@@ -68,7 +91,7 @@ class _TransactionPageState extends State<TransactionPage> {
           _buildFilterButtons(),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: _getTransactionsStream(user.uid), 
+              stream: _getTransactionsStream(user.uid),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
@@ -81,11 +104,13 @@ class _TransactionPageState extends State<TransactionPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.error_outline, color: Colors.red[300], size: 60),
+                        Icon(Icons.error_outline, color: Colors.red[300],
+                            size: 60),
                         const SizedBox(height: 15),
                         Text(
                           'Error loading transactions',
-                          style: TextStyle(color: Colors.grey[600], fontSize: 16),
+                          style: TextStyle(color: Colors.grey[600],
+                              fontSize: 16),
                         )
                       ],
                     ),
@@ -104,7 +129,7 @@ class _TransactionPageState extends State<TransactionPage> {
                         ),
                         const SizedBox(height: 15),
                         Text(
-                          'No trnsactions yet',
+                          'No transactions yet',
                           style: TextStyle(
                             color: Colors.grey[600],
                             fontSize: 18,
@@ -134,34 +159,37 @@ class _TransactionPageState extends State<TransactionPage> {
 
                   if (aTimestamp == null) return 1;
                   if (bTimestamp == null) return -1;
-
                   return bTimestamp.compareTo(aTimestamp);
                 });
 
                 return ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: transactions.length,
-                  itemBuilder: (context, index) {
-                    final doc = transactions[index];
-                    final data = doc.data() as Map<String, dynamic>;
+                    padding: const EdgeInsets.all(16),
+                    itemCount: transactions.length,
+                    itemBuilder: (context, index) {
+                      final doc = transactions[index];
+                      final data = doc.data() as Map<String, dynamic>;
 
-                    return TransactionCard(
-                      transactionId: doc.id,
-                      type: data['type'] ?? 'debit',
-                      description: data['description'] ?? 'Transaction',
-                      category: data['category'] ?? 'General',
-                      amount: (data['amount'] ?? 0.0).toDouble(),
-                      timestamp: data['timestamp'] as Timestamp?,
-                      note: data['note'],
-                      recipient: data['recipient'],
-                      sender: data['sender'],
-                    );
-                  }
+                      return TransactionCard(
+                        transactionId: doc.id,
+                        type: data['type'] ?? 'debit',
+                        description: data['description'] ?? 'Transaction',
+                        category: data['category'] ?? 'General',
+                        amount: (data['amount'] ?? 0.0).toDouble(),
+                        timestamp: data['timestamp'] as Timestamp?,
+                        note: data['note'],
+                        recipient: data['recipient'],
+                        sender: data['sender'],
+                      );
+                    }
                 );
               }
             )
           )
         ],
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
     );
   }
@@ -173,15 +201,15 @@ class _TransactionPageState extends State<TransactionPage> {
       child: Row(
         children: [
           Expanded(
-            child: _buildFilterButton('All', 'all')
+              child: _buildFilterButton('All', 'all')
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: _buildFilterButton('Sent', 'debit')
+              child: _buildFilterButton('Sent', 'debit')
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: _buildFilterButton('Received', 'credit')
+              child: _buildFilterButton('Received', 'credit')
           ),
         ],
       ),
@@ -200,12 +228,12 @@ class _TransactionPageState extends State<TransactionPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? primaryBlue : Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: isSelected ? primaryBlue : Colors.grey[300]!,
-            width: 1.5,
-          )
+            color: isSelected ? primaryBlue : Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: isSelected ? primaryBlue : Colors.grey[300]!,
+              width: 1.5,
+            )
         ),
         child: Text(
           label,
@@ -251,7 +279,8 @@ class TransactionCard extends StatelessWidget {
     final isDebit = type == 'debit';
     final icon = isDebit ? Icons.arrow_upward : Icons.arrow_downward;
     final iconColor = isDebit ? Colors.red : Colors.green;
-    final amountText = '${isDebit ? '-' : '+'}\$${amount.toStringAsFixed(2)}';
+    final amountText = '${isDebit ? '-' :
+    '+'}\$${amount.toStringAsFixed(2)}';
     final amountColor = isDebit ? Colors.red : Colors.green;
 
     String formattedDate = 'Unknown date';
@@ -264,7 +293,7 @@ class TransactionCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadiusGeometry.circular(15),
+        borderRadius: BorderRadius.circular(15),
       ),
       child: InkWell(
         onTap: () {
@@ -280,52 +309,53 @@ class TransactionCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: iconColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: iconColor.withOpacity(0.3), width: 1),
+                  border: Border.all(color: iconColor.withOpacity(0.3),
+                      width: 1),
                 ),
                 child: Icon(
-                  icon, 
+                  icon,
                   color: iconColor,
                   size: 24,
                 ),
               ),
               const SizedBox(width: 15),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      description,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      formattedDate,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                    if (note != null && note!.isNotEmpty) ...[
-                      const SizedBox(height: 4),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Text(
-                        note!,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[500],
-                          fontStyle: FontStyle.italic,
+                        description,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                      )
-                    ]
-                  ],
-                )
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        formattedDate,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      if (note != null && note!.isNotEmpty) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          note!,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[500],
+                            fontStyle: FontStyle.italic,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      ]
+                    ],
+                  )
               ),
               const SizedBox(width: 10),
               Column(
@@ -341,7 +371,8 @@ class TransactionCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(horizontal: 8,
+                        vertical: 3),
                     decoration: BoxDecoration(
                       color: Colors.grey[200],
                       borderRadius: BorderRadius.circular(8),
@@ -367,11 +398,13 @@ class TransactionCard extends StatelessWidget {
   void _showTransactionDetails(BuildContext context) {
     final isDebit = type == 'debit';
     final iconColor = isDebit ? Colors.red : Colors.green;
-    final amountText = '${isDebit ? '-' : '+'}\$${amount.toStringAsFixed(2)}';
+    final amountText = '${isDebit ? '-' :
+    '+'}\$${amount.toStringAsFixed(2)}';
     final amountColor = isDebit ? Colors.red : Colors.green;
 
     String formattedDate = 'Unknown date';
     String formattedTime = '';
+
     if (timestamp != null) {
       final date = timestamp!.toDate();
       formattedDate = DateFormat('EEEE, MMMM dd, yyyy').format(date);
@@ -379,175 +412,189 @@ class TransactionCard extends StatelessWidget {
     }
 
     showModalBottomSheet(
-      context: context, 
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(25),
-            topRight: Radius.circular(25),
-          )
-        ),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                //Handle bar
-                Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                //Icon
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: iconColor.withOpacity(0.1),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: iconColor.withOpacity(0.3), width: 2),
-                  ),
-                  child: Icon(
-                    isDebit ? Icons.arrow_upward : Icons.arrow_downward,
-                    color: iconColor,
-                    size: 40,
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                //Amount
-                Text(
-                  amountText,
-                  style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    color: amountColor
-                  ),
-                ),
-                const SizedBox(height: 8),
-
-                //Status
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.green.withOpacity(0.3)),
-                  ),
-                  child: const Text(
-                    'Completed',
-                    style: TextStyle(
-                      color: Colors.green,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (context) => Container(
+          decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(25),
+                topRight: Radius.circular(25),
+              )
+          ),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  //Handle bar
+                  Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                ),
-                const SizedBox(height: 30),
-
-                //Details
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(15),
+                  const SizedBox(height: 24),
+                  //Icon
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: iconColor.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: iconColor.withOpacity(0.3),
+                          width: 2),
+                    ),
+                    child: Icon(
+                      isDebit ? Icons.arrow_upward : Icons.arrow_downward,
+                      color: iconColor,
+                      size: 40,
+                    ),
                   ),
-                  child: Column(
+                  const SizedBox(height: 20),
+                  //Amount
+                  Text(
+                    amountText,
+                    style: TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.bold,
+                        color: amountColor
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  //Status
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16,
+                        vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color:
+                      Colors.green.withOpacity(0.3)),
+                    ),
+                    child: const Text(
+                      'Completed',
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  //Details
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Column(
+                      children: [
+                        _buildDetailRow('Transaction Type', isDebit ? 'Sent'
+                            : 'Received', Icons.swap_horiz),
+                        const Divider(height: 24),
+                        _buildDetailRow('Description', description,
+                            Icons.description_outlined),
+                        const Divider(height: 24),
+                        _buildDetailRow('Category', category,
+                            Icons.category_outlined),
+                        if (recipient != null) ...[
+                          const Divider(height: 24),
+                          _buildDetailRow('Recipient', recipient!,
+                              Icons.person_outline),
+                        ],
+                        if (sender != null) ...[
+                          const Divider(height: 24),
+                          _buildDetailRow('Sender', sender!,
+                              Icons.person_outline),
+                        ],
+                        const Divider(height: 24),
+                        _buildDetailRow('Date', formattedDate,
+                            Icons.calendar_today),
+                        const Divider(height: 24),
+                        _buildDetailRow('Time', formattedTime,
+                            Icons.access_time),
+                        if (note != null && note!.isNotEmpty) ...[
+                          const Divider(height: 24),
+                          _buildDetailRow('Note', note!,
+                              Icons.note_outlined),
+                        ],
+                        const Divider(height: 24),
+                        _buildDetailRow('Transaction ID',
+                            transactionId.substring(0, 16) + '...', Icons.tag),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  //Close & share button
+                  Row(
                     children: [
-                      _buildDetailRow('Transaction Type', isDebit ? 'Sent' : 'Received', Icons.swap_horiz),
-                      const Divider(height: 24),
-                      _buildDetailRow('Description', description, Icons.description_outlined),
-                      const Divider(height: 24),
-                      _buildDetailRow('Category', category, Icons.category_outlined),
-                      if (recipient != null) ...[
-                        const Divider(height: 24),
-                        _buildDetailRow('Recipient', recipient!, Icons.percent_outlined),
-                      ],
-                      if (sender != null) ...[
-                        const Divider(height: 24),
-                        _buildDetailRow('Sender', sender!, Icons.percent_outlined),
-                      ],
-                      const Divider(height: 24),
-                      _buildDetailRow('Date', formattedDate, Icons.calendar_today),
-                      const Divider(height: 24),
-                      _buildDetailRow('Time', formattedTime, Icons.access_time),
-                      if (note != null && note!.isNotEmpty) ...[
-                        const Divider(height: 24),
-                        _buildDetailRow('Note', note!, Icons.note_outlined),
-                      ],
-                      const Divider(height: 24),
-                      _buildDetailRow('Transaction ID', transactionId.substring(0,16)+'...', Icons.tag),
+                      Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () => Navigator.pop(context),
+                            icon: const Icon(Icons.close),
+                            label: const Text('Close'),
+                            style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.grey[700],
+                                side: BorderSide(color: Colors.grey[300]!),
+                                padding: const EdgeInsets.symmetric(vertical:
+                                14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                  BorderRadius.circular(12),
+                                )
+                            ),
+                          )
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.pop(context); //Close modal first
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          TransactionReceiptPage(
+                                            transactionId: transactionId,
+                                            type: type,
+                                            description: description,
+                                            category: category,
+                                            amount: amount,
+                                            timestamp: timestamp,
+                                            note: note,
+                                            recipient: recipient,
+                                            sender: sender,
+                                          )
+                                  )
+                              );
+                            },
+                            icon: const Icon(Icons.share, color:
+                            Colors.white),
+                            label: const Text('Share', style: TextStyle(color:
+                            Colors.white)),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: primaryBlue,
+                                padding: const EdgeInsets.symmetric(vertical:
+                                14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                  BorderRadius.circular(12),
+                                )
+                            ),
+                          )
+                      ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 24),
-
-                //Close & share button
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () => Navigator.pop(context), 
-                        icon: const Icon(Icons.close),
-                        label: const Text('Close'),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.grey[700],
-                          side: BorderSide(color: Colors.grey[300]!),
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadiusGeometry.circular(12),
-                          )
-                        ),
-                      )
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.pop(context); //Close modal first
-                          Navigator.push(
-                            context, 
-                            MaterialPageRoute(
-                              builder: (context) => TransactionReceiptPage(
-                                transactionId: transactionId,
-                                type: type,
-                                description: description,
-                                category: category,
-                                amount: amount,
-                                timestamp: timestamp,
-                                note: note,
-                                recipient: recipient,
-                                sender: sender,
-                              )
-                            )
-                          );
-                        }, 
-                        icon: const Icon(Icons.share, color: Colors.white),
-                        label: const Text('Share', style: TextStyle(color: Colors.white)),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: primaryBlue,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadiusGeometry.circular(12),
-                          )
-                        ),
-                      )
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      )
+        )
     );
   }
 
@@ -557,28 +604,28 @@ class TransactionCard extends StatelessWidget {
         Icon(icon, size: 20, color: Colors.grey[600]),
         const SizedBox(width: 12),
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                  fontWeight: FontWeight.w500,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w600,
-                ),
-              )
-            ],
-          )
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w600,
+                  ),
+                )
+              ],
+            )
         )
       ],
     );
