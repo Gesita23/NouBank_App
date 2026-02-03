@@ -13,6 +13,9 @@ import 'package:noubank/actiongrid/send_to_contact.dart';
 import 'actiongrid/request_money.dart';
 import 'actiongrid/pay_bills.dart';
 import 'actiongrid/bank_transfer.dart';
+import 'actiongrid/others.dart';
+import 'actiongrid/mobile_top_up.dart';
+import 'actiongrid/currency_convertor.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,9 +43,9 @@ class MyApp extends StatelessWidget {
 
       //routes baby
       routes: {
-        /////FOR NAVBAR/////
+        //navbar
         '/home': (context) => const MyHomePage(title: ''),
-        '/account': (context) => const AccountPage(),
+        '/account': (context) => const AccountsPage(),
         '/transactions': (context) => const TransactionPage(),
         '/more': (context) => const MorePage(),
 
@@ -54,6 +57,9 @@ class MyApp extends StatelessWidget {
         '/pay_bills': (context) => const PayBillsPage(),
         '/bank_transfer': (context) => const BankTransferPage(),
         // '/statistics':(context) => const StatisticsPage(),
+        '/other': (context) => const OtherPage(),
+        '/currency_converter': (context) => const CurrencyConverterPage(),
+        '/mobile_topup': (context) => const MobileTopUpPage(),
       },
     );
   }

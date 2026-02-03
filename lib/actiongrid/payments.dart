@@ -25,7 +25,7 @@ class PaymentsPage extends StatefulWidget {
   // Optional parameters to receive account info from account page
   final String? accountType; // e.g., "Checking", "Savings", "Credit Card"
   final double? accountBalance;
-  final String? accountNumber; // e.g., "****1234"
+  final String? accountNumber; 
 
   const PaymentsPage({
     super.key,
