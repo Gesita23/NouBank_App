@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
+const Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
 
 class SendToContactPage extends StatefulWidget {
   const SendToContactPage({super.key});
@@ -21,11 +22,29 @@ class SendToContactPageState extends State<SendToContactPage> {
   double _currentBalance = 0.0;
   Map<String, dynamic>? _selectedRecipient;
   String _searchType = 'username'; // 'username', 'phone', or 'email'
+  
+  // Account info from payment page
+  String _accountType = 'Main Account';
+  String _accountNumber = '****';
 
   @override
   void initState() {
     super.initState();
     _loadBalance();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Get account info from route arguments
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    if (args != null) {
+      _accountType = args['accountType'] ?? 'Main Account';
+      _accountNumber = args['accountNumber'] ?? '****';
+      if (args['accountBalance'] != null) {
+        _currentBalance = args['accountBalance'];
+      }
+    }
   }
 
   @override
@@ -62,7 +81,7 @@ class SendToContactPageState extends State<SendToContactPage> {
 
     try {
       Query query = FirebaseFirestore.instance.collection('users');
-      
+
       // Search based on selected type
       if (_searchType == 'username') {
         query = query.where('username', isEqualTo: searchValue);
@@ -80,7 +99,7 @@ class SendToContactPageState extends State<SendToContactPage> {
       } else {
         final recipientData = querySnapshot.docs.first.data() as Map<String, dynamic>;
         final currentUser = FirebaseAuth.instance.currentUser;
-        
+
         // Check if trying to send to self
         if (recipientData['uid'] == currentUser?.uid) {
           _showErrorDialog('You cannot send money to yourself');
@@ -107,6 +126,7 @@ class SendToContactPageState extends State<SendToContactPage> {
 
   Future<void> _sendMoney() async {
     if (!_formKey.currentState!.validate()) return;
+
     if (_selectedRecipient == null) {
       _showErrorDialog('Please search and select a recipient first');
       return;
@@ -142,27 +162,21 @@ class SendToContactPageState extends State<SendToContactPage> {
       final senderName = senderDoc.data()?['name'] ?? currentUser.email;
 
       // Update sender's balance and expenses
-      final senderRef = FirebaseFirestore.instance
-          .collection('users')
-          .doc(currentUser.uid);
+      final senderRef = FirebaseFirestore.instance.collection('users').doc(currentUser.uid);
       batch.update(senderRef, {
         'account_balance': FieldValue.increment(-amount),
         'expenses': FieldValue.increment(amount),
       });
 
       // Update recipient's balance and income
-      final recipientRef = FirebaseFirestore.instance
-          .collection('users')
-          .doc(_selectedRecipient!['uid']);
+      final recipientRef = FirebaseFirestore.instance.collection('users').doc(_selectedRecipient!['uid']);
       batch.update(recipientRef, {
         'account_balance': FieldValue.increment(amount),
         'income': FieldValue.increment(amount),
       });
 
       // Create transaction for sender (debit)
-      final senderTransactionRef = FirebaseFirestore.instance
-          .collection('transactions')
-          .doc();
+      final senderTransactionRef = FirebaseFirestore.instance.collection('transactions').doc();
       batch.set(senderTransactionRef, {
         'userId': currentUser.uid,
         'type': 'debit',
@@ -170,16 +184,12 @@ class SendToContactPageState extends State<SendToContactPage> {
         'description': 'Sent to ${_selectedRecipient!['name']}',
         'category': 'Transfer',
         'recipient': _selectedRecipient!['username'] ?? _selectedRecipient!['email'],
-        'note': _noteController.text.trim().isEmpty
-            ? null
-            : _noteController.text.trim(),
+        'note': _noteController.text.trim().isEmpty ? null : _noteController.text.trim(),
         'timestamp': timestamp,
       });
 
       // Create transaction for recipient (credit)
-      final recipientTransactionRef = FirebaseFirestore.instance
-          .collection('transactions')
-          .doc();
+      final recipientTransactionRef = FirebaseFirestore.instance.collection('transactions').doc();
       batch.set(recipientTransactionRef, {
         'userId': _selectedRecipient!['uid'],
         'type': 'credit',
@@ -187,9 +197,7 @@ class SendToContactPageState extends State<SendToContactPage> {
         'description': 'Received from $senderName',
         'category': 'Transfer',
         'sender': currentUser.email,
-        'note': _noteController.text.trim().isEmpty
-            ? null
-            : _noteController.text.trim(),
+        'note': _noteController.text.trim().isEmpty ? null : _noteController.text.trim(),
         'timestamp': timestamp,
       });
 
@@ -402,7 +410,7 @@ class SendToContactPageState extends State<SendToContactPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildBalanceCard(),
+                _buildAccountHeader(),
                 const SizedBox(height: 24),
                 _buildSearchTypeSelector(),
                 const SizedBox(height: 16),
@@ -425,45 +433,77 @@ class SendToContactPageState extends State<SendToContactPage> {
     );
   }
 
-  Widget _buildBalanceCard() {
+  // STANDARDIZED HEADER - LOCKED TO ACCOUNT (NO DROPDOWN)
+  Widget _buildAccountHeader() {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [primaryBlue, Color.fromARGB(255, 21, 101, 192)],
+          colors: [primaryBlue, secondaryBlue],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: primaryBlue.withOpacity(0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Text(
+            'Paying from',
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.85),
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            _accountType,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            _accountNumber,
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.8),
+              fontSize: 13,
+              letterSpacing: 1.2,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Divider(height: 1, color: Colors.white.withOpacity(0.2)),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'Available Balance',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
-                  fontSize: 14,
+                  color: Colors.white.withOpacity(0.85),
+                  fontSize: 13,
                 ),
               ),
-              const SizedBox(height: 8),
               Text(
                 '\$${_currentBalance.toStringAsFixed(2)}',
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 28,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
+                  letterSpacing: -0.5,
                 ),
               ),
             ],
-          ),
-          const Icon(
-            Icons.account_balance_wallet,
-            color: Colors.white,
-            size: 40,
           ),
         ],
       ),

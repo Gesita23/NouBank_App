@@ -4,18 +4,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
+const Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
 
 // Bill Category Model
 class BillCategory {
   final IconData icon;
   final String title;
-  final Color color;
   final String type;
 
   const BillCategory({
     required this.icon,
     required this.title,
-    required this.color,
     required this.type,
   });
 }
@@ -29,43 +28,41 @@ class PayBillsPage extends StatefulWidget {
 
 class _PayBillsPageState extends State<PayBillsPage> {
   double _currentBalance = 0.0;
+  
+  // Account info from payment page
+  String _accountType = 'Main Account';
+  String _accountNumber = '****';
 
-  // Bill categories
+  // Bill categories - ALL USE SAME BLUE COLOR
   final List<BillCategory> billCategories = const [
     BillCategory(
       icon: Icons.electrical_services,
       title: 'Electricity',
-      color: Color(0xFFFFA726),
       type: 'electricity',
     ),
     BillCategory(
       icon: Icons.water_drop,
       title: 'Water',
-      color: Color(0xFF42A5F5),
       type: 'water',
     ),
     BillCategory(
       icon: Icons.wifi,
       title: 'Internet',
-      color: Color(0xFF66BB6A),
       type: 'internet',
     ),
     BillCategory(
       icon: Icons.phone_android,
       title: 'Mobile',
-      color: Color(0xFFAB47BC),
       type: 'mobile',
     ),
     BillCategory(
       icon: Icons.tv,
       title: 'TV/Cable',
-      color: Color(0xFFEF5350),
       type: 'tv',
     ),
     BillCategory(
       icon: Icons.local_gas_station,
       title: 'Gas',
-      color: Color(0xFFFF7043),
       type: 'gas',
     ),
   ];
@@ -74,6 +71,20 @@ class _PayBillsPageState extends State<PayBillsPage> {
   void initState() {
     super.initState();
     _loadBalance();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Get account info from route arguments
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    if (args != null) {
+      _accountType = args['accountType'] ?? 'Main Account';
+      _accountNumber = args['accountNumber'] ?? '****';
+      if (args['accountBalance'] != null) {
+        _currentBalance = args['accountBalance'];
+      }
+    }
   }
 
   Future<void> _loadBalance() async {
@@ -126,7 +137,8 @@ class _PayBillsPageState extends State<PayBillsPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _buildBalanceCard(),
+            const SizedBox(height: 16),
+            _buildAccountHeader(),
             const SizedBox(height: 20),
             _buildScanBarcodeCard(),
             const SizedBox(height: 24),
@@ -138,46 +150,78 @@ class _PayBillsPageState extends State<PayBillsPage> {
     );
   }
 
-  Widget _buildBalanceCard() {
+  // STANDARDIZED HEADER - LOCKED TO ACCOUNT (NO DROPDOWN)
+  Widget _buildAccountHeader() {
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [primaryBlue, Color.fromARGB(255, 21, 101, 192)],
+          colors: [primaryBlue, secondaryBlue],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: primaryBlue.withOpacity(0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Text(
+            'Paying from',
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.85),
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            _accountType,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            _accountNumber,
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.8),
+              fontSize: 13,
+              letterSpacing: 1.2,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Divider(height: 1, color: Colors.white.withOpacity(0.2)),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'Available Balance',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
-                  fontSize: 14,
+                  color: Colors.white.withOpacity(0.85),
+                  fontSize: 13,
                 ),
               ),
-              const SizedBox(height: 8),
               Text(
                 '\$${_currentBalance.toStringAsFixed(2)}',
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 28,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
+                  letterSpacing: -0.5,
                 ),
               ),
             ],
-          ),
-          const Icon(
-            Icons.account_balance_wallet,
-            color: Colors.white,
-            size: 40,
           ),
         ],
       ),
@@ -312,12 +356,12 @@ class _PayBillsPageState extends State<PayBillsPage> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: category.color.withOpacity(0.1),
+                  color: primaryBlue.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   category.icon,
-                  color: category.color,
+                  color: primaryBlue,
                   size: 28,
                 ),
               ),
@@ -462,7 +506,7 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
                 color: Colors.black.withOpacity(0.7),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Text(
+              child: const Text(
                 'Position the barcode within the frame',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -712,23 +756,20 @@ class _BillPaymentSheetState extends State<BillPaymentSheet> {
                 ),
               ),
               const SizedBox(height: 24),
-
               // Icon
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: (widget.category?.color ?? primaryBlue).withOpacity(0.1),
+                  color: primaryBlue.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   widget.category?.icon ?? Icons.receipt_long,
-                  color: widget.category?.color ?? primaryBlue,
+                  color: primaryBlue,
                   size: 40,
                 ),
               ),
-
               const SizedBox(height: 20),
-
               // Title
               Text(
                 widget.billData['provider'],
@@ -737,9 +778,7 @@ class _BillPaymentSheetState extends State<BillPaymentSheet> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
               const SizedBox(height: 8),
-
               // Amount
               Text(
                 '\$${amount.toStringAsFixed(2)}',
@@ -749,9 +788,7 @@ class _BillPaymentSheetState extends State<BillPaymentSheet> {
                   color: primaryBlue,
                 ),
               ),
-
               const SizedBox(height: 30),
-
               // Bill Details
               Container(
                 padding: const EdgeInsets.all(20),
@@ -769,9 +806,7 @@ class _BillPaymentSheetState extends State<BillPaymentSheet> {
                   ],
                 ),
               ),
-
               const SizedBox(height: 24),
-
               // Action buttons
               Row(
                 children: [

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'bottom_nav.dart';
+import '../bottom_nav.dart';
 
 const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
 const Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
@@ -11,14 +11,12 @@ class PaymentOption {
   final IconData icon;
   final String title;
   final String subtitle;
-  final Color color;
   final String route;
 
   const PaymentOption({
     required this.icon,
     required this.title,
     required this.subtitle,
-    required this.color,
     required this.route,
   });
 }
@@ -28,7 +26,7 @@ class PaymentsPage extends StatefulWidget {
   final String? accountType; // e.g., "Checking", "Savings", "Credit Card"
   final double? accountBalance;
   final String? accountNumber; // e.g., "****1234"
-  
+
   const PaymentsPage({
     super.key,
     this.accountType,
@@ -88,41 +86,36 @@ class _PaymentsPageState extends State<PaymentsPage> {
     }
   }
 
-  // Payment options list
+  // Payment options list - UPDATED WITH CONSISTENT STYLING
   final List<PaymentOption> paymentOptions = const [
     PaymentOption(
       icon: Icons.person_outline,
       title: 'Send to Contact',
       subtitle: 'Transfer to NouBank users',
-      color: Color(0xFF4CAF50),
       route: '/send_to_contact',
     ),
     PaymentOption(
       icon: Icons.qr_code_scanner,
       title: 'Scan QR Code',
       subtitle: 'Pay by scanning QR',
-      color: Color(0xFF2196F3),
       route: '/scan',
     ),
     PaymentOption(
       icon: Icons.receipt_long,
       title: 'Pay Bills',
       subtitle: 'Electricity, water, internet',
-      color: Color(0xFFFF9800),
       route: '/pay_bills',
     ),
     PaymentOption(
       icon: Icons.request_page,
       title: 'Request Money',
       subtitle: 'Request from others',
-      color: Color(0xFFE91E63),
       route: '/request_money',
     ),
     PaymentOption(
       icon: Icons.account_balance,
       title: 'Bank Transfer',
       subtitle: 'Transfer to other banks',
-      color: Color(0xFF00BCD4),
       route: '/bank_transfer',
     ),
   ];
@@ -323,25 +316,21 @@ class _PaymentsPageState extends State<PaymentsPage> {
               _buildQuickActionButton(
                 icon: Icons.send,
                 label: 'Send',
-                color: const Color(0xFF4CAF50),
                 onTap: () => Navigator.pushNamed(context, '/send_to_contact'),
               ),
               _buildQuickActionButton(
                 icon: Icons.qr_code_scanner,
                 label: 'Scan',
-                color: const Color(0xFF2196F3),
                 onTap: () => Navigator.pushNamed(context, '/scan'),
               ),
               _buildQuickActionButton(
                 icon: Icons.request_page,
                 label: 'Request',
-                color: const Color(0xFFE91E63),
                 onTap: () => Navigator.pushNamed(context, '/request_money'),
               ),
               _buildQuickActionButton(
                 icon: Icons.receipt_long,
                 label: 'Bills',
-                color: const Color(0xFFFF9800),
                 onTap: () => Navigator.pushNamed(context, '/pay_bills'),
               ),
             ],
@@ -354,7 +343,6 @@ class _PaymentsPageState extends State<PaymentsPage> {
   Widget _buildQuickActionButton({
     required IconData icon,
     required String label,
-    required Color color,
     required VoidCallback onTap,
   }) {
     return InkWell(
@@ -368,12 +356,12 @@ class _PaymentsPageState extends State<PaymentsPage> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: primaryBlue.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Icon(
                 icon,
-                color: color,
+                color: primaryBlue,
                 size: 28,
               ),
             ),
@@ -392,7 +380,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
     );
   }
 
-  // All Payment Options
+  // All Payment Options - UPDATED TO MATCH HOME.DART ACTION GRID STYLE
   Widget _buildPaymentOptions() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -408,80 +396,93 @@ class _PaymentsPageState extends State<PaymentsPage> {
             ),
           ),
           const SizedBox(height: 16),
-          ...paymentOptions.map((option) => _buildPaymentOptionCard(option)),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              childAspectRatio: 1.3,
+            ),
+            itemCount: paymentOptions.length,
+            itemBuilder: (context, index) {
+              return _buildPaymentOptionCard(paymentOptions[index]);
+            },
+          ),
         ],
       ),
     );
   }
 
   Widget _buildPaymentOptionCard(PaymentOption option) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Material(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        child: InkWell(
-          onTap: () {
-            // Navigate to implemented features, show coming soon for others
-            if (option.route == '/scan' || 
-                option.route == '/send_to_contact' ||
-                option.route == '/pay_bills' ||
-                option.route == '/request_money' ||
-                option.route == '/bank_transfer') {
-              Navigator.pushNamed(context, option.route);
-            } else {
-              _showComingSoonDialog(option.title);
-            }
-          },
-          borderRadius: BorderRadius.circular(16),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: option.color.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    option.icon,
-                    color: option.color,
-                    size: 28,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        option.title,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        option.subtitle,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.grey[400],
-                  size: 18,
-                ),
-              ],
+    return InkWell(
+      onTap: () {
+        // Navigate to implemented features
+        if (option.route == '/scan' ||
+            option.route == '/send_to_contact' ||
+            option.route == '/pay_bills' ||
+            option.route == '/request_money' ||
+            option.route == '/bank_transfer') {
+          // Pass account info to the next page
+          Navigator.pushNamed(
+            context,
+            option.route,
+            arguments: {
+              'accountType': widget.accountType ?? 'Main Account',
+              'accountBalance': widget.accountBalance ?? totalBalance,
+              'accountNumber': widget.accountNumber ?? '****',
+            },
+          );
+        } else {
+          _showComingSoonDialog(option.title);
+        }
+      },
+      borderRadius: BorderRadius.circular(15),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 3,
+              offset: const Offset(0, 1),
             ),
-          ),
+          ],
+        ),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              option.icon,
+              color: primaryBlue,
+              size: 32,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              option.title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              option.subtitle,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 11,
+                color: Colors.grey[600],
+              ),
+            ),
+          ],
         ),
       ),
     );

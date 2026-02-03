@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 import 'transactions.dart';
+import 'more.dart';
 import 'actiongrid/qr_scan.dart';
 import '../accounts.dart';
 import 'actiongrid/payments.dart';
@@ -41,12 +42,9 @@ class MyApp extends StatelessWidget {
       routes: {
         /////FOR NAVBAR/////
         '/home': (context) => const MyHomePage(title: ''),
-
         '/account': (context) => const AccountPage(),
         '/transactions': (context) => const TransactionPage(),
-        // '/carts': (context) => const CartsPage(),
-        //'/security': (context) => const SecurityPage(),
-        //'/change_password': (context) => const ChangePasswordPage(),
+        '/more': (context) => const MorePage(),
 
         /////FOR ACTIONGRID/////
         '/scan': (context) => const QrPaymentPage(),

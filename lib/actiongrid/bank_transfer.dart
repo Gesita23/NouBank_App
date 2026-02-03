@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
+const Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
 
 class BankTransferPage extends StatefulWidget {
   const BankTransferPage({super.key});
@@ -23,11 +24,29 @@ class _BankTransferPageState extends State<BankTransferPage> {
   bool _isLoading = false;
   double _currentBalance = 0.0;
   String _transferType = 'domestic'; // 'domestic' or 'international'
+  
+  // Account info from payment page
+  String _accountType = 'Main Account';
+  String _accountNumber = '****';
 
   @override
   void initState() {
     super.initState();
     _loadBalance();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Get account info from route arguments
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    if (args != null) {
+      _accountType = args['accountType'] ?? 'Main Account';
+      _accountNumber = args['accountNumber'] ?? '****';
+      if (args['accountBalance'] != null) {
+        _currentBalance = args['accountBalance'];
+      }
+    }
   }
 
   @override
@@ -385,7 +404,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildBalanceCard(),
+                _buildAccountHeader(),
                 const SizedBox(height: 24),
                 _buildTransferTypeSelector(),
                 const SizedBox(height: 20),
@@ -408,45 +427,77 @@ class _BankTransferPageState extends State<BankTransferPage> {
     );
   }
 
-  Widget _buildBalanceCard() {
+  // STANDARDIZED HEADER - LOCKED TO ACCOUNT (NO DROPDOWN)
+  Widget _buildAccountHeader() {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [primaryBlue, Color.fromARGB(255, 21, 101, 192)],
+          colors: [primaryBlue, secondaryBlue],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: primaryBlue.withOpacity(0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Text(
+            'Paying from',
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.85),
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            _accountType,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            _accountNumber,
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.8),
+              fontSize: 13,
+              letterSpacing: 1.2,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Divider(height: 1, color: Colors.white.withOpacity(0.2)),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'Available Balance',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
-                  fontSize: 14,
+                  color: Colors.white.withOpacity(0.85),
+                  fontSize: 13,
                 ),
               ),
-              const SizedBox(height: 8),
               Text(
                 '\$${_currentBalance.toStringAsFixed(2)}',
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 28,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
+                  letterSpacing: -0.5,
                 ),
               ),
             ],
-          ),
-          const Icon(
-            Icons.account_balance_wallet,
-            color: Colors.white,
-            size: 40,
           ),
         ],
       ),
@@ -658,7 +709,6 @@ class _BankTransferPageState extends State<BankTransferPage> {
 
   Widget _buildAmountSection() {
     final fee = _transferType == 'domestic' ? '1%' : '2%';
-    
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(

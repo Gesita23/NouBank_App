@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
+const Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
 
 class RequestMoneyPage extends StatefulWidget {
   const RequestMoneyPage({super.key});
@@ -20,6 +21,25 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
   bool _isLoading = false;
   Map<String, dynamic>? _selectedRecipient;
   String _searchType = 'username'; // 'username', 'phone', or 'email'
+  
+  // Account info from payment page
+  String _accountType = 'Main Account';
+  String _accountNumber = '****';
+  double _currentBalance = 0.0;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Get account info from route arguments
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    if (args != null) {
+      _accountType = args['accountType'] ?? 'Main Account';
+      _accountNumber = args['accountNumber'] ?? '****';
+      if (args['accountBalance'] != null) {
+        _currentBalance = args['accountBalance'];
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -40,7 +60,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
 
     try {
       Query query = FirebaseFirestore.instance.collection('users');
-      
+
       // Search based on selected type
       if (_searchType == 'username') {
         query = query.where('username', isEqualTo: searchValue);
@@ -58,7 +78,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
       } else {
         final recipientData = querySnapshot.docs.first.data() as Map<String, dynamic>;
         final currentUser = FirebaseAuth.instance.currentUser;
-        
+
         // Check if trying to request from self
         if (recipientData['uid'] == currentUser?.uid) {
           _showErrorDialog('You cannot request money from yourself');
@@ -85,6 +105,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
 
   Future<void> _sendRequest() async {
     if (!_formKey.currentState!.validate()) return;
+
     if (_selectedRecipient == null) {
       _showErrorDialog('Please search and select a recipient first');
       return;
@@ -125,9 +146,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
         'recipientUsername': _selectedRecipient!['username'],
         'recipientEmail': _selectedRecipient!['email'],
         'amount': amount,
-        'reason': _reasonController.text.trim().isEmpty
-            ? null
-            : _reasonController.text.trim(),
+        'reason': _reasonController.text.trim().isEmpty ? null : _reasonController.text.trim(),
         'status': 'pending', // pending, accepted, rejected
         'createdAt': timestamp,
       });
@@ -404,11 +423,18 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [primaryBlue, Color.fromARGB(255, 21, 101, 192)],
+          colors: [primaryBlue, secondaryBlue],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: primaryBlue.withOpacity(0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Row(
         children: [
