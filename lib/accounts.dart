@@ -1,234 +1,284 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'bottom_nav.dart';
 
-// Matching the color from your PDF (home.dart source)
-const Color primaryPurple = Color.fromARGB(255, 13, 71, 161);
-const Color bgGrey = Color(0xFFF2F4F8);
+const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
+const Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
 
-class AccountPage extends StatefulWidget {
-  const AccountPage({super.key});
+class BankAccount {
+  final String id;
+  final String accountType;
+  final double balance;
+  final String accountNumber;
+  final String holderName;
+  final Color cardColor;
+  final IconData icon;
 
-  @override
-  State<AccountPage> createState() => _AccountPageState();
+  BankAccount({
+    required this.id,
+    required this.accountType,
+    required this.balance,
+    required this.accountNumber,
+    required this.holderName,
+    required this.cardColor,
+    required this.icon,
+  });
 }
 
-class _AccountPageState extends State<AccountPage> {
-  // Global visibility toggle for the "Total Balance" card
-  bool _isTotalBalanceHidden = false;
+class AccountsPage extends StatefulWidget {
+  const AccountsPage({super.key});
 
-  // Mock Data - In a real app, you might fetch this from Firestore like home.dart does
-  List<Map<String, dynamic>> accounts = [
-    {
-      "id": 1,
-      "name": "Savings Account",
-      "number": "••• 2389",
-      "balance": "\$25,150",
-      "isHidden": false,
-      "icon": Icons.savings_rounded,
-      "iconColor": Colors.green
-    },
-    {
-      "id": 2,
-      "name": "Checking Account",
-      "number": "••• 4756",
-      "balance": "\$16,500",
-      "isHidden": false,
-      "icon": Icons.account_balance_wallet,
-      "iconColor": Colors.redAccent
-    },
-    {
-      "id": 3,
-      "name": "Joint Account",
-      "number": "••• 8907",
-      "balance": ".....", 
-      "isHidden": true, 
-      "icon": Icons.groups,
-      "iconColor": const Color(0xFF5C6BC0)
-    },
-  ];
+  @override
+  State<AccountsPage> createState() => _AccountsPageState();
+}
+
+class _AccountsPageState extends State<AccountsPage> {
+  int _selectedIndex = 1;
+
+  void _onItemTapped(int index) {
+    switch (index) {
+      case 0:
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false);
+        break;
+      case 1:
+        break;
+      case 2:
+        Navigator.pushNamed(context, '/transactions');
+        break;
+      case 3:
+        Navigator.pushNamed(context, '/cards');
+        break;
+      case 4:
+        Navigator.pushNamed(context, '/more');
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
-      backgroundColor: bgGrey,
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        backgroundColor: primaryPurple,
+        title: const Text('My Accounts',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+        backgroundColor: primaryBlue,
         elevation: 0,
-        // The back button here will return you to the Home Page
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context), 
-        ),
-        title: const Text(
-          "Accounts",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // 1. TOTAL BALANCE CARD
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 24),
-              decoration: const BoxDecoration(
-                color: primaryPurple,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(24),
-                  bottomRight: Radius.circular(24),
-                ),
-              ),
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1), // Glassmorphism effect
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Total Balance",
-                      style: TextStyle(color: Colors.white70, fontSize: 14),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          _isTotalBalanceHidden ? "••••••" : "\$64,350",
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                             setState(() {
-                               _isTotalBalanceHidden = !_isTotalBalanceHidden;
-                             });
-                          },
-                          icon: Icon(
-                            _isTotalBalanceHidden ? Icons.visibility_off : Icons.remove_red_eye,
-                            color: Colors.white70,
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      "Total balance across all accounts",
-                      style: TextStyle(color: Colors.white60, fontSize: 12),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+      body: user == null
+          ? const Center(child: Text('Please log in'))
+          : StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(user.uid)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: primaryBlue),
+                  );
+                }
 
-            // 2. ACCOUNTS LIST
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12.0),
-                    child: Text("Your Accounts", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black54)),
-                  ),
-                  
-                  // Generate the cards dynamically from the list
-                  ...accounts.map((acc) => _buildAccountCard(acc)).toList(),
+                final data =
+                    snapshot.data!.data() as Map<String, dynamic>? ?? {};
+                final name = data['name'] ?? 'User';
+                final balance =
+                    (data['account_balance'] ?? 0).toDouble();
 
-                  const Padding(
-                    padding: EdgeInsets.only(top: 24.0, bottom: 12.0),
-                    child: Text("Other Accounts", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black54)),
+                final accounts = [
+                  BankAccount(
+                    id: 'main',
+                    accountType: 'Main Account',
+                    balance: balance,
+                    accountNumber: '****1234',
+                    holderName: name,
+                    cardColor: primaryBlue,
+                    icon: Icons.account_balance_wallet,
                   ),
-                   // Example of static other account
-                  _buildAccountCard({
-                    "name": "Loan Account",
-                    "number": "••• 1122",
-                    "balance": "\$4,200",
-                    "isHidden": false,
-                    "icon": Icons.monetization_on,
-                    "iconColor": Colors.orange
-                  }),
-                ],
-              ),
+                ];
+
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.only(bottom: 80),
+                  child: Column(
+                    children: [
+                      _buildHeader(balance, name),
+                      const SizedBox(height: 24),
+                      _buildAccounts(accounts),
+                    ],
+                  ),
+                );
+              },
             ),
-          ],
-        ),
+      bottomNavigationBar: CustomBottomNavBar(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
     );
   }
 
-  Widget _buildAccountCard(Map<String, dynamic> data) {
-    bool isHidden = data['isHidden'] ?? false;
-    
+  Widget _buildHeader(double balance, String name) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        gradient: const LinearGradient(
+          colors: [primaryBlue, secondaryBlue],
+        ),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Hello, $name',
+              style:
+                  const TextStyle(color: Colors.white70, fontSize: 16)),
+          const SizedBox(height: 8),
+          const Text('Total Balance',
+              style: TextStyle(color: Colors.white70)),
+          const SizedBox(height: 12),
+          Text('\$${balance.toStringAsFixed(2)}',
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold)),
         ],
       ),
-      child: Row(
+    );
+  }
+
+  Widget _buildAccounts(List<BankAccount> accounts) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: accounts.map(_buildAccountCard).toList(),
+      ),
+    );
+  }
+
+  Widget _buildAccountCard(BankAccount account) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => AccountDetailsPage(account: account),
+            ),
+          );
+        },
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                account.cardColor,
+                account.cardColor.withOpacity(0.8)
+              ],
+            ),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(account.icon, color: Colors.white),
+                      const SizedBox(width: 12),
+                      Text(account.accountType,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600)),
+                    ],
+                  ),
+                  const Icon(Icons.chevron_right,
+                      color: Colors.white70),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Text(account.accountNumber,
+                  style: const TextStyle(
+                      color: Colors.white, letterSpacing: 2)),
+              const SizedBox(height: 16),
+              Text('\$${account.balance.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AccountDetailsPage extends StatelessWidget {
+  final BankAccount account;
+
+  const AccountDetailsPage({super.key, required this.account});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[100],
+      appBar: AppBar(
+        title: Text(account.accountType,
+            style:
+                const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+        backgroundColor: account.cardColor,
+      ),
+      body: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(10),
+            width: double.infinity,
+            padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: (data['iconColor'] as Color).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12)
+              gradient: LinearGradient(
+                colors: [
+                  account.cardColor,
+                  account.cardColor.withOpacity(0.8)
+                ],
+              ),
             ),
-            child: Icon(data['icon'], color: data['iconColor'], size: 28),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  data['name'],
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xFF2D2D2D)),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  data['number'], 
-                  style: const TextStyle(fontSize: 14, color: Colors.grey),
-                ),
+                Icon(account.icon, color: Colors.white, size: 48),
+                const SizedBox(height: 16),
+                Text('\$${account.balance.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold)),
               ],
             ),
           ),
-          Row(
-            children: [
-              Text(
-                isHidden ? "••••••" : data['balance'],
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF2D2D2D)),
+          const SizedBox(height: 24),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  '/payments',
+                  arguments: {
+                    'accountType': account.accountType,
+                    'accountBalance': account.balance,
+                    'accountNumber': account.accountNumber,
+                  },
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: account.cardColor,
               ),
-              const SizedBox(width: 8),
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    // Update the specific account's visibility
-                    if(accounts.contains(data)) {
-                       data['isHidden'] = !isHidden;
-                    }
-                  });
-                },
-                child: Icon(
-                  isHidden ? Icons.visibility_off : Icons.remove_red_eye,
-                  color: const Color(0xFF8B95A6),
-                  size: 22,
-                ),
-              ),
-            ],
+              child: const Text('Send Money'),
+            ),
           ),
         ],
       ),

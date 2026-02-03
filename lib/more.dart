@@ -65,11 +65,6 @@ class _MorePageState extends State<MorePage> {
               // Financial Services Section
               _buildMenuCard([
                 _MenuItem(
-                  icon: Icons.trending_up,
-                  label: "Invest",
-                  onTap: () => _navigateToInvest(context),
-                ),
-                _MenuItem(
                   icon: Icons.article_outlined,
                   label: "Statements & Advices",
                   onTap: () => _navigateToStatements(context),
@@ -197,13 +192,6 @@ class _MorePageState extends State<MorePage> {
   }
 
   // Navigation Methods
-  void _navigateToInvest(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const InvestPage()),
-    );
-  }
-
   void _navigateToStatements(BuildContext context) {
     Navigator.push(
       context,
@@ -307,177 +295,6 @@ class _MenuItem {
 }
 
 // Placeholder pages for navigation
-class InvestPage extends StatelessWidget {
-  const InvestPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        title: const Text("Invest", style: TextStyle(color: Colors.white)),
-        backgroundColor: primaryBlue,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Investment Options",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              "Grow your wealth with our investment products",
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[600],
-              ),
-            ),
-            const SizedBox(height: 24),
-            
-            _buildInvestmentCard(
-              "Fixed Deposit",
-              "Earn guaranteed returns with low risk",
-              "4.5% p.a.",
-              Icons.account_balance,
-              Colors.green,
-            ),
-            const SizedBox(height: 12),
-            
-            _buildInvestmentCard(
-              "Mutual Funds",
-              "Diversified portfolio managed by experts",
-              "8-12% p.a.",
-              Icons.trending_up,
-              Colors.blue,
-            ),
-            const SizedBox(height: 12),
-            
-            _buildInvestmentCard(
-              "Stocks & Shares",
-              "Invest in individual companies",
-              "Variable",
-              Icons.show_chart,
-              Colors.orange,
-            ),
-            const SizedBox(height: 12),
-            
-            _buildInvestmentCard(
-              "Government Bonds",
-              "Secure investment backed by government",
-              "3.8% p.a.",
-              Icons.security,
-              Colors.purple,
-            ),
-            
-            const SizedBox(height: 24),
-            
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: primaryBlue.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: primaryBlue.withOpacity(0.3)),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.info_outline, color: primaryBlue),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      "Investment products will be available soon. Contact us to learn more.",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[800],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInvestmentCard(String title, String description, String returns, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(icon, color: color, size: 28),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  description,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 12),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              returns,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class StatementsPage extends StatelessWidget {
   const StatementsPage({super.key});
@@ -510,7 +327,7 @@ class StatementsPage extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              "Download your monthly statements and tax documents",
+              "Download your monthly statements",
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.grey[600],
@@ -519,6 +336,16 @@ class StatementsPage extends StatelessWidget {
             const SizedBox(height: 24),
             
             _buildStatementCard(
+              context,
+              "February 2026",
+              "Account Statement",
+              "Generated on Feb 01, 2026",
+              Icons.picture_as_pdf,
+            ),
+            const SizedBox(height: 12),
+            
+            _buildStatementCard(
+              context,
               "January 2026",
               "Account Statement",
               "Generated on Jan 31, 2026",
@@ -527,6 +354,7 @@ class StatementsPage extends StatelessWidget {
             const SizedBox(height: 12),
             
             _buildStatementCard(
+              context,
               "December 2025",
               "Account Statement",
               "Generated on Dec 31, 2025",
@@ -535,28 +363,11 @@ class StatementsPage extends StatelessWidget {
             const SizedBox(height: 12),
             
             _buildStatementCard(
+              context,
               "November 2025",
               "Account Statement",
               "Generated on Nov 30, 2025",
               Icons.picture_as_pdf,
-            ),
-            
-            const SizedBox(height: 32),
-            
-            const Text(
-              "Tax Documents",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
-            
-            _buildStatementCard(
-              "Tax Year 2025",
-              "Annual Tax Statement",
-              "Generated on Jan 15, 2026",
-              Icons.receipt_long,
             ),
             
             const SizedBox(height: 24),
@@ -593,7 +404,12 @@ class StatementsPage extends StatelessWidget {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
-                      // Enable email statements
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Email statements feature enabled!'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryBlue,
@@ -616,7 +432,7 @@ class StatementsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildStatementCard(String title, String type, String date, IconData icon) {
+  Widget _buildStatementCard(BuildContext context, String title, String type, String date, IconData icon) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -673,13 +489,56 @@ class StatementsPage extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {
-              // Download statement
+              _downloadStatement(context, title);
             },
             icon: const Icon(Icons.download, color: primaryBlue),
+            tooltip: 'Download',
           ),
         ],
       ),
     );
+  }
+
+  void _downloadStatement(BuildContext context, String statementName) {
+    // Show download progress
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(color: primaryBlue),
+              const SizedBox(height: 20),
+              Text('Downloading $statementName...'),
+            ],
+          ),
+        );
+      },
+    );
+
+    // Simulate download
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.pop(context); // Close progress dialog
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('$statementName downloaded successfully!'),
+          backgroundColor: Colors.green,
+          action: SnackBarAction(
+            label: 'View',
+            textColor: Colors.white,
+            onPressed: () {
+              // Open downloaded file
+            },
+          ),
+        ),
+      );
+    });
   }
 }
 
@@ -851,8 +710,11 @@ class PersonalDetailsPage extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () {<<<<<<< HEAD
                         _showEditProfileDialog(context, user.uid, name, phone);
+=======
+                        _showEditProfileDialog(context, user.uid, name, phone, email);
+>>>>>>> c59c995ebb3f2c702948b899356cf01e8b914663
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryBlue,
@@ -880,9 +742,10 @@ class PersonalDetailsPage extends StatelessWidget {
     );
   }
 
-  void _showEditProfileDialog(BuildContext context, String uid, String currentName, String currentPhone) {
+  void _showEditProfileDialog(BuildContext context, String uid, String currentName, String currentPhone, String currentEmail) {
     final nameController = TextEditingController(text: currentName);
     final phoneController = TextEditingController(text: currentPhone);
+    final emailController = TextEditingController(text: currentEmail);
     final formKey = GlobalKey<FormState>();
 
     showDialog(
@@ -894,49 +757,72 @@ class PersonalDetailsPage extends StatelessWidget {
         title: const Text('Edit Profile'),
         content: Form(
           key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  labelText: 'Full Name',
-                  prefixIcon: const Icon(Icons.person_outline),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Full Name',
+                    prefixIcon: const Icon(Icons.person_outline),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Please enter your name';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Please enter your name';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: phoneController,
-                decoration: InputDecoration(
-                  labelText: 'Phone Number',
-                  prefixIcon: const Icon(Icons.phone_outlined),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    prefixIcon: const Icon(Icons.email_outlined),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    if (!value.contains('@')) {
+                      return 'Please enter a valid email';
+                    }
+                    return null;
+                  },
                 ),
-                keyboardType: TextInputType.phone,
-                maxLength: 8,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Please enter your phone number';
-                  }
-                  final cleanPhone = value.replaceAll(RegExp(r'[^0-9]'), '');
-                  if (cleanPhone.length != 8) {
-                    return 'Phone number must be 8 digits';
-                  }
-                  return null;
-                },
-              ),
-            ],
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: phoneController,
+                  decoration: InputDecoration(
+                    labelText: 'Phone Number',
+                    prefixIcon: const Icon(Icons.phone_outlined),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  keyboardType: TextInputType.phone,
+                  maxLength: 8,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Please enter your phone number';
+                    }
+                    final cleanPhone = value.replaceAll(RegExp(r'[^0-9]'), '');
+                    if (cleanPhone.length != 8) {
+                      return 'Phone number must be 8 digits';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
           ),
         ),
         actions: [
@@ -948,12 +834,20 @@ class PersonalDetailsPage extends StatelessWidget {
             onPressed: () async {
               if (formKey.currentState!.validate()) {
                 try {
+                  final user = FirebaseAuth.instance.currentUser;
+                  
+                  // Update email in Firebase Auth if changed
+                  if (emailController.text.trim() != currentEmail && user != null) {
+                    await user.verifyBeforeUpdateEmail(emailController.text.trim());
+                  }
+                  
                   // Update Firestore
                   await FirebaseFirestore.instance
                       .collection('users')
                       .doc(uid)
                       .update({
                     'name': nameController.text.trim(),
+                    'email': emailController.text.trim(),
                     'phone': phoneController.text.trim(),
                   });
 
@@ -968,9 +862,15 @@ class PersonalDetailsPage extends StatelessWidget {
                   }
                 } catch (e) {
                   if (context.mounted) {
+                    String errorMessage = 'Error updating profile: ';
+                    if (e.toString().contains('requires-recent-login')) {
+                      errorMessage = 'Please log out and log back in to update your email';
+                    } else {
+                      errorMessage += e.toString();
+                    }
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('Error updating profile: $e'),
+                        content: Text(errorMessage),
                         backgroundColor: Colors.red,
                       ),
                     );
@@ -1084,9 +984,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool _notificationsEnabled = true;
-  bool _marketingEmails = true;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1142,76 +1039,57 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
               _buildSettingTile(
-                "Security Settings",
-                "Manage your account security",
-                Icons.security,
+                "PIN Management",
+                "Set or change your transaction PIN",
+                Icons.pin_outlined,
+                Icon(Icons.chevron_right, color: Colors.grey[400]),
+                onTap: () {
+                  _showPINDialog(context);
+                },
+              ),
+              _buildSettingTile(
+                "Biometric Authentication",
+                "Enable fingerprint or face unlock",
+                Icons.fingerprint,
                 Icon(Icons.chevron_right, color: Colors.grey[400]),
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Advanced security settings coming soon'),
+                      content: Text('Biometric authentication setup coming soon'),
                     ),
                   );
                 },
               ),
-            ]),
-            
-            const SizedBox(height: 24),
-            
-            // Notifications Section
-            const Text(
-              "Notifications",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 12),
-            
-            _buildSettingsCard([
               _buildSettingTile(
-                "Push Notifications",
-                "Receive alerts for transactions",
-                Icons.notifications_outlined,
-                Switch(
-                  value: _notificationsEnabled,
-                  onChanged: (value) {
-                    setState(() {
-                      _notificationsEnabled = value;
-                    });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(value 
-                          ? 'Notifications enabled' 
-                          : 'Notifications disabled'),
-                        duration: const Duration(seconds: 1),
-                      ),
-                    );
-                  },
-                  activeColor: primaryBlue,
-                ),
+                "Two-Factor Authentication",
+                "Add an extra layer of security",
+                Icons.security,
+                Icon(Icons.chevron_right, color: Colors.grey[400]),
+                onTap: () {
+                  _show2FADialog(context);
+                },
               ),
               _buildSettingTile(
-                "Marketing Emails",
-                "Receive offers and promotions",
-                Icons.email_outlined,
-                Switch(
-                  value: _marketingEmails,
-                  onChanged: (value) {
-                    setState(() {
-                      _marketingEmails = value;
-                    });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(value 
-                          ? 'Marketing emails enabled' 
-                          : 'Marketing emails disabled'),
-                        duration: const Duration(seconds: 1),
-                      ),
-                    );
-                  },
-                  activeColor: primaryBlue,
-                ),
+                "Login History",
+                "View your recent login activity",
+                Icons.history,
+                Icon(Icons.chevron_right, color: Colors.grey[400]),
+                onTap: () {
+                  _showLoginHistoryDialog(context);
+                },
+              ),
+              _buildSettingTile(
+                "Trusted Devices",
+                "Manage devices that can access your account",
+                Icons.devices,
+                Icon(Icons.chevron_right, color: Colors.grey[400]),
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Trusted devices management coming soon'),
+                    ),
+                  );
+                },
               ),
             ]),
             
@@ -1496,6 +1374,288 @@ class _SettingsPageState extends State<SettingsPage> {
               backgroundColor: primaryBlue,
             ),
             child: const Text('Change Password', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showPINDialog(BuildContext context) {
+    final pinController = TextEditingController();
+    final confirmPinController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: const Text('Set Transaction PIN'),
+        content: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: pinController,
+                obscureText: true,
+                keyboardType: TextInputType.number,
+                maxLength: 4,
+                decoration: InputDecoration(
+                  labelText: 'Enter 4-Digit PIN',
+                  prefixIcon: const Icon(Icons.pin),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a PIN';
+                  }
+                  if (value.length != 4) {
+                    return 'PIN must be exactly 4 digits';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: confirmPinController,
+                obscureText: true,
+                keyboardType: TextInputType.number,
+                maxLength: 4,
+                decoration: InputDecoration(
+                  labelText: 'Confirm PIN',
+                  prefixIcon: const Icon(Icons.pin),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please confirm your PIN';
+                  }
+                  if (value != pinController.text) {
+                    return 'PINs do not match';
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (formKey.currentState!.validate()) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('PIN set successfully!'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primaryBlue,
+            ),
+            child: const Text('Set PIN', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _show2FADialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Row(
+          children: const [
+            Icon(Icons.security, color: primaryBlue, size: 28),
+            SizedBox(width: 12),
+            Text('Two-Factor Authentication'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Protect your account with an extra layer of security.',
+              style: TextStyle(fontSize: 14),
+            ),
+            const SizedBox(height: 16),
+            _build2FAOption(
+              'SMS Authentication',
+              'Receive codes via text message',
+              Icons.sms,
+            ),
+            const SizedBox(height: 12),
+            _build2FAOption(
+              'Email Authentication',
+              'Receive codes via email',
+              Icons.email,
+            ),
+            const SizedBox(height: 12),
+            _build2FAOption(
+              'Authenticator App',
+              'Use Google Authenticator or similar',
+              Icons.phone_android,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _build2FAOption(String title, String subtitle, IconData icon) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey[300]!),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: primaryBlue),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLoginHistoryDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: const Text('Recent Login Activity'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildLoginHistoryItem(
+                'Current Session',
+                'Port Louis, Mauritius',
+                'Feb 3, 2026 - 2:30 PM',
+                Icons.check_circle,
+                Colors.green,
+              ),
+              const Divider(),
+              _buildLoginHistoryItem(
+                'Mobile App',
+                'Port Louis, Mauritius',
+                'Feb 2, 2026 - 9:15 AM',
+                Icons.phone_android,
+                primaryBlue,
+              ),
+              const Divider(),
+              _buildLoginHistoryItem(
+                'Web Browser',
+                'Port Louis, Mauritius',
+                'Feb 1, 2026 - 6:45 PM',
+                Icons.computer,
+                primaryBlue,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoginHistoryItem(
+    String device,
+    String location,
+    String time,
+    IconData icon,
+    Color color,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: color, size: 20),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  device,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  location,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                Text(
+                  time,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.grey[500],
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
