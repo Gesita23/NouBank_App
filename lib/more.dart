@@ -86,16 +86,6 @@ class _MorePageState extends State<MorePage> {
                   onTap: () => _navigateToPersonalDetails(context),
                 ),
                 _MenuItem(
-                  icon: Icons.autorenew,
-                  label: "Standing orders",
-                  onTap: () => _navigateToStandingOrders(context),
-                ),
-                _MenuItem(
-                  icon: Icons.people_outline,
-                  label: "Beneficiaries",
-                  onTap: () => _navigateToBeneficiaries(context),
-                ),
-                _MenuItem(
                   icon: Icons.settings_outlined,
                   label: "Settings",
                   onTap: () => _navigateToSettings(context),
@@ -228,20 +218,6 @@ class _MorePageState extends State<MorePage> {
     );
   }
 
-  void _navigateToStandingOrders(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const StandingOrdersPage()),
-    );
-  }
-
-  void _navigateToBeneficiaries(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const BeneficiariesPage()),
-    );
-  }
-
   void _navigateToSettings(BuildContext context) {
     Navigator.push(
       context,
@@ -295,7 +271,7 @@ class _MorePageState extends State<MorePage> {
       // Navigate to auth screen and clear navigation stack
       if (context.mounted) {
         Navigator.of(context).pushNamedAndRemoveUntil(
-          '/login',
+          '/',
           (route) => false,
         );
       }
@@ -876,12 +852,7 @@ class PersonalDetailsPage extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        // Navigate to edit page or show edit dialog
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Edit profile feature coming soon!'),
-                          ),
-                        );
+                        _showEditProfileDialog(context, user.uid, name, phone);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryBlue,
@@ -905,6 +876,114 @@ class PersonalDetailsPage extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+
+  void _showEditProfileDialog(BuildContext context, String uid, String currentName, String currentPhone) {
+    final nameController = TextEditingController(text: currentName);
+    final phoneController = TextEditingController(text: currentPhone);
+    final formKey = GlobalKey<FormState>();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: const Text('Edit Profile'),
+        content: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  labelText: 'Full Name',
+                  prefixIcon: const Icon(Icons.person_outline),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter your name';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: phoneController,
+                decoration: InputDecoration(
+                  labelText: 'Phone Number',
+                  prefixIcon: const Icon(Icons.phone_outlined),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                keyboardType: TextInputType.phone,
+                maxLength: 8,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter your phone number';
+                  }
+                  final cleanPhone = value.replaceAll(RegExp(r'[^0-9]'), '');
+                  if (cleanPhone.length != 8) {
+                    return 'Phone number must be 8 digits';
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (formKey.currentState!.validate()) {
+                try {
+                  // Update Firestore
+                  await FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(uid)
+                      .update({
+                    'name': nameController.text.trim(),
+                    'phone': phoneController.text.trim(),
+                  });
+
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Profile updated successfully!'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Error updating profile: $e'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                }
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primaryBlue,
+            ),
+            child: const Text('Save', style: TextStyle(color: Colors.white)),
+          ),
+        ],
       ),
     );
   }
@@ -996,491 +1075,6 @@ class _InfoItem {
   });
 }
 
-class StandingOrdersPage extends StatelessWidget {
-  const StandingOrdersPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        title: const Text("Standing Orders", style: TextStyle(color: Colors.white)),
-        backgroundColor: primaryBlue,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Active Standing Orders",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              "Manage your recurring payments",
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[600],
-              ),
-            ),
-            const SizedBox(height: 24),
-            
-            _buildStandingOrderCard(
-              "Rent Payment",
-              "John Doe",
-              "\$1,200.00",
-              "Monthly - 1st of every month",
-              Icons.home,
-              Colors.blue,
-              true,
-            ),
-            const SizedBox(height: 12),
-            
-            _buildStandingOrderCard(
-              "Electricity Bill",
-              "Utility Company",
-              "\$150.00",
-              "Monthly - 15th of every month",
-              Icons.electrical_services,
-              Colors.orange,
-              true,
-            ),
-            const SizedBox(height: 12),
-            
-            _buildStandingOrderCard(
-              "Internet Subscription",
-              "ISP Provider",
-              "\$80.00",
-              "Monthly - 5th of every month",
-              Icons.wifi,
-              Colors.purple,
-              true,
-            ),
-            const SizedBox(height: 12),
-            
-            _buildStandingOrderCard(
-              "Gym Membership",
-              "Fitness Center",
-              "\$60.00",
-              "Monthly - 10th of every month",
-              Icons.fitness_center,
-              Colors.green,
-              false,
-            ),
-            
-            const SizedBox(height: 24),
-            
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  // Add new standing order
-                },
-                icon: const Icon(Icons.add, color: Colors.white),
-                label: const Text(
-                  "Add New Standing Order",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryBlue,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
-            ),
-            
-            const SizedBox(height: 16),
-            
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.blue.withOpacity(0.3)),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.info_outline, color: Colors.blue[700]),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      "Standing orders are automatically processed on the scheduled date. Ensure sufficient balance.",
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey[800],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStandingOrderCard(
-    String title,
-    String recipient,
-    String amount,
-    String frequency,
-    IconData icon,
-    Color color,
-    bool isActive,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(icon, color: color, size: 24),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      "To: $recipient",
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    amount,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: isActive ? Colors.green.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      isActive ? "Active" : "Paused",
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        color: isActive ? Colors.green : Colors.grey,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Icon(Icons.calendar_today, size: 14, color: Colors.grey[600]),
-              const SizedBox(width: 6),
-              Text(
-                frequency,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.grey[600],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class BeneficiariesPage extends StatelessWidget {
-  const BeneficiariesPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        title: const Text("Beneficiaries", style: TextStyle(color: Colors.white)),
-        backgroundColor: primaryBlue,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Saved Beneficiaries",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              "Quick access to your frequent recipients",
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[600],
-              ),
-            ),
-            const SizedBox(height: 24),
-            
-            _buildBeneficiaryCard(
-              "John Doe",
-              "john.doe@email.com",
-              "Personal",
-              Colors.blue,
-            ),
-            const SizedBox(height: 12),
-            
-            _buildBeneficiaryCard(
-              "Sarah Smith",
-              "54123456",
-              "Mobile",
-              Colors.green,
-            ),
-            const SizedBox(height: 12),
-            
-            _buildBeneficiaryCard(
-              "ABC Company Ltd",
-              "Account: 123456789",
-              "Business",
-              Colors.orange,
-            ),
-            const SizedBox(height: 12),
-            
-            _buildBeneficiaryCard(
-              "Mom",
-              "55987654",
-              "Family",
-              Colors.pink,
-            ),
-            const SizedBox(height: 12),
-            
-            _buildBeneficiaryCard(
-              "Utility Services",
-              "utilities@service.com",
-              "Bills",
-              Colors.purple,
-            ),
-            
-            const SizedBox(height: 24),
-            
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  _showAddBeneficiaryDialog(context);
-                },
-                icon: const Icon(Icons.person_add, color: Colors.white),
-                label: const Text(
-                  "Add New Beneficiary",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryBlue,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
-            ),
-            
-            const SizedBox(height: 16),
-            
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.green.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.green.withOpacity(0.3)),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.check_circle_outline, color: Colors.green[700]),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      "Save beneficiaries for faster and easier payments.",
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey[800],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBeneficiaryCard(
-    String name,
-    String details,
-    String category,
-    Color color,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 24,
-            backgroundColor: color.withOpacity(0.1),
-            child: Text(
-              name[0].toUpperCase(),
-              style: TextStyle(
-                color: color,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  details,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  category,
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: color,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Icon(Icons.more_vert, color: Colors.grey[400], size: 20),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showAddBeneficiaryDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: const Text("Add Beneficiary"),
-          content: const Text(
-            "This feature will allow you to add new beneficiaries for quick payments.",
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Close"),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -1491,8 +1085,6 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool _notificationsEnabled = true;
-  bool _biometricEnabled = false;
-  bool _darkModeEnabled = false;
   bool _marketingEmails = true;
 
   @override
@@ -1541,35 +1133,25 @@ class _SettingsPageState extends State<SettingsPage> {
             
             _buildSettingsCard([
               _buildSettingTile(
-                "Biometric Login",
-                "Use fingerprint or face recognition",
-                Icons.fingerprint,
-                Switch(
-                  value: _biometricEnabled,
-                  onChanged: (value) {
-                    setState(() {
-                      _biometricEnabled = value;
-                    });
-                  },
-                  activeColor: primaryBlue,
-                ),
-              ),
-              _buildSettingTile(
                 "Change Password",
                 "Update your account password",
                 Icons.lock_outline,
                 Icon(Icons.chevron_right, color: Colors.grey[400]),
                 onTap: () {
-                  // Navigate to change password
+                  _showChangePasswordDialog(context);
                 },
               ),
               _buildSettingTile(
-                "Two-Factor Authentication",
-                "Add extra security to your account",
+                "Security Settings",
+                "Manage your account security",
                 Icons.security,
                 Icon(Icons.chevron_right, color: Colors.grey[400]),
                 onTap: () {
-                  // Navigate to 2FA setup
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Advanced security settings coming soon'),
+                    ),
+                  );
                 },
               ),
             ]),
@@ -1597,6 +1179,14 @@ class _SettingsPageState extends State<SettingsPage> {
                     setState(() {
                       _notificationsEnabled = value;
                     });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(value 
+                          ? 'Notifications enabled' 
+                          : 'Notifications disabled'),
+                        duration: const Duration(seconds: 1),
+                      ),
+                    );
                   },
                   activeColor: primaryBlue,
                 ),
@@ -1611,6 +1201,14 @@ class _SettingsPageState extends State<SettingsPage> {
                     setState(() {
                       _marketingEmails = value;
                     });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(value 
+                          ? 'Marketing emails enabled' 
+                          : 'Marketing emails disabled'),
+                        duration: const Duration(seconds: 1),
+                      ),
+                    );
                   },
                   activeColor: primaryBlue,
                 ),
@@ -1619,9 +1217,9 @@ class _SettingsPageState extends State<SettingsPage> {
             
             const SizedBox(height: 24),
             
-            // Appearance Section
+            // Account Section
             const Text(
-              "Appearance",
+              "Account",
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -1631,26 +1229,22 @@ class _SettingsPageState extends State<SettingsPage> {
             
             _buildSettingsCard([
               _buildSettingTile(
-                "Dark Mode",
-                "Switch to dark theme",
-                Icons.dark_mode_outlined,
-                Switch(
-                  value: _darkModeEnabled,
-                  onChanged: (value) {
-                    setState(() {
-                      _darkModeEnabled = value;
-                    });
-                  },
-                  activeColor: primaryBlue,
-                ),
-              ),
-              _buildSettingTile(
-                "Language",
-                "English (US)",
-                Icons.language,
+                "Account Information",
+                "View your account details",
+                Icons.account_circle_outlined,
                 Icon(Icons.chevron_right, color: Colors.grey[400]),
                 onTap: () {
-                  // Navigate to language selection
+                  Navigator.pop(context); // Go back to More page
+                  Navigator.pushNamed(context, '/account');
+                },
+              ),
+              _buildSettingTile(
+                "Delete Account",
+                "Permanently delete your account",
+                Icons.delete_outline,
+                Icon(Icons.chevron_right, color: Colors.grey[400]),
+                onTap: () {
+                  _showDeleteAccountDialog(context);
                 },
               ),
             ]),
@@ -1674,7 +1268,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 Icons.privacy_tip_outlined,
                 Icon(Icons.chevron_right, color: Colors.grey[400]),
                 onTap: () {
-                  // Navigate to privacy policy
+                  _showInfoDialog(
+                    context, 
+                    'Privacy Policy', 
+                    'Your privacy is important to us. We collect and use your personal information only to provide and improve our banking services. We never share your data with third parties without your consent.'
+                  );
                 },
               ),
               _buildSettingTile(
@@ -1683,7 +1281,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 Icons.description_outlined,
                 Icon(Icons.chevron_right, color: Colors.grey[400]),
                 onTap: () {
-                  // Navigate to terms
+                  _showInfoDialog(
+                    context, 
+                    'Terms & Conditions', 
+                    'By using NouBank services, you agree to our terms and conditions. Please read them carefully before proceeding with any transactions.'
+                  );
                 },
               ),
               _buildSettingTile(
@@ -1765,6 +1367,199 @@ class _SettingsPageState extends State<SettingsPage> {
             trailing,
           ],
         ),
+      ),
+    );
+  }
+
+  void _showChangePasswordDialog(BuildContext context) {
+    final currentPasswordController = TextEditingController();
+    final newPasswordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: const Text('Change Password'),
+        content: Form(
+          key: formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: currentPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Current Password',
+                    prefixIcon: const Icon(Icons.lock_outline),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter current password';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: newPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'New Password',
+                    prefixIcon: const Icon(Icons.lock),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter new password';
+                    }
+                    if (value.length < 6) {
+                      return 'Password must be at least 6 characters';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: confirmPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Confirm New Password',
+                    prefixIcon: const Icon(Icons.lock),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please confirm new password';
+                    }
+                    if (value != newPasswordController.text) {
+                      return 'Passwords do not match';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (formKey.currentState!.validate()) {
+                try {
+                  final user = FirebaseAuth.instance.currentUser;
+                  final credential = EmailAuthProvider.credential(
+                    email: user!.email!,
+                    password: currentPasswordController.text,
+                  );
+                  
+                  await user.reauthenticateWithCredential(credential);
+                  await user.updatePassword(newPasswordController.text);
+                  
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Password changed successfully!'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Error: ${e.toString()}'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                }
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primaryBlue,
+            ),
+            child: const Text('Change Password', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteAccountDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Row(
+          children: const [
+            Icon(Icons.warning_amber_rounded, color: Colors.red, size: 28),
+            SizedBox(width: 12),
+            Text('Delete Account'),
+          ],
+        ),
+        content: const Text(
+          'Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently deleted.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Please contact support to delete your account'),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+            ),
+            child: const Text('Delete', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showInfoDialog(BuildContext context, String title, String content) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Text(title),
+        content: SingleChildScrollView(
+          child: Text(content),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
       ),
     );
   }
@@ -1876,4 +1671,3 @@ class ContactUsPage extends StatelessWidget {
     );
   }
 }
-
