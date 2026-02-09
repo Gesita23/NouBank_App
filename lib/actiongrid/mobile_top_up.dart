@@ -184,7 +184,7 @@ class _MobileTopUpPageState extends State<MobileTopUpPage> {
             ),
             child: Center(
               child: Text(
-                '\$${amount.toInt()}',
+                'Rs ${amount.toInt()}',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: selected ? Colors.white : Colors.black,
@@ -210,8 +210,8 @@ class _MobileTopUpPageState extends State<MobileTopUpPage> {
           });
         },
         decoration: const InputDecoration(
-          prefixIcon: Icon(Icons.attach_money, color: primaryBlue),
-          hintText: 'Custom amount',
+          prefixIcon: Icon(Icons.toll_rounded, color: primaryBlue),
+          hintText: 'Custom amount (Rs)',
           border: InputBorder.none,
         ),
       ),
@@ -234,7 +234,7 @@ class _MobileTopUpPageState extends State<MobileTopUpPage> {
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
           Text(
-            '\$${(_finalAmount ?? 0).toStringAsFixed(2)}',
+            'Rs ${(_finalAmount ?? 0).toStringAsFixed(2)}',
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               color: primaryBlue,
@@ -337,7 +337,7 @@ class _MobileTopUpPageState extends State<MobileTopUpPage> {
             const Text('Top-Up Successful',
                 style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-            Text('\$${amount.toStringAsFixed(2)} sent via $carrier'),
+            Text('Rs ${amount.toStringAsFixed(2)} sent via $carrier'),
           ],
         ),
         actions: [

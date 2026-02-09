@@ -187,7 +187,7 @@ class _AccountScreenState extends State<AccountScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            '\$${totalBalance.toStringAsFixed(2)}',
+            'Rs ${totalBalance.toStringAsFixed(2)}',
             style: const TextStyle(
               color: Colors.white,
               fontSize: 32,
@@ -338,7 +338,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '\$${balance.toStringAsFixed(2)}',
+                    'Rs ${balance.toStringAsFixed(2)}',
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -467,7 +467,7 @@ class AccountDetailsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '\$${balance.toStringAsFixed(2)}',
+                    'Rs ${balance.toStringAsFixed(2)}',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 36,

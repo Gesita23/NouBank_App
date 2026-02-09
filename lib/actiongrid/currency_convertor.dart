@@ -345,7 +345,7 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
                       ],
                     ),
                     child: Text(
-                      '\$$a',
+                      'Rs $a',
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,

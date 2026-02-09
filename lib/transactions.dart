@@ -280,7 +280,7 @@ class TransactionCard extends StatelessWidget {
     final icon = isDebit ? Icons.arrow_upward : Icons.arrow_downward;
     final iconColor = isDebit ? Colors.red : Colors.green;
     final amountText = '${isDebit ? '-' :
-    '+'}\$${amount.toStringAsFixed(2)}';
+    '+'}Rs ${amount.toStringAsFixed(2)}';
     final amountColor = isDebit ? Colors.red : Colors.green;
 
     String formattedDate = 'Unknown date';
@@ -399,7 +399,7 @@ class TransactionCard extends StatelessWidget {
     final isDebit = type == 'debit';
     final iconColor = isDebit ? Colors.red : Colors.green;
     final amountText = '${isDebit ? '-' :
-    '+'}\$${amount.toStringAsFixed(2)}';
+    '+'}Rs ${amount.toStringAsFixed(2)}';
     final amountColor = isDebit ? Colors.red : Colors.green;
 
     String formattedDate = 'Unknown date';

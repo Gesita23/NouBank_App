@@ -812,7 +812,7 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
                       color: primaryBlue,
                     ),
                     decoration: InputDecoration(
-                      prefixText: '\$ ',
+                      prefixText: 'Rs ',
                       prefixStyle: const TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
@@ -834,7 +834,7 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
                   const SizedBox(height: 10),
                   if (_senderBalance != null)
                     Text(
-                      'Available balance: \$${_senderBalance!.toStringAsFixed(2)}',
+                      'Available balance: Rs ${_senderBalance!.toStringAsFixed(2)}',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey[600],

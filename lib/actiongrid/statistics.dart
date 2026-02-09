@@ -5,6 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
+const Color lightBlue = Color(0xFF2196F3); // Income color - lighter blue
+const Color darkBlue = Color(0xFF0D47A1); // Expense color - darker blue
+const Color accentBlue = Color(0xFF1976D2); // Medium blue for accents
 
 class MonthlyStats {
   final String month;
@@ -222,7 +225,7 @@ class StatisticsScreen extends StatelessWidget {
                             PieChartSectionData(
                               value: totalIncome,
                               title: 'Income\n\$${totalIncome.toStringAsFixed(0)}',
-                              color: Colors.green,
+                              color: lightBlue,
                               radius: 60,
                               titleStyle: const TextStyle(
                                 color: Colors.white,
@@ -233,7 +236,7 @@ class StatisticsScreen extends StatelessWidget {
                             PieChartSectionData(
                               value: totalExpense,
                               title: 'Expense\n\$${totalExpense.toStringAsFixed(0)}',
-                              color: Colors.red,
+                              color: darkBlue,
                               radius: 60,
                               titleStyle: const TextStyle(
                                 color: Colors.white,
@@ -249,8 +252,8 @@ class StatisticsScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildLegendItem('Income', Colors.green, totalIncome),
-                  _buildLegendItem('Expense', Colors.red, totalExpense),
+                  _buildLegendItem('Income', lightBlue, totalIncome),
+                  _buildLegendItem('Expense', darkBlue, totalExpense),
                 ],
               ),
             ],
@@ -336,7 +339,7 @@ class StatisticsScreen extends StatelessWidget {
                           barRods: [
                             BarChartRodData(
                               toY: data[index].income,
-                              color: Colors.green,
+                              color: lightBlue,
                               width: 12,
                               borderRadius: const BorderRadius.only(
                                 topLeft: Radius.circular(4),
@@ -345,7 +348,7 @@ class StatisticsScreen extends StatelessWidget {
                             ),
                             BarChartRodData(
                               toY: data[index].expense,
-                              color: Colors.red,
+                              color: darkBlue,
                               width: 12,
                               borderRadius: const BorderRadius.only(
                                 topLeft: Radius.circular(4),
@@ -444,7 +447,7 @@ class StatisticsScreen extends StatelessWidget {
               child: _buildSummaryCard(
                 'Net Balance',
                 netSavings,
-                netSavings >= 0 ? Colors.green : Colors.red,
+                netSavings >= 0 ? accentBlue : const Color(0xFF1565C0),
                 netSavings >= 0 ? Icons.trending_up : Icons.trending_down,
               ),
             ),
@@ -453,7 +456,7 @@ class StatisticsScreen extends StatelessWidget {
               child: _buildSummaryCard(
                 'Avg Income',
                 data.isEmpty ? 0 : totalIncome / data.length,
-                Colors.blue,
+                lightBlue,
                 Icons.arrow_downward,
               ),
             ),
@@ -485,11 +488,13 @@ class StatisticsScreen extends StatelessWidget {
             children: [
               Icon(icon, color: color, size: 20),
               const SizedBox(width: 8),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
+              Flexible(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
                 ),
               ),
             ],

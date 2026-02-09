@@ -275,7 +275,7 @@ class HeaderSection extends StatelessWidget {
               style: TextStyle(color: Colors.white70)),
           const SizedBox(height: 8),
           Text(
-            '\$$balance',
+            'Rs $balance',
             style: const TextStyle(
               color: Colors.white,
               fontSize: 28,
@@ -289,12 +289,12 @@ class HeaderSection extends StatelessWidget {
               BalanceMiniItem(
                 icon: Icons.arrow_downward,
                 label: 'Income',
-                amount: '\$$income',
+                amount: 'Rs $income',
               ),
               BalanceMiniItem(
                 icon: Icons.arrow_upward,
                 label: 'Expenses',
-                amount: '\$$expenses',
+                amount: 'Rs $expenses',
               ),
             ],
           ),
@@ -342,7 +342,7 @@ class IncomeExpenseSummary extends StatelessWidget {
           children: [
             Text(label),
             Text(
-              '\$$amount',
+              'Rs $amount',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
@@ -639,7 +639,7 @@ class TransactionRow extends StatelessWidget {
     final isDebit = type == 'debit';
     final icon = isDebit ? Icons.arrow_upward : Icons.arrow_downward;
     final iconColor = isDebit ? Colors.red : Colors.green;
-    final amountText = '${isDebit ? '-' : '+'}\$${amount.toStringAsFixed(2)}';
+    final amountText = '${isDebit ? '-' : '+'}Rs ${amount.toStringAsFixed(2)}';
     final amountColor = isDebit ? Colors.red : Colors.green;
 
     return Padding(

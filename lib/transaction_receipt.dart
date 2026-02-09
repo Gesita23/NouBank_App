@@ -88,7 +88,7 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
   Widget _buildReceiptCard() {
     final isDebit = widget.type == 'debit';
     final statusColor = const Color(0xFF4CAF50);
-    final amountText = '\$${widget.amount.toStringAsFixed(2)}';
+    final amountText = 'Rs ${widget.amount.toStringAsFixed(2)}';
     String formattedDate = 'Unknown date';
     
     if (widget.timestamp != null) {
@@ -244,7 +244,7 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
                 const SizedBox(height: 16),
                 _buildAmountRow('Amount', amountText),
                 const SizedBox(height: 12),
-                _buildAmountRow('Service Fee', '\$0.00'),
+                _buildAmountRow('Service Fee', 'Rs 0.00'),
                 const SizedBox(height: 16),
                 Divider(color: Colors.grey[300]),
                 const SizedBox(height: 16),
@@ -494,4 +494,3 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
     );
   }
 }
-

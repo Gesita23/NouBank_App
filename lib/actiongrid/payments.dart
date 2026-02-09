@@ -275,7 +275,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '\$${account.balance.toStringAsFixed(2)}',
+                  'Rs ${account.balance.toStringAsFixed(2)}',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -516,7 +516,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
                     ),
                   ),
                   Text(
-                    '\$${selectedAccount.balance.toStringAsFixed(2)}',
+                    'Rs ${selectedAccount.balance.toStringAsFixed(2)}',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 24,

@@ -695,7 +695,7 @@ class PersonalDetailsPage extends StatelessWidget {
                     _InfoItem(
                       icon: Icons.account_balance_outlined,
                       label: "Account Balance",
-                      value: "\$$balance",
+                      value: "Rs $balance",
                     ),
                     _InfoItem(
                       icon: Icons.fingerprint,

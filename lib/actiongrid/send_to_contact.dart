@@ -19,10 +19,12 @@ class SendToContactPageState extends State<SendToContactPage> {
   final _noteController = TextEditingController();
 
   bool _isLoading = false;
+  bool _isSearching = false;
   double _currentBalance = 0.0;
   Map<String, dynamic>? _selectedRecipient;
+  Map<String, dynamic>? _searchResult;
   String _searchType = 'username';
-
+  String? _searchError;
   String _accountType = 'Main Account';
   String _accountNumber = '****';
 
@@ -57,6 +59,7 @@ class SendToContactPageState extends State<SendToContactPage> {
   Future<void> _loadBalance() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
+
     final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
     if (doc.exists && mounted) {
       setState(() {
@@ -68,9 +71,18 @@ class SendToContactPageState extends State<SendToContactPage> {
   Future<void> _searchRecipientLive() async {
     final value = _recipientController.text.trim().toLowerCase();
     if (value.isEmpty) {
-      setState(() => _selectedRecipient = null);
+      setState(() {
+        _searchResult = null;
+        _selectedRecipient = null;
+        _searchError = null;
+      });
       return;
     }
+
+    setState(() {
+      _isSearching = true;
+      _searchError = null;
+    });
 
     Query query = FirebaseFirestore.instance.collection('users');
     if (_searchType == 'username') {
@@ -82,33 +94,66 @@ class SendToContactPageState extends State<SendToContactPage> {
     }
 
     final snap = await query.limit(1).get();
+    
     if (snap.docs.isEmpty) {
-      setState(() => _selectedRecipient = null);
+      setState(() {
+        _searchResult = null;
+        _searchError = 'No user found with this $_searchType';
+        _isSearching = false;
+      });
       return;
     }
 
     final data = snap.docs.first.data() as Map<String, dynamic>;
     final me = FirebaseAuth.instance.currentUser;
-
     if (data['uid'] == me?.uid) {
-      setState(() => _selectedRecipient = null);
+      setState(() {
+        _searchResult = null;
+        _searchError = 'You cannot send money to yourself';
+        _isSearching = false;
+      });
       return;
     }
 
     setState(() {
-      _selectedRecipient = {
+      _searchResult = {
         'uid': data['uid'],
         'name': data['name'],
         'email': data['email'],
         'username': data['username'],
         'phone': data['phone'],
       };
+      _searchError = null;
+      _isSearching = false;
+    });
+  }
+
+  void _selectRecipient() {
+    if (_searchResult != null) {
+      setState(() {
+        _selectedRecipient = _searchResult;
+        _searchResult = null;
+      });
+    }
+  }
+
+  void _clearRecipient() {
+    setState(() {
+      _selectedRecipient = null;
+      _recipientController.clear();
+      _searchResult = null;
+      _searchError = null;
     });
   }
 
   Future<void> _sendMoney() async {
     if (!_formKey.currentState!.validate()) return;
-    if (_selectedRecipient == null) return;
+    if (_selectedRecipient == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a recipient')),
+      );
+      return;
+    }
 
     final amount = double.tryParse(_amountController.text) ?? 0;
     if (amount <= 0 || amount > _currentBalance) return;
@@ -155,7 +200,6 @@ class SendToContactPageState extends State<SendToContactPage> {
       });
 
       await batch.commit();
-
       if (mounted) _showSuccessDialog(amount);
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -164,29 +208,26 @@ class SendToContactPageState extends State<SendToContactPage> {
 
   Future<bool> _showConfirmDialog(double amount) async {
     return await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            title: const Text('Confirm Transfer'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Send \$${amount.toStringAsFixed(2)} to:'),
-                const SizedBox(height: 8),
-                Text(_selectedRecipient!['name'],
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                Text('@${_selectedRecipient!['username']}',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 14)),
-              ],
-            ),
-            actions: [
-              TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
-              ElevatedButton(onPressed: () => Navigator.pop(context, true), child: const Text('Confirm')),
-            ],
-          ),
-        ) ??
-        false;
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text('Confirm Transfer'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Send Rs ${amount.toStringAsFixed(2)} to:'),
+            const SizedBox(height: 8),
+            Text(_selectedRecipient!['name'], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            Text('@${_selectedRecipient!['username']}', style: TextStyle(color: Colors.grey[600], fontSize: 14)),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+          ElevatedButton(onPressed: () => Navigator.pop(context, true), child: const Text('Confirm')),
+        ],
+      ),
+    ) ?? false;
   }
 
   void _showSuccessDialog(double amount) {
@@ -202,7 +243,7 @@ class SendToContactPageState extends State<SendToContactPage> {
             const SizedBox(height: 20),
             const Text('Transfer Successful!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
-            Text('\$${amount.toStringAsFixed(2)} sent to'),
+            Text('Rs ${amount.toStringAsFixed(2)} sent to'),
             Text(_selectedRecipient!['name'], style: const TextStyle(fontWeight: FontWeight.bold)),
           ],
         ),
@@ -230,6 +271,7 @@ class SendToContactPageState extends State<SendToContactPage> {
           onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back, color: Colors.white),
         ),
+        elevation: 0,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -239,14 +281,44 @@ class SendToContactPageState extends State<SendToContactPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildAccountHeader(),
+                _buildInfoCard(),
                 const SizedBox(height: 24),
                 _buildSearchTypeSelector(),
                 const SizedBox(height: 16),
                 _buildRecipientSection(),
-                const SizedBox(height: 20),
+                const SizedBox(height: 12),
+                if (_isSearching) ...[
+                  const Center(child: CircularProgressIndicator()),
+                  const SizedBox(height: 12),
+                ],
+                if (_searchError != null) ...[
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.red.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.error_outline, color: Colors.red, size: 20),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            _searchError!,
+                            style: const TextStyle(color: Colors.red, fontSize: 14),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                ],
+                if (_searchResult != null && _selectedRecipient == null) ...[
+                  _buildSearchResultCard(),
+                  const SizedBox(height: 12),
+                ],
                 if (_selectedRecipient != null) ...[
-                  _buildRecipientCard(),
+                  _buildSelectedRecipientCard(),
                   const SizedBox(height: 20),
                 ],
                 _buildAmountSection(),
@@ -262,30 +334,82 @@ class SendToContactPageState extends State<SendToContactPage> {
     );
   }
 
-  Widget _buildAccountHeader() {
+  Widget _buildInfoCard() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(colors: [primaryBlue, secondaryBlue]),
+        gradient: const LinearGradient(
+          colors: [primaryBlue, secondaryBlue],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: primaryBlue.withOpacity(0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('Paying from', style: TextStyle(color: Colors.white.withOpacity(0.85))),
-        const SizedBox(height: 6),
-        Text(_accountType, style: const TextStyle(color: Colors.white, fontSize: 18)),
-        const SizedBox(height: 16),
-        Text('\$${_currentBalance.toStringAsFixed(2)}',
-            style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-      ]),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.send,
+              color: Colors.white,
+              size: 32,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Transfer Money',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Send money to your contacts instantly',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.9),
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildSearchTypeSelector() {
-    return Row(children: [
-      Expanded(child: _searchTypeButton('Username', 'username')),
-      Expanded(child: _searchTypeButton('Phone', 'phone')),
-      Expanded(child: _searchTypeButton('Email', 'email')),
-    ]);
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Expanded(child: _searchTypeButton('Username', 'username')),
+          Expanded(child: _searchTypeButton('Phone', 'phone')),
+          Expanded(child: _searchTypeButton('Email', 'email')),
+        ],
+      ),
+    );
   }
 
   Widget _searchTypeButton(String label, String value) {
@@ -295,6 +419,8 @@ class SendToContactPageState extends State<SendToContactPage> {
         setState(() {
           _searchType = value;
           _selectedRecipient = null;
+          _searchResult = null;
+          _searchError = null;
           _recipientController.clear();
         });
       },
@@ -314,6 +440,7 @@ class SendToContactPageState extends State<SendToContactPage> {
   Widget _buildRecipientSection() {
     return TextFormField(
       controller: _recipientController,
+      enabled: _selectedRecipient == null,
       decoration: InputDecoration(
         hintText: 'Enter $_searchType',
         prefixIcon: const Icon(Icons.search, color: primaryBlue),
@@ -324,21 +451,63 @@ class SendToContactPageState extends State<SendToContactPage> {
     );
   }
 
-  Widget _buildRecipientCard() {
+  Widget _buildSearchResultCard() {
+    return InkWell(
+      onTap: _selectRecipient,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.blue.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: primaryBlue.withOpacity(0.3)),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.person, color: primaryBlue),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(_searchResult!['name'], style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text('@${_searchResult!['username']}', style: TextStyle(color: Colors.grey[600])),
+                ],
+              ),
+            ),
+            const Icon(Icons.arrow_forward_ios, size: 16, color: primaryBlue),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSelectedRecipientCard() {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.green.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.green.withOpacity(0.3)),
       ),
-      child: Row(children: [
-        const Icon(Icons.person, color: Colors.green),
-        const SizedBox(width: 12),
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(_selectedRecipient!['name'], style: const TextStyle(fontWeight: FontWeight.bold)),
-          Text('@${_selectedRecipient!['username']}'),
-        ]),
-      ]),
+      child: Row(
+        children: [
+          const Icon(Icons.check_circle, color: Colors.green),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(_selectedRecipient!['name'], style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text('@${_selectedRecipient!['username']}', style: TextStyle(color: Colors.grey[600])),
+              ],
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.close, color: Colors.red),
+            onPressed: _clearRecipient,
+          ),
+        ],
+      ),
     );
   }
 
@@ -348,7 +517,7 @@ class SendToContactPageState extends State<SendToContactPage> {
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       decoration: InputDecoration(
         hintText: '0.00',
-        prefixIcon: const Icon(Icons.attach_money, color: primaryBlue),
+        prefixIcon: const Icon(Icons.toll_rounded, color: primaryBlue),
         filled: true,
         fillColor: Colors.grey[50],
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -389,5 +558,3 @@ class SendToContactPageState extends State<SendToContactPage> {
     );
   }
 }
-
-

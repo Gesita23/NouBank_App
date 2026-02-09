@@ -202,7 +202,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Request \$${amount.toStringAsFixed(2)} from:'),
+                Text('Request Rs ${amount.toStringAsFixed(2)} from:'),
                 const SizedBox(height: 8),
                 Text(
                   _selectedRecipient!['name'],
@@ -312,7 +312,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
             ),
             const SizedBox(height: 12),
             Text(
-              'Requesting \$${amount.toStringAsFixed(2)} from',
+              'Requesting Rs ${amount.toStringAsFixed(2)} from',
               style: TextStyle(
                 color: Colors.grey[700],
                 fontSize: 15,
@@ -725,7 +725,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             decoration: InputDecoration(
               hintText: '0.00',
-              prefixIcon: const Icon(Icons.attach_money, color: primaryBlue),
+              prefixIcon: const Icon(Icons.toll_rounded, color: primaryBlue),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(color: Colors.grey[300]!),
@@ -757,7 +757,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
             spacing: 8,
             children: [10, 20, 50, 100].map((amount) {
               return ActionChip(
-                label: Text('\$$amount'),
+                label: Text('Rs $amount'),
                 onPressed: () {
                   _amountController.text = amount.toString();
                 },

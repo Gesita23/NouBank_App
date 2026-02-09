@@ -28,7 +28,6 @@ class PayBillsPage extends StatefulWidget {
 
 class _PayBillsPageState extends State<PayBillsPage> {
   double _currentBalance = 0.0;
-
   // Account info from payment page
   String _accountType = 'Main Account';
   String _accountNumber = '****';
@@ -94,7 +93,6 @@ class _PayBillsPageState extends State<PayBillsPage> {
           .collection('users')
           .doc(user.uid)
           .get();
-
       if (doc.exists && mounted) {
         setState(() {
           _currentBalance = (doc.data()?['account_balance'] ?? 0.0).toDouble();
@@ -139,7 +137,7 @@ class _PayBillsPageState extends State<PayBillsPage> {
         child: Column(
           children: [
             const SizedBox(height: 16),
-            _buildAccountHeader(),
+            _buildInfoCard(),
             const SizedBox(height: 20),
             _buildScanBarcodeCard(),
             const SizedBox(height: 24),
@@ -151,11 +149,10 @@ class _PayBillsPageState extends State<PayBillsPage> {
     );
   }
 
-  // STANDARDIZED HEADER - LOCKED TO ACCOUNT (NO DROPDOWN)
-  Widget _buildAccountHeader() {
+  Widget _buildInfoCard() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [primaryBlue, secondaryBlue],
@@ -171,65 +168,49 @@ class _PayBillsPageState extends State<PayBillsPage> {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Text(
-            'Paying from',
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.85),
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(12),
             ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            _accountType,
-            style: const TextStyle(
+            child: const Icon(
+              Icons.receipt_long,
               color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
+              size: 32,
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            _accountNumber,
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.8),
-              fontSize: 13,
-              letterSpacing: 1.2,
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Bill Payment',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Pay your bills quickly and securely',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.9),
+                    fontSize: 13,
+                  ),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 16),
-          Divider(height: 1, color: Colors.white.withOpacity(0.2)),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Available Balance',
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.85),
-                  fontSize: 13,
-                ),
-              ),
-              Text(
-                '\$${_currentBalance.toStringAsFixed(2)}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: -0.5,
-                ),
-              ),
-            ],
           ),
         ],
       ),
     );
   }
 
-  // FIXED: Scan Barcode Card - reduced padding
   Widget _buildScanBarcodeCard() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -307,7 +288,6 @@ class _PayBillsPageState extends State<PayBillsPage> {
     );
   }
 
-  // FIXED: Bill Categories - reduced spacing
   Widget _buildBillCategories() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -343,7 +323,6 @@ class _PayBillsPageState extends State<PayBillsPage> {
     );
   }
 
-  // FIXED: Category Card - reduced padding
   Widget _buildCategoryCard(BillCategory category) {
     return Material(
       color: Colors.white,
@@ -476,9 +455,7 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         title: Text(
-          widget.category != null
-              ? 'Scan ${widget.category!.title} Bill'
-              : 'Scan Bill Barcode',
+          widget.category != null ? 'Scan ${widget.category!.title} Bill' : 'Scan Bill Barcode',
           style: const TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.black,
@@ -785,7 +762,7 @@ class _BillPaymentSheetState extends State<BillPaymentSheet> {
               const SizedBox(height: 8),
               // Amount
               Text(
-                '\$${amount.toStringAsFixed(2)}',
+                'Rs ${amount.toStringAsFixed(2)}',
                 style: const TextStyle(
                   fontSize: 36,
                   fontWeight: FontWeight.bold,
@@ -806,7 +783,7 @@ class _BillPaymentSheetState extends State<BillPaymentSheet> {
                     const Divider(height: 24),
                     _buildDetailRow('Account', widget.billData['accountNumber']),
                     const Divider(height: 24),
-                    _buildDetailRow('Amount', '\$${amount.toStringAsFixed(2)}'),
+                    _buildDetailRow('Amount', 'Rs ${amount.toStringAsFixed(2)}'),
                   ],
                 ),
               ),
