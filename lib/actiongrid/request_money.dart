@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
 
 const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
 const Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
@@ -26,6 +27,14 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
   String _accountType = 'Main Account';
   String _accountNumber = '****';
   double _currentBalance = 0.0;
+  
+  Timer? _debounce;
+
+  @override
+  void initState() {
+    super.initState();
+    _recipientController.addListener(_onRecipientTextChanged);
+  }
 
   @override
   void didChangeDependencies() {
@@ -43,16 +52,32 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
 
   @override
   void dispose() {
+    _debounce?.cancel();
+    _recipientController.removeListener(_onRecipientTextChanged);
     _recipientController.dispose();
     _amountController.dispose();
     _reasonController.dispose();
     super.dispose();
   }
 
+  void _onRecipientTextChanged() {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      final trimmed = _recipientController.text.trim();
+      if (trimmed.isEmpty) {
+        setState(() {
+          _selectedRecipient = null;
+        });
+      } else {
+        _searchRecipient();
+      }
+    });
+  }
+
   Future<void> _searchRecipient() async {
     final searchValue = _recipientController.text.trim().toLowerCase();
     if (searchValue.isEmpty) {
-      _showErrorDialog('Please enter ${_searchType == 'username' ? 'username' : _searchType == 'phone' ? 'phone number' : 'email'}');
+      setState(() => _selectedRecipient = null);
       return;
     }
 
@@ -99,7 +124,9 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
     } catch (e) {
       _showErrorDialog('Error searching recipient: $e');
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -588,19 +615,16 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
                         : Icons.email_outlined,
                 color: primaryBlue,
               ),
-              suffixIcon: IconButton(
-                onPressed: _isLoading ? null : _searchRecipient,
-                icon: _isLoading
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: primaryBlue,
-                        ),
-                      )
-                    : const Icon(Icons.search, color: primaryBlue),
-              ),
+              suffixIcon: _isLoading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: primaryBlue,
+                      ),
+                    )
+                  : null, // 🔑 REMOVED SEARCH BUTTON - AUTO-SEARCH ONLY
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(color: Colors.grey[300]!),

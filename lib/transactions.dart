@@ -35,7 +35,7 @@ class _TransactionPageState extends State<TransactionPage> {
         });
         break;
       case 3:
-        Navigator.pushNamed(context, '/carts');
+        Navigator.pushNamed(context, '/cards');
         break;
       case 4:
         Navigator.pushNamed(context, '/more');

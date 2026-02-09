@@ -28,7 +28,7 @@ class PayBillsPage extends StatefulWidget {
 
 class _PayBillsPageState extends State<PayBillsPage> {
   double _currentBalance = 0.0;
-  
+
   // Account info from payment page
   String _accountType = 'Main Account';
   String _accountNumber = '****';
@@ -94,6 +94,7 @@ class _PayBillsPageState extends State<PayBillsPage> {
           .collection('users')
           .doc(user.uid)
           .get();
+
       if (doc.exists && mounted) {
         setState(() {
           _currentBalance = (doc.data()?['account_balance'] ?? 0.0).toDouble();
@@ -228,6 +229,7 @@ class _PayBillsPageState extends State<PayBillsPage> {
     );
   }
 
+  // FIXED: Scan Barcode Card - reduced padding
   Widget _buildScanBarcodeCard() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -253,11 +255,11 @@ class _PayBillsPageState extends State<PayBillsPage> {
           },
           borderRadius: BorderRadius.circular(16),
           child: Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(18),
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
                     color: primaryBlue.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
@@ -265,10 +267,10 @@ class _PayBillsPageState extends State<PayBillsPage> {
                   child: const Icon(
                     Icons.qr_code_scanner,
                     color: primaryBlue,
-                    size: 32,
+                    size: 30,
                   ),
                 ),
-                const SizedBox(width: 20),
+                const SizedBox(width: 18),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -276,16 +278,16 @@ class _PayBillsPageState extends State<PayBillsPage> {
                       const Text(
                         'Scan Bill Barcode',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 17,
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 3),
                       Text(
                         'Scan your bill to pay instantly',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 13,
                           color: Colors.grey[600],
                         ),
                       ),
@@ -305,6 +307,7 @@ class _PayBillsPageState extends State<PayBillsPage> {
     );
   }
 
+  // FIXED: Bill Categories - reduced spacing
   Widget _buildBillCategories() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -319,15 +322,15 @@ class _PayBillsPageState extends State<PayBillsPage> {
               color: Colors.black87,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 14),
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: 1.0,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 1.05,
             ),
             itemCount: billCategories.length,
             itemBuilder: (context, index) {
@@ -340,6 +343,7 @@ class _PayBillsPageState extends State<PayBillsPage> {
     );
   }
 
+  // FIXED: Category Card - reduced padding
   Widget _buildCategoryCard(BillCategory category) {
     return Material(
       color: Colors.white,
@@ -349,12 +353,12 @@ class _PayBillsPageState extends State<PayBillsPage> {
         onTap: () => _navigateToBarcodeScanner(category),
         borderRadius: BorderRadius.circular(16),
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: primaryBlue.withOpacity(0.1),
                   shape: BoxShape.circle,
@@ -362,15 +366,15 @@ class _PayBillsPageState extends State<PayBillsPage> {
                 child: Icon(
                   category.icon,
                   color: primaryBlue,
-                  size: 28,
+                  size: 26,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
               Text(
                 category.title,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  fontSize: 13,
+                  fontSize: 12,
                   fontWeight: FontWeight.w600,
                   color: Colors.black87,
                 ),

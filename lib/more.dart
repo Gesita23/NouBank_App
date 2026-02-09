@@ -710,11 +710,8 @@ class PersonalDetailsPage extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {<<<<<<< HEAD
-                        _showEditProfileDialog(context, user.uid, name, phone);
-=======
+                      onPressed: () {
                         _showEditProfileDialog(context, user.uid, name, phone, email);
->>>>>>> c59c995ebb3f2c702948b899356cf01e8b914663
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryBlue,
@@ -1831,3 +1828,4 @@ class ContactUsPage extends StatelessWidget {
     );
   }
 }
+

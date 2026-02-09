@@ -7,7 +7,7 @@ import 'firebase_options.dart';
 import 'transactions.dart';
 import 'more.dart';
 import 'actiongrid/qr_scan.dart';
-import '../accounts.dart';
+import 'accounts.dart';
 import 'actiongrid/payments.dart';
 import 'package:noubank/actiongrid/send_to_contact.dart';
 import 'actiongrid/request_money.dart';
@@ -16,6 +16,8 @@ import 'actiongrid/bank_transfer.dart';
 import 'actiongrid/others.dart';
 import 'actiongrid/mobile_top_up.dart';
 import 'actiongrid/currency_convertor.dart';
+import 'cards.dart';
+import 'actiongrid/statistics.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,9 +47,10 @@ class MyApp extends StatelessWidget {
       routes: {
         //navbar
         '/home': (context) => const MyHomePage(title: ''),
-        '/account': (context) => const AccountsPage(),
+        '/account': (context) => const AccountScreen(),
         '/transactions': (context) => const TransactionPage(),
         '/more': (context) => const MorePage(),
+        '/cards': (context) => const CardScreen(),
 
         /////FOR ACTIONGRID/////
         '/scan': (context) => const QrPaymentPage(),
@@ -56,7 +59,7 @@ class MyApp extends StatelessWidget {
         '/request_money': (context) => const RequestMoneyPage(),
         '/pay_bills': (context) => const PayBillsPage(),
         '/bank_transfer': (context) => const BankTransferPage(),
-        // '/statistics':(context) => const StatisticsPage(),
+        '/statistics':(context) => const StatisticsScreen(),
         '/other': (context) => const OtherPage(),
         '/currency_converter': (context) => const CurrencyConverterPage(),
         '/mobile_topup': (context) => const MobileTopUpPage(),

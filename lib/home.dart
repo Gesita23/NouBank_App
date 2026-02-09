@@ -52,7 +52,6 @@ const List<ActionItem> actionItems = [
 /// navbar
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
   final String title;
 
   @override
@@ -110,7 +109,7 @@ class _HomePageContentState extends State<HomePageContent> {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-    
+
     if (user == null) {
       return const Center(
         child: Text('Please log in to view your account'),
@@ -136,7 +135,7 @@ class _HomePageContentState extends State<HomePageContent> {
         }
 
         final data = snapshot.data?.data() as Map<String, dynamic>? ?? {};
-        
+
         // FIXED: Convert all numeric values to String properly
         final name = data['name'] ?? 'User';
         final balance = (data['account_balance'] ?? 0).toString();
@@ -181,7 +180,7 @@ class HeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.of(context).padding.top;
-    
+
     return SizedBox(
       height: 320 + topPadding,
       child: Stack(
@@ -208,11 +207,7 @@ class HeaderSection extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 140 + topPadding,
-            left: 20,
-            right: 20,
-            child: _balanceCard()
-          ),
+              top: 140 + topPadding, left: 20, right: 20, child: _balanceCard()),
         ],
       ),
     );
@@ -240,19 +235,23 @@ class HeaderSection extends StatelessWidget {
       children: [
         const Icon(Icons.lock_outline, color: Colors.white),
         const SizedBox(width: 8),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Welcome!', style: TextStyle(color: Colors.white70)),
-            Text(
-              name,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 21,
-                fontWeight: FontWeight.bold,
+        Flexible(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Welcome!',
+                  style: TextStyle(color: Colors.white70)),
+              Text(
+                name,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 21,
+                  fontWeight: FontWeight.bold,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
@@ -272,7 +271,8 @@ class HeaderSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Total Balance', style: TextStyle(color: Colors.white70)),
+          const Text('Total Balance',
+              style: TextStyle(color: Colors.white70)),
           const SizedBox(height: 8),
           Text(
             '\$$balance',
@@ -385,7 +385,7 @@ class BalanceMiniItem extends StatelessWidget {
   }
 }
 
-// Action Grid Section
+// FIXED: Action Grid Section - increased spacing and aspect ratio
 class ActionGridSection extends StatelessWidget {
   const ActionGridSection({super.key});
 
@@ -406,17 +406,16 @@ class ActionGridSection extends StatelessWidget {
                 color: Colors.black,
               ),
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 12),
             GridView.count(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               crossAxisCount: 4,
               mainAxisSpacing: 10,
               crossAxisSpacing: 10,
-              childAspectRatio: 0.9,
-              children: actionItems
-                  .map((item) => ActionButton(item: item))
-                  .toList(),
+              childAspectRatio: 0.85,
+              children:
+                  actionItems.map((item) => ActionButton(item: item)).toList(),
             ),
           ],
         ),
@@ -425,10 +424,9 @@ class ActionGridSection extends StatelessWidget {
   }
 }
 
-//individual actionbutton in the grid
+//FIXED: individual actionbutton in the grid - reduced font size and padding
 class ActionButton extends StatelessWidget {
   final ActionItem item;
-
   const ActionButton({super.key, required this.item});
 
   @override
@@ -451,19 +449,23 @@ class ActionButton extends StatelessWidget {
             ),
           ],
         ),
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(item.icon, color: item.iconColor, size: 30),
-            const SizedBox(height: 8),
-            Text(
-              item.label,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Colors.black87,
+            Icon(item.icon, color: item.iconColor, size: 26),
+            const SizedBox(height: 4),
+            Flexible(
+              child: Text(
+                item.label,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
@@ -598,10 +600,7 @@ class TransactionHistorySection extends StatelessWidget {
         const Text(
           'Transaction History',
           style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.black
-          ),
+              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
         ),
         TextButton(
           onPressed: () {
@@ -610,10 +609,7 @@ class TransactionHistorySection extends StatelessWidget {
           child: const Text(
             'See All',
             style: TextStyle(
-              fontSize: 16,
-              color: primarypurple,
-              fontWeight: FontWeight.w600
-            ),
+                fontSize: 16, color: primarypurple, fontWeight: FontWeight.w600),
           ),
         )
       ],

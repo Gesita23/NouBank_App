@@ -27,7 +27,7 @@ class OtherPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             const Text(
               'What would you like to do today',
               style: TextStyle(
@@ -36,8 +36,8 @@ class OtherPage extends StatelessWidget {
                 color: Colors.black,
               ),
             ),
-            const SizedBox(height: 18),
-            // Grid of option cards — same 4-column style as home ActionGrid
+            const SizedBox(height: 14),
+            // FIXED: Grid spacing and aspect ratio to prevent overflow
             GridView.count(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
@@ -65,7 +65,7 @@ class OtherPage extends StatelessWidget {
   }
 }
 
-/// Single option card — mirrors the ActionButton styling from home.dart exactly
+/// FIXED: Single option card with adjusted padding and flexible text
 class _OtherOptionCard extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -98,30 +98,34 @@ class _OtherOptionCard extends StatelessWidget {
             ),
           ],
         ),
-        padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 12),
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Icon bubble — same primaryBlue used across the app
+            // Icon bubble
             Container(
-              width: 56,
-              height: 56,
+              width: 52,
+              height: 52,
               decoration: BoxDecoration(
                 color: primaryBlue.withOpacity(0.08),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Center(
-                child: Icon(icon, color: primaryBlue, size: 30),
+                child: Icon(icon, color: primaryBlue, size: 28),
               ),
             ),
-            const SizedBox(height: 14),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
+            const SizedBox(height: 12),
+            Flexible(
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],

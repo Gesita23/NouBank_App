@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-const Color primaryBlue = Color(0xFF4364F7);
-const Color secondaryBlue = Color(0xFF00BFFF);
+const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
+const Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
