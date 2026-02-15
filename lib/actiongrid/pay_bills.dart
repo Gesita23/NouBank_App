@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
-const Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
+Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
+Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
 
 // Bill Category Model
 class BillCategory {
@@ -12,7 +12,7 @@ class BillCategory {
   final String title;
   final String type;
 
-  const BillCategory({
+  BillCategory({
     required this.icon,
     required this.title,
     required this.type,
@@ -20,7 +20,7 @@ class BillCategory {
 }
 
 class PayBillsPage extends StatefulWidget {
-  const PayBillsPage({super.key});
+  PayBillsPage({super.key});
 
   @override
   State<PayBillsPage> createState() => _PayBillsPageState();
@@ -33,7 +33,7 @@ class _PayBillsPageState extends State<PayBillsPage> {
   String _accountNumber = '****';
 
   // Bill categories - ALL USE SAME BLUE COLOR
-  final List<BillCategory> billCategories = const [
+  final List<BillCategory> billCategories = [
     BillCategory(
       icon: Icons.electrical_services,
       title: 'Electricity',
@@ -122,27 +122,27 @@ class _PayBillsPageState extends State<PayBillsPage> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Pay Bills',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: primaryBlue,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
         elevation: 0,
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             _buildInfoCard(),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             _buildScanBarcodeCard(),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             _buildBillCategories(),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
           ],
         ),
       ),
@@ -151,10 +151,10 @@ class _PayBillsPageState extends State<PayBillsPage> {
 
   Widget _buildInfoCard() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: [primaryBlue, secondaryBlue],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -164,30 +164,30 @@ class _PayBillsPageState extends State<PayBillsPage> {
           BoxShadow(
             color: primaryBlue.withOpacity(0.3),
             blurRadius: 12,
-            offset: const Offset(0, 6),
+            offset: Offset(0, 6),
           ),
         ],
       ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.2),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.receipt_long,
               color: Colors.white,
               size: 32,
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Bill Payment',
                   style: TextStyle(
                     color: Colors.white,
@@ -195,7 +195,7 @@ class _PayBillsPageState extends State<PayBillsPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Text(
                   'Pay your bills quickly and securely',
                   style: TextStyle(
@@ -213,7 +213,7 @@ class _PayBillsPageState extends State<PayBillsPage> {
 
   Widget _buildScanBarcodeCard() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      margin: EdgeInsets.symmetric(horizontal: 16),
       child: Material(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -236,27 +236,27 @@ class _PayBillsPageState extends State<PayBillsPage> {
           },
           borderRadius: BorderRadius.circular(16),
           child: Container(
-            padding: const EdgeInsets.all(18),
+            padding: EdgeInsets.all(18),
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(14),
+                  padding: EdgeInsets.all(14),
                   decoration: BoxDecoration(
                     color: primaryBlue.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.qr_code_scanner,
                     color: primaryBlue,
                     size: 30,
                   ),
                 ),
-                const SizedBox(width: 18),
+                SizedBox(width: 18),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Scan Bill Barcode',
                         style: TextStyle(
                           fontSize: 17,
@@ -264,7 +264,7 @@ class _PayBillsPageState extends State<PayBillsPage> {
                           color: Colors.black87,
                         ),
                       ),
-                      const SizedBox(height: 3),
+                      SizedBox(height: 3),
                       Text(
                         'Scan your bill to pay instantly',
                         style: TextStyle(
@@ -290,11 +290,11 @@ class _PayBillsPageState extends State<PayBillsPage> {
 
   Widget _buildBillCategories() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Bill Categories',
             style: TextStyle(
               fontSize: 18,
@@ -302,11 +302,11 @@ class _PayBillsPageState extends State<PayBillsPage> {
               color: Colors.black87,
             ),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           GridView.builder(
             shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
               mainAxisSpacing: 10,
               crossAxisSpacing: 10,
@@ -332,12 +332,12 @@ class _PayBillsPageState extends State<PayBillsPage> {
         onTap: () => _navigateToBarcodeScanner(category),
         borderRadius: BorderRadius.circular(16),
         child: Container(
-          padding: const EdgeInsets.all(12),
+          padding: EdgeInsets.all(12),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: primaryBlue.withOpacity(0.1),
                   shape: BoxShape.circle,
@@ -348,11 +348,11 @@ class _PayBillsPageState extends State<PayBillsPage> {
                   size: 26,
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
               Text(
                 category.title,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                   color: Colors.black87,
@@ -371,7 +371,7 @@ class BarcodeScannerPage extends StatefulWidget {
   final BillCategory? category;
   final double currentBalance;
 
-  const BarcodeScannerPage({
+  BarcodeScannerPage({
     super.key,
     this.category,
     required this.currentBalance,
@@ -443,7 +443,7 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
       'barcode': barcode,
       'billNumber': 'BILL-${barcode.substring(0, 8)}',
       'amount': (50 + (barcode.length * 3.5)).toStringAsFixed(2),
-      'dueDate': DateTime.now().add(const Duration(days: 7)),
+      'dueDate': DateTime.now().add(Duration(days: 7)),
       'provider': widget.category?.title ?? 'Utility Provider',
       'accountNumber': '****${barcode.substring(barcode.length - 4)}',
     };
@@ -456,12 +456,12 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
       appBar: AppBar(
         title: Text(
           widget.category != null ? 'Scan ${widget.category!.title} Bill' : 'Scan Bill Barcode',
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.black,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.close, color: Colors.white),
+          icon: Icon(Icons.close, color: Colors.white),
         ),
       ),
       body: Stack(
@@ -481,13 +481,13 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
             left: 0,
             right: 0,
             child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 40),
-              padding: const EdgeInsets.all(16),
+              margin: EdgeInsets.symmetric(horizontal: 40),
+              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.7),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Text(
+              child: Text(
                 'Position the barcode within the frame',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -521,7 +521,7 @@ class ScannerOverlay extends CustomPainter {
     canvas.drawPath(
       Path()
         ..addRect(Rect.fromLTWH(0, 0, size.width, size.height))
-        ..addRRect(RRect.fromRectAndRadius(scanArea, const Radius.circular(16)))
+        ..addRRect(RRect.fromRectAndRadius(scanArea, Radius.circular(16)))
         ..fillType = PathFillType.evenOdd,
       paint,
     );
@@ -533,7 +533,7 @@ class ScannerOverlay extends CustomPainter {
       ..strokeWidth = 3;
 
     canvas.drawRRect(
-      RRect.fromRectAndRadius(scanArea, const Radius.circular(16)),
+      RRect.fromRectAndRadius(scanArea, Radius.circular(16)),
       borderPaint,
     );
 
@@ -575,7 +575,7 @@ class BillPaymentSheet extends StatefulWidget {
   final VoidCallback onPaymentComplete;
   final VoidCallback onCancel;
 
-  const BillPaymentSheet({
+  BillPaymentSheet({
     super.key,
     required this.billData,
     required this.currentBalance,
@@ -651,19 +651,19 @@ class _BillPaymentSheetState extends State<BillPaymentSheet> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.green.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.check_circle, color: Colors.green, size: 60),
+              child: Icon(Icons.check_circle, color: Colors.green, size: 60),
             ),
-            const SizedBox(height: 20),
-            const Text(
+            SizedBox(height: 20),
+            Text(
               'Payment Successful!',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             Text(
               'Bill paid successfully',
               style: TextStyle(color: Colors.grey[700], fontSize: 15),
@@ -676,7 +676,7 @@ class _BillPaymentSheetState extends State<BillPaymentSheet> {
               Navigator.pop(context); // Close dialog
               widget.onPaymentComplete();
             },
-            child: const Text(
+            child: Text(
               'Done',
               style: TextStyle(color: primaryBlue, fontWeight: FontWeight.bold, fontSize: 16),
             ),
@@ -692,7 +692,7 @@ class _BillPaymentSheetState extends State<BillPaymentSheet> {
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
-          children: const [
+          children: [
             Icon(Icons.error_outline, color: Colors.red),
             SizedBox(width: 10),
             Text('Error'),
@@ -702,7 +702,7 @@ class _BillPaymentSheetState extends State<BillPaymentSheet> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
+            child: Text('OK'),
           ),
         ],
       ),
@@ -714,7 +714,7 @@ class _BillPaymentSheetState extends State<BillPaymentSheet> {
     final amount = double.parse(widget.billData['amount']);
 
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(25),
@@ -723,7 +723,7 @@ class _BillPaymentSheetState extends State<BillPaymentSheet> {
       ),
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -736,10 +736,10 @@ class _BillPaymentSheetState extends State<BillPaymentSheet> {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               // Icon
               Container(
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: primaryBlue.withOpacity(0.1),
                   shape: BoxShape.circle,
@@ -750,29 +750,29 @@ class _BillPaymentSheetState extends State<BillPaymentSheet> {
                   size: 40,
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               // Title
               Text(
                 widget.billData['provider'],
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
               // Amount
               Text(
                 'Rs ${amount.toStringAsFixed(2)}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 36,
                   fontWeight: FontWeight.bold,
                   color: primaryBlue,
                 ),
               ),
-              const SizedBox(height: 30),
+              SizedBox(height: 30),
               // Bill Details
               Container(
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.grey[100],
                   borderRadius: BorderRadius.circular(15),
@@ -780,14 +780,14 @@ class _BillPaymentSheetState extends State<BillPaymentSheet> {
                 child: Column(
                   children: [
                     _buildDetailRow('Bill Number', widget.billData['billNumber']),
-                    const Divider(height: 24),
+                    Divider(height: 24),
                     _buildDetailRow('Account', widget.billData['accountNumber']),
-                    const Divider(height: 24),
+                    Divider(height: 24),
                     _buildDetailRow('Amount', 'Rs ${amount.toStringAsFixed(2)}'),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               // Action buttons
               Row(
                 children: [
@@ -795,27 +795,27 @@ class _BillPaymentSheetState extends State<BillPaymentSheet> {
                     child: OutlinedButton(
                       onPressed: _isProcessing ? null : widget.onCancel,
                       style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text('Cancel'),
+                      child: Text('Cancel'),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: _isProcessing ? null : _payBill,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryBlue,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                       child: _isProcessing
-                          ? const SizedBox(
+                          ? SizedBox(
                               width: 20,
                               height: 20,
                               child: CircularProgressIndicator(
@@ -823,7 +823,7 @@ class _BillPaymentSheetState extends State<BillPaymentSheet> {
                                 strokeWidth: 2,
                               ),
                             )
-                          : const Text(
+                          : Text(
                               'Pay Now',
                               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                             ),
@@ -851,7 +851,7 @@ class _BillPaymentSheetState extends State<BillPaymentSheet> {
         ),
         Text(
           value,
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.black87,
             fontSize: 14,
             fontWeight: FontWeight.w600,

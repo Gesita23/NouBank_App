@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 
-const Color primarypurple = Color.fromARGB(255, 13, 71, 161);
-const Color secondarypurple = Color.fromARGB(255, 21, 101, 192);
+Color primarypurple = Color.fromARGB(255, 13, 71, 161);
+Color secondarypurple = Color.fromARGB(255, 21, 101, 192);
 
 //reusable nav bar
 class CustomBottomNavBar extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onItemTapped;
 
-  const CustomBottomNavBar({
+  CustomBottomNavBar({
     super.key,
     required this.selectedIndex,
     required this.onItemTapped,
@@ -46,7 +46,7 @@ class CustomBottomNavBar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, color: color),
-          const SizedBox(height: 4),
+          SizedBox(height: 4),
           Text(label, style: TextStyle(color: color, fontSize: 12)),
         ],
       ),

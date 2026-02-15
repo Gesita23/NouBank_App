@@ -5,11 +5,11 @@ import 'package:intl/intl.dart';
 import 'bottom_nav.dart';
 
 // DESIGN CONSTANTS
-const Color primarypurple = Color.fromARGB(255, 13, 71, 161);
-const Color secondarypurple = Color.fromARGB(255, 21, 101, 192);
+Color primarypurple = Color.fromARGB(255, 13, 71, 161);
+Color secondarypurple = Color.fromARGB(255, 21, 101, 192);
 
 class AccountScreen extends StatefulWidget {
-  const AccountScreen({super.key});
+  AccountScreen({super.key});
 
   @override
   State<AccountScreen> createState() => _AccountScreenState();
@@ -48,7 +48,7 @@ class _AccountScreenState extends State<AccountScreen> {
     if (user == null) {
       return Scaffold(
         backgroundColor: Colors.grey[100],
-        body: const Center(
+        body: Center(
           child: Text('Please log in to view your accounts'),
         ),
       );
@@ -57,7 +57,7 @@ class _AccountScreenState extends State<AccountScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'My Accounts',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -75,7 +75,7 @@ class _AccountScreenState extends State<AccountScreen> {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
+            return Center(
               child: CircularProgressIndicator(color: primarypurple),
             );
           }
@@ -97,16 +97,16 @@ class _AccountScreenState extends State<AccountScreen> {
           final checkingBalance = accountBalance * 0.3; // Secondary account
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Total Balance Summary
                 _buildTotalBalanceCard(accountBalance),
-                const SizedBox(height: 24),
+                SizedBox(height: 24),
 
                 // Section Title
-                const Text(
+                Text(
                   'Your Accounts',
                   style: TextStyle(
                     fontSize: 20,
@@ -114,7 +114,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     color: Colors.black87,
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
 
                 // UPDATED ORDER: Savings Account First (Primary)
                 _buildAccountCard(
@@ -128,7 +128,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   dateOpened: createdAt,
                   isPrimary: true, // Mark as primary
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
 
                 // Checking Account Card (Secondary)
                 _buildAccountCard(
@@ -142,7 +142,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   dateOpened: createdAt,
                   isPrimary: false,
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: 24),
 
                 // REMOVED: _buildAddAccountButton(context)
               ],
@@ -159,9 +159,9 @@ class _AccountScreenState extends State<AccountScreen> {
 
   Widget _buildTotalBalanceCard(double totalBalance) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: [primarypurple, secondarypurple],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -171,31 +171,31 @@ class _AccountScreenState extends State<AccountScreen> {
           BoxShadow(
             color: primarypurple.withOpacity(0.3),
             blurRadius: 10,
-            offset: const Offset(0, 5),
+            offset: Offset(0, 5),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Total Balance',
             style: TextStyle(
               color: Colors.white70,
               fontSize: 14,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Text(
             'Rs ${totalBalance.toStringAsFixed(2)}',
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
               fontSize: 32,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 4),
-          const Text(
+          SizedBox(height: 4),
+          Text(
             'Across all accounts',
             style: TextStyle(
               color: Colors.white70,
@@ -238,7 +238,7 @@ class _AccountScreenState extends State<AccountScreen> {
       },
       borderRadius: BorderRadius.circular(15),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(15),
@@ -247,7 +247,7 @@ class _AccountScreenState extends State<AccountScreen> {
               color: Colors.grey.withOpacity(0.1),
               spreadRadius: 1,
               blurRadius: 3,
-              offset: const Offset(0, 1),
+              offset: Offset(0, 1),
             ),
           ],
         ),
@@ -255,7 +255,7 @@ class _AccountScreenState extends State<AccountScreen> {
           children: [
             // UPDATED: Prettier icon with gradient background and white icon
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [color, color.withOpacity(0.7)],
@@ -267,7 +267,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   BoxShadow(
                     color: color.withOpacity(0.3),
                     blurRadius: 8,
-                    offset: const Offset(0, 3),
+                    offset: Offset(0, 3),
                   ),
                 ],
               ),
@@ -277,7 +277,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 size: 30,
               ),
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: 16),
 
             // Account Info - FIXED WITH FLEXIBLE
             Expanded(
@@ -289,7 +289,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       Flexible(
                         child: Text(
                           accountType,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: Colors.black87,
@@ -298,9 +298,9 @@ class _AccountScreenState extends State<AccountScreen> {
                         ),
                       ),
                       if (isPrimary) ...[
-                        const SizedBox(width: 8),
+                        SizedBox(width: 8),
                         Container(
-                          padding: const EdgeInsets.symmetric(
+                          padding: EdgeInsets.symmetric(
                             horizontal: 8,
                             vertical: 2,
                           ),
@@ -308,7 +308,7 @@ class _AccountScreenState extends State<AccountScreen> {
                             color: primarypurple.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: const Text(
+                          child: Text(
                             'Primary',
                             style: TextStyle(
                               fontSize: 10,
@@ -320,7 +320,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       ],
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                   Text(
                     accountNumber,
                     style: TextStyle(
@@ -339,14 +339,14 @@ class _AccountScreenState extends State<AccountScreen> {
                 children: [
                   Text(
                     'Rs ${balance.toStringAsFixed(2)}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                   Icon(
                     Icons.arrow_forward_ios,
                     size: 14,
@@ -374,7 +374,7 @@ class AccountDetailsScreen extends StatelessWidget {
   final String userName;
   final Timestamp? dateOpened;
 
-  const AccountDetailsScreen({
+  AccountDetailsScreen({
     super.key,
     required this.accountType,
     required this.accountNumber,
@@ -399,7 +399,7 @@ class AccountDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           accountType,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
@@ -409,19 +409,19 @@ class AccountDetailsScreen extends StatelessWidget {
         foregroundColor: Colors.black,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Account Balance Card
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.all(24),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [color, color.withOpacity(0.7)],
@@ -433,7 +433,7 @@ class AccountDetailsScreen extends StatelessWidget {
                   BoxShadow(
                     color: color.withOpacity(0.3),
                     blurRadius: 10,
-                    offset: const Offset(0, 5),
+                    offset: Offset(0, 5),
                   ),
                 ],
               ),
@@ -443,11 +443,11 @@ class AccountDetailsScreen extends StatelessWidget {
                   Row(
                     children: [
                       Icon(icon, color: Colors.white, size: 32),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12),
                       Flexible(
                         child: Text(
                           accountType,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -457,27 +457,27 @@ class AccountDetailsScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
+                  SizedBox(height: 20),
+                  Text(
                     'Available Balance',
                     style: TextStyle(
                       color: Colors.white70,
                       fontSize: 14,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   Text(
                     'Rs ${balance.toStringAsFixed(2)}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                   Text(
                     accountNumber,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white70,
                       fontSize: 14,
                       letterSpacing: 2,
@@ -486,14 +486,14 @@ class AccountDetailsScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
 
             // Make Payment Button
             _buildMakePaymentButton(context),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
 
             // Account Details Section
-            const Text(
+            Text(
               'Account Details',
               style: TextStyle(
                 fontSize: 20,
@@ -501,7 +501,7 @@ class AccountDetailsScreen extends StatelessWidget {
                 color: Colors.black87,
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
 
             // Details Cards
             _buildDetailCard(
@@ -509,35 +509,35 @@ class AccountDetailsScreen extends StatelessWidget {
               label: 'Account Holder',
               value: userName,
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             _buildDetailCard(
               icon: Icons.calendar_today_outlined,
               label: 'Date Opened',
               value: formattedDate,
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             _buildDetailCard(
               icon: Icons.account_balance,
               label: 'Account Type',
               value: accountType,
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             _buildDetailCard(
               icon: Icons.credit_card,
               label: 'Account Number',
               value: accountNumber,
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             _buildDetailCard(
               icon: Icons.verified_user_outlined,
               label: 'Account Status',
               value: 'Active',
               valueColor: Colors.green,
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
 
             // Quick Actions
-            const Text(
+            Text(
               'Quick Actions',
               style: TextStyle(
                 fontSize: 20,
@@ -545,7 +545,7 @@ class AccountDetailsScreen extends StatelessWidget {
                 color: Colors.black87,
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
 
             // Action Buttons Row
             Row(
@@ -570,7 +570,7 @@ class AccountDetailsScreen extends StatelessWidget {
                     },
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 Expanded(
                   child: _buildActionButton(
                     context: context,
@@ -579,7 +579,7 @@ class AccountDetailsScreen extends StatelessWidget {
                     color: Colors.orange,
                     onTap: () {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
+                        SnackBar(
                           content: Text('Statements feature coming soon'),
                           backgroundColor: Colors.orange,
                         ),
@@ -589,7 +589,7 @@ class AccountDetailsScreen extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             Row(
               children: [
                 Expanded(
@@ -603,7 +603,7 @@ class AccountDetailsScreen extends StatelessWidget {
                     },
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 Expanded(
                   child: _buildActionButton(
                     context: context,
@@ -612,7 +612,7 @@ class AccountDetailsScreen extends StatelessWidget {
                     color: Colors.grey,
                     onTap: () {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
+                        SnackBar(
                           content: Text('Settings feature coming soon'),
                           backgroundColor: Colors.grey,
                         ),
@@ -633,7 +633,7 @@ class AccountDetailsScreen extends StatelessWidget {
       width: double.infinity,
       height: 56,
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: [primarypurple, secondarypurple],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
@@ -643,7 +643,7 @@ class AccountDetailsScreen extends StatelessWidget {
           BoxShadow(
             color: primarypurple.withOpacity(0.3),
             blurRadius: 8,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
           ),
         ],
       ),
@@ -669,7 +669,7 @@ class AccountDetailsScreen extends StatelessWidget {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Icon(Icons.payment, color: Colors.white, size: 24),
             SizedBox(width: 12),
             Text(
@@ -693,7 +693,7 @@ class AccountDetailsScreen extends StatelessWidget {
     Color? valueColor,
   }) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
@@ -702,14 +702,14 @@ class AccountDetailsScreen extends StatelessWidget {
             color: Colors.grey.withOpacity(0.1),
             spreadRadius: 1,
             blurRadius: 3,
-            offset: const Offset(0, 1),
+            offset: Offset(0, 1),
           ),
         ],
       ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: Colors.grey[100],
               borderRadius: BorderRadius.circular(10),
@@ -720,7 +720,7 @@ class AccountDetailsScreen extends StatelessWidget {
               size: 24,
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -732,7 +732,7 @@ class AccountDetailsScreen extends StatelessWidget {
                     color: Colors.grey[600],
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Text(
                   value,
                   style: TextStyle(
@@ -761,7 +761,7 @@ class AccountDetailsScreen extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(15),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(15),
@@ -770,7 +770,7 @@ class AccountDetailsScreen extends StatelessWidget {
               color: Colors.grey.withOpacity(0.1),
               spreadRadius: 1,
               blurRadius: 3,
-              offset: const Offset(0, 1),
+              offset: Offset(0, 1),
             ),
           ],
         ),
@@ -778,11 +778,11 @@ class AccountDetailsScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, color: color, size: 30),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Text(
               label,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
                 color: Colors.black87,

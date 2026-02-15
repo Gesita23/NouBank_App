@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
-const Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
+Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
+Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
 
 class SendToContactPage extends StatefulWidget {
-  const SendToContactPage({super.key});
+  SendToContactPage({super.key});
 
   @override
   State<SendToContactPage> createState() => SendToContactPageState();
@@ -150,7 +150,7 @@ class SendToContactPageState extends State<SendToContactPage> {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedRecipient == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a recipient')),
+        SnackBar(content: Text('Please select a recipient')),
       );
       return;
     }
@@ -211,20 +211,20 @@ class SendToContactPageState extends State<SendToContactPage> {
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Confirm Transfer'),
+        title: Text('Confirm Transfer'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Send Rs ${amount.toStringAsFixed(2)} to:'),
-            const SizedBox(height: 8),
-            Text(_selectedRecipient!['name'], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            SizedBox(height: 8),
+            Text(_selectedRecipient!['name'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             Text('@${_selectedRecipient!['username']}', style: TextStyle(color: Colors.grey[600], fontSize: 14)),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
-          ElevatedButton(onPressed: () => Navigator.pop(context, true), child: const Text('Confirm')),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text('Cancel')),
+          ElevatedButton(onPressed: () => Navigator.pop(context, true), child: Text('Confirm')),
         ],
       ),
     ) ?? false;
@@ -239,12 +239,12 @@ class SendToContactPageState extends State<SendToContactPage> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.check_circle, color: Colors.green, size: 60),
-            const SizedBox(height: 20),
-            const Text('Transfer Successful!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
+            Icon(Icons.check_circle, color: Colors.green, size: 60),
+            SizedBox(height: 20),
+            Text('Transfer Successful!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            SizedBox(height: 12),
             Text('Rs ${amount.toStringAsFixed(2)} sent to'),
-            Text(_selectedRecipient!['name'], style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(_selectedRecipient!['name'], style: TextStyle(fontWeight: FontWeight.bold)),
           ],
         ),
         actions: [
@@ -253,7 +253,7 @@ class SendToContactPageState extends State<SendToContactPage> {
               Navigator.pop(context);
               Navigator.pop(context);
             },
-            child: const Text('Done', style: TextStyle(color: primaryBlue)),
+            child: Text('Done', style: TextStyle(color: primaryBlue)),
           ),
         ],
       ),
@@ -265,66 +265,66 @@ class SendToContactPageState extends State<SendToContactPage> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text('Send Money', style: TextStyle(color: Colors.white)),
+        title: Text('Send Money', style: TextStyle(color: Colors.white)),
         backgroundColor: primaryBlue,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
         elevation: 0,
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildInfoCard(),
-                const SizedBox(height: 24),
+                SizedBox(height: 24),
                 _buildSearchTypeSelector(),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 _buildRecipientSection(),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 if (_isSearching) ...[
-                  const Center(child: CircularProgressIndicator()),
-                  const SizedBox(height: 12),
+                  Center(child: CircularProgressIndicator()),
+                  SizedBox(height: 12),
                 ],
                 if (_searchError != null) ...[
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: Colors.red.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.error_outline, color: Colors.red, size: 20),
-                        const SizedBox(width: 8),
+                        Icon(Icons.error_outline, color: Colors.red, size: 20),
+                        SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             _searchError!,
-                            style: const TextStyle(color: Colors.red, fontSize: 14),
+                            style: TextStyle(color: Colors.red, fontSize: 14),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                 ],
                 if (_searchResult != null && _selectedRecipient == null) ...[
                   _buildSearchResultCard(),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                 ],
                 if (_selectedRecipient != null) ...[
                   _buildSelectedRecipientCard(),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                 ],
                 _buildAmountSection(),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 _buildNoteSection(),
-                const SizedBox(height: 30),
+                SizedBox(height: 30),
                 _buildSendButton(),
               ],
             ),
@@ -336,9 +336,9 @@ class SendToContactPageState extends State<SendToContactPage> {
 
   Widget _buildInfoCard() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: [primaryBlue, secondaryBlue],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -348,30 +348,30 @@ class SendToContactPageState extends State<SendToContactPage> {
           BoxShadow(
             color: primaryBlue.withOpacity(0.3),
             blurRadius: 12,
-            offset: const Offset(0, 6),
+            offset: Offset(0, 6),
           ),
         ],
       ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.2),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.send,
               color: Colors.white,
               size: 32,
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Transfer Money',
                   style: TextStyle(
                     color: Colors.white,
@@ -379,7 +379,7 @@ class SendToContactPageState extends State<SendToContactPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Text(
                   'Send money to your contacts instantly',
                   style: TextStyle(
@@ -397,7 +397,7 @@ class SendToContactPageState extends State<SendToContactPage> {
 
   Widget _buildSearchTypeSelector() {
     return Container(
-      padding: const EdgeInsets.all(4),
+      padding: EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -425,7 +425,7 @@ class SendToContactPageState extends State<SendToContactPage> {
         });
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
           color: selected ? primaryBlue : Colors.white,
           borderRadius: BorderRadius.circular(10),
@@ -443,7 +443,7 @@ class SendToContactPageState extends State<SendToContactPage> {
       enabled: _selectedRecipient == null,
       decoration: InputDecoration(
         hintText: 'Enter $_searchType',
-        prefixIcon: const Icon(Icons.search, color: primaryBlue),
+        prefixIcon: Icon(Icons.search, color: primaryBlue),
         filled: true,
         fillColor: Colors.grey[50],
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -455,7 +455,7 @@ class SendToContactPageState extends State<SendToContactPage> {
     return InkWell(
       onTap: _selectRecipient,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.blue.withOpacity(0.1),
           borderRadius: BorderRadius.circular(12),
@@ -463,18 +463,18 @@ class SendToContactPageState extends State<SendToContactPage> {
         ),
         child: Row(
           children: [
-            const Icon(Icons.person, color: primaryBlue),
-            const SizedBox(width: 12),
+            Icon(Icons.person, color: primaryBlue),
+            SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(_searchResult!['name'], style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text(_searchResult!['name'], style: TextStyle(fontWeight: FontWeight.bold)),
                   Text('@${_searchResult!['username']}', style: TextStyle(color: Colors.grey[600])),
                 ],
               ),
             ),
-            const Icon(Icons.arrow_forward_ios, size: 16, color: primaryBlue),
+            Icon(Icons.arrow_forward_ios, size: 16, color: primaryBlue),
           ],
         ),
       ),
@@ -483,7 +483,7 @@ class SendToContactPageState extends State<SendToContactPage> {
 
   Widget _buildSelectedRecipientCard() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.green.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
@@ -491,19 +491,19 @@ class SendToContactPageState extends State<SendToContactPage> {
       ),
       child: Row(
         children: [
-          const Icon(Icons.check_circle, color: Colors.green),
-          const SizedBox(width: 12),
+          Icon(Icons.check_circle, color: Colors.green),
+          SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(_selectedRecipient!['name'], style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(_selectedRecipient!['name'], style: TextStyle(fontWeight: FontWeight.bold)),
                 Text('@${_selectedRecipient!['username']}', style: TextStyle(color: Colors.grey[600])),
               ],
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.close, color: Colors.red),
+            icon: Icon(Icons.close, color: Colors.red),
             onPressed: _clearRecipient,
           ),
         ],
@@ -514,10 +514,10 @@ class SendToContactPageState extends State<SendToContactPage> {
   Widget _buildAmountSection() {
     return TextFormField(
       controller: _amountController,
-      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      keyboardType: TextInputType.numberWithOptions(decimal: true),
       decoration: InputDecoration(
         hintText: '0.00',
-        prefixIcon: const Icon(Icons.toll_rounded, color: primaryBlue),
+        prefixIcon: Icon(Icons.toll_rounded, color: primaryBlue),
         filled: true,
         fillColor: Colors.grey[50],
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -552,8 +552,8 @@ class SendToContactPageState extends State<SendToContactPage> {
         onPressed: _isLoading ? null : _sendMoney,
         style: ElevatedButton.styleFrom(backgroundColor: primaryBlue),
         child: _isLoading
-            ? const CircularProgressIndicator(color: Colors.white)
-            : const Text('Send Money', style: TextStyle(color: Colors.white, fontSize: 16)),
+            ? CircularProgressIndicator(color: Colors.white)
+            : Text('Send Money', style: TextStyle(color: Colors.white, fontSize: 16)),
       ),
     );
   }

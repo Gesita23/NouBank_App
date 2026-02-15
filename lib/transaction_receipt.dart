@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
+Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
 
 class TransactionReceiptPage extends StatefulWidget {
   final String transactionId;
@@ -21,7 +21,7 @@ class TransactionReceiptPage extends StatefulWidget {
   final String? recipient;
   final String? sender;
 
-  const TransactionReceiptPage({
+  TransactionReceiptPage({
     super.key,
     required this.transactionId,
     required this.type,
@@ -47,7 +47,7 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Transaction Receipt',
           style: TextStyle(color: Colors.white),
         ),
@@ -56,18 +56,18 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
         elevation: 0,
         leading: IconButton(
           onPressed: () => Navigator.pop(context), 
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back),
         ),
         actions: [
           IconButton(
             onPressed: _isSharing ? null : _shareReceipt, 
-            icon: const Icon(Icons.share),
+            icon: Icon(Icons.share),
           )
         ],
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16),
           child: Column(
             children: [
               //Receipt card wrapped with RepaintBoundary for image capture
@@ -75,7 +75,7 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
                 key: _receiptKey,
                 child: _buildReceiptCard(),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               //Action Buttons
               _buildActionButtons(),
             ],
@@ -87,7 +87,7 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
 
   Widget _buildReceiptCard() {
     final isDebit = widget.type == 'debit';
-    final statusColor = const Color(0xFF4CAF50);
+    final statusColor = Color(0xFF4CAF50);
     final amountText = 'Rs ${widget.amount.toStringAsFixed(2)}';
     String formattedDate = 'Unknown date';
     
@@ -104,7 +104,7 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
           )
         ]
       ),
@@ -112,10 +112,10 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
         children: [
           //Header Section
           Container(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(24),
             decoration: BoxDecoration(
               color: statusColor,
-              borderRadius: const BorderRadius.only(
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
               )
@@ -130,13 +130,13 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
                     color: Colors.white.withOpacity(0.2),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.check_circle,
                     color: Colors.white,
                     size: 50,
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 Text(
                   isDebit ? 'Payment Sent' : 'Payment Received',
                   style: TextStyle(
@@ -145,10 +145,10 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 Text(
                   amountText,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
                     fontSize: 23,
                     fontWeight: FontWeight.bold,
@@ -160,19 +160,19 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
 
           //Status Badge
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             child: _buildStatusBadge(),
           ),
 
           //Divider
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: EdgeInsets.symmetric(horizontal: 24),
             child: Divider(color: Colors.grey[300]),
           ),
 
           //Transaction Details
           Padding(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(24),
             child: Column(
               children: [
                 _buildDetailRow(
@@ -182,37 +182,37 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
                     : widget.transactionId,
                   isHighlighted: true,
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 _buildDetailRow(
                   'Transaction Type',
                   isDebit ? 'Payment Sent' : 'Payment Received',
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 _buildDetailRow(
                   'Category',
                   widget.category,
                 ),
                 if (widget.recipient != null)...[
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                   _buildDetailRow(
                     'Recipient',
                     widget.recipient!,
                   )
                 ],
                 if (widget.sender != null)...[
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                   _buildDetailRow(
                     'Sender',
                     widget.sender!,
                   )
                 ],
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 _buildDetailRow(
                   'Description',
                   widget.description,
                 ),
                 if (widget.note != null && widget.note!.isNotEmpty) ...[
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                   _buildDetailRow(
                     'Note',
                     widget.note!,
@@ -224,30 +224,30 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
 
           //Divider
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: EdgeInsets.symmetric(horizontal: 24),
             child: Divider(color: Colors.grey[300]),
           ),
 
           //Amount Details
           Padding(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Amount Details',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 _buildAmountRow('Amount', amountText),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 _buildAmountRow('Service Fee', 'Rs 0.00'),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 Divider(color: Colors.grey[300]),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 _buildAmountRow('Total Amount', amountText, isTotal: true),
               ],
             ),
@@ -255,10 +255,10 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
 
           //Footer
           Container(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(24),
             decoration: BoxDecoration(
               color: Colors.grey[50],
-              borderRadius: const BorderRadius.only(
+              borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(16),
                 bottomRight: Radius.circular(16),
               )
@@ -268,7 +268,7 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
                 Row(
                   children: [
                     Icon(Icons.info_outline, size: 16, color: Colors.grey[600]),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         'Keep this receipt for your records',
@@ -280,7 +280,7 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
                     )
                   ],
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 Text(
                   'Need help? Contact support@NouBank.com',
                   style: TextStyle(
@@ -332,7 +332,7 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
             fontSize: 14,
           ),
         ),
-        const SizedBox(width: 16),
+        SizedBox(width: 16),
         Expanded(
           child: Text(
             value,
@@ -351,14 +351,14 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
 
   Widget _buildStatusBadge() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: const Color(0xFFE8F5E9),
+        color: Color(0xFFE8F5E9),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: const [
+        children: [
           Icon(Icons.check_circle, color: Color(0xFF2E7D32), size: 18),
           SizedBox(width: 6),
           Text(
@@ -439,7 +439,7 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
           child: ElevatedButton.icon(
             onPressed: _isSharing ? null : _shareReceipt, 
             icon: _isSharing
-              ? const SizedBox(
+              ? SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
@@ -447,10 +447,10 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
                   strokeWidth: 2,
                 ),
               )
-              : const Icon(Icons.share, color: Colors.white),
+              : Icon(Icons.share, color: Colors.white),
             label: Text(
               _isSharing ? 'Preparing...' : 'Share Receipt',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
@@ -465,7 +465,7 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
             )
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
 
         //Done Button
         SizedBox(
@@ -473,8 +473,8 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
           height: 50,
           child: OutlinedButton.icon(
             onPressed: () => Navigator.pop(context), 
-            icon: const Icon(Icons.check),
-            label: const Text(
+            icon: Icon(Icons.check),
+            label: Text(
               'Done',
               style: TextStyle(
                 fontSize: 16,
@@ -483,7 +483,7 @@ class _TransactionReceiptPageState extends State<TransactionReceiptPage> {
             ),
             style: OutlinedButton.styleFrom(
               foregroundColor: primaryBlue,
-              side: const BorderSide(color: primaryBlue, width: 2),
+              side: BorderSide(color: primaryBlue, width: 2),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               )

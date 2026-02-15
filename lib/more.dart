@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'bottom_nav.dart';
 
-// Color constants matching your theme
 const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
 const Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
 
@@ -32,7 +34,6 @@ class _MorePageState extends State<MorePage> {
         Navigator.pushNamed(context, '/cards');
         break;
       case 4:
-        // Already on More page
         setState(() {
           _selectedIndex = index;
         });
@@ -62,7 +63,6 @@ class _MorePageState extends State<MorePage> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              // Financial Services Section
               _buildMenuCard([
                 _MenuItem(
                   icon: Icons.article_outlined,
@@ -70,10 +70,7 @@ class _MorePageState extends State<MorePage> {
                   onTap: () => _navigateToStatements(context),
                 ),
               ]),
-              
               const SizedBox(height: 16),
-              
-              // Account Management Section
               _buildMenuCard([
                 _MenuItem(
                   icon: Icons.person_outline,
@@ -86,10 +83,7 @@ class _MorePageState extends State<MorePage> {
                   onTap: () => _navigateToSettings(context),
                 ),
               ]),
-              
               const SizedBox(height: 16),
-              
-              // Support & Logout Section
               _buildMenuCard([
                 _MenuItem(
                   icon: Icons.phone_outlined,
@@ -159,8 +153,8 @@ class _MorePageState extends State<MorePage> {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: item.iconBackgroundColor?.withOpacity(0.1) ?? 
-                       Colors.grey[100],
+                color: item.iconBackgroundColor?.withOpacity(0.1) ??
+                    Colors.grey[100],
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
@@ -191,7 +185,6 @@ class _MorePageState extends State<MorePage> {
     );
   }
 
-  // Navigation Methods
   void _navigateToStatements(BuildContext context) {
     Navigator.push(
       context,
@@ -237,8 +230,8 @@ class _MorePageState extends State<MorePage> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Close dialog
-                _performLogout(context); // Perform logout
+                Navigator.pop(context);
+                _performLogout(context);
               },
               child: const Text(
                 "Log out",
@@ -253,10 +246,7 @@ class _MorePageState extends State<MorePage> {
 
   void _performLogout(BuildContext context) async {
     try {
-      // Sign out from Firebase
       await FirebaseAuth.instance.signOut();
-      
-      // Navigate to auth screen and clear navigation stack
       if (context.mounted) {
         Navigator.of(context).pushNamedAndRemoveUntil(
           '/',
@@ -264,7 +254,6 @@ class _MorePageState extends State<MorePage> {
         );
       }
     } catch (e) {
-      // Show error if logout fails
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -277,7 +266,6 @@ class _MorePageState extends State<MorePage> {
   }
 }
 
-// Menu Item Model
 class _MenuItem {
   final IconData icon;
   final String label;
@@ -294,8 +282,7 @@ class _MenuItem {
   });
 }
 
-// Placeholder pages for navigation
-
+// STATEMENTS PAGE
 class StatementsPage extends StatelessWidget {
   const StatementsPage({super.key});
 
@@ -306,7 +293,8 @@ class StatementsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text("Statements & Advices", style: TextStyle(color: Colors.white)),
+        title: const Text("Statements & Advices",
+            style: TextStyle(color: Colors.white)),
         backgroundColor: primaryBlue,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
@@ -334,49 +322,26 @@ class StatementsPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            
-            _buildStatementCard(
-              context,
-              "February 2026",
-              "Account Statement",
-              "Generated on Feb 01, 2026",
-              Icons.picture_as_pdf,
-            ),
+            _buildStatementCard(context, "February 2026", "Account Statement",
+                "Generated on Feb 01, 2026", Icons.picture_as_pdf),
             const SizedBox(height: 12),
-            
-            _buildStatementCard(
-              context,
-              "January 2026",
-              "Account Statement",
-              "Generated on Jan 31, 2026",
-              Icons.picture_as_pdf,
-            ),
+            _buildStatementCard(context, "January 2026", "Account Statement",
+                "Generated on Jan 31, 2026", Icons.picture_as_pdf),
             const SizedBox(height: 12),
-            
-            _buildStatementCard(
-              context,
-              "December 2025",
-              "Account Statement",
-              "Generated on Dec 31, 2025",
-              Icons.picture_as_pdf,
-            ),
+            _buildStatementCard(context, "December 2025", "Account Statement",
+                "Generated on Dec 31, 2025", Icons.picture_as_pdf),
             const SizedBox(height: 12),
-            
-            _buildStatementCard(
-              context,
-              "November 2025",
-              "Account Statement",
-              "Generated on Nov 30, 2025",
-              Icons.picture_as_pdf,
-            ),
-            
+            _buildStatementCard(context, "November 2025", "Account Statement",
+                "Generated on Nov 30, 2025", Icons.picture_as_pdf),
             const SizedBox(height: 24),
-            
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [primaryBlue.withOpacity(0.1), secondaryBlue.withOpacity(0.1)],
+                  colors: [
+                    primaryBlue.withOpacity(0.1),
+                    secondaryBlue.withOpacity(0.1)
+                  ],
                 ),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: primaryBlue.withOpacity(0.3)),
@@ -413,7 +378,8 @@ class StatementsPage extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryBlue,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -432,7 +398,8 @@ class StatementsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildStatementCard(BuildContext context, String title, String type, String date, IconData icon) {
+  Widget _buildStatementCard(BuildContext context, String title, String type,
+      String date, IconData icon) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -500,7 +467,6 @@ class StatementsPage extends StatelessWidget {
   }
 
   void _downloadStatement(BuildContext context, String statementName) {
-    // Show download progress
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -520,11 +486,8 @@ class StatementsPage extends StatelessWidget {
         );
       },
     );
-
-    // Simulate download
     Future.delayed(const Duration(seconds: 2), () {
-      Navigator.pop(context); // Close progress dialog
-      
+      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('$statementName downloaded successfully!'),
@@ -532,9 +495,7 @@ class StatementsPage extends StatelessWidget {
           action: SnackBarAction(
             label: 'View',
             textColor: Colors.white,
-            onPressed: () {
-              // Open downloaded file
-            },
+            onPressed: () {},
           ),
         ),
       );
@@ -542,6 +503,7 @@ class StatementsPage extends StatelessWidget {
   }
 }
 
+// PERSONAL DETAILS PAGE
 class PersonalDetailsPage extends StatelessWidget {
   const PersonalDetailsPage({super.key});
 
@@ -606,7 +568,6 @@ class PersonalDetailsPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Profile Header
                   Center(
                     child: Column(
                       children: [
@@ -641,10 +602,7 @@ class PersonalDetailsPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  
                   const SizedBox(height: 32),
-                  
-                  // Personal Information Section
                   const Text(
                     "Personal Information",
                     style: TextStyle(
@@ -654,7 +612,6 @@ class PersonalDetailsPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
                   _buildInfoCard([
                     _InfoItem(
                       icon: Icons.person_outline,
@@ -677,10 +634,7 @@ class PersonalDetailsPage extends StatelessWidget {
                       value: phone,
                     ),
                   ]),
-                  
                   const SizedBox(height: 24),
-                  
-                  // Account Information Section
                   const Text(
                     "Account Information",
                     style: TextStyle(
@@ -690,7 +644,6 @@ class PersonalDetailsPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
                   _buildInfoCard([
                     _InfoItem(
                       icon: Icons.account_balance_outlined,
@@ -703,15 +656,13 @@ class PersonalDetailsPage extends StatelessWidget {
                       value: user.uid.substring(0, 20) + '...',
                     ),
                   ]),
-                  
                   const SizedBox(height: 24),
-                  
-                  // Edit Button
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        _showEditProfileDialog(context, user.uid, name, phone, email);
+                        _showEditProfileDialog(
+                            context, user.uid, name, phone, email);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryBlue,
@@ -739,7 +690,8 @@ class PersonalDetailsPage extends StatelessWidget {
     );
   }
 
-  void _showEditProfileDialog(BuildContext context, String uid, String currentName, String currentPhone, String currentEmail) {
+  void _showEditProfileDialog(BuildContext context, String uid,
+      String currentName, String currentPhone, String currentEmail) {
     final nameController = TextEditingController(text: currentName);
     final phoneController = TextEditingController(text: currentPhone);
     final emailController = TextEditingController(text: currentEmail);
@@ -832,13 +784,11 @@ class PersonalDetailsPage extends StatelessWidget {
               if (formKey.currentState!.validate()) {
                 try {
                   final user = FirebaseAuth.instance.currentUser;
-                  
-                  // Update email in Firebase Auth if changed
-                  if (emailController.text.trim() != currentEmail && user != null) {
-                    await user.verifyBeforeUpdateEmail(emailController.text.trim());
+                  if (emailController.text.trim() != currentEmail &&
+                      user != null) {
+                    await user
+                        .verifyBeforeUpdateEmail(emailController.text.trim());
                   }
-                  
-                  // Update Firestore
                   await FirebaseFirestore.instance
                       .collection('users')
                       .doc(uid)
@@ -847,7 +797,6 @@ class PersonalDetailsPage extends StatelessWidget {
                     'email': emailController.text.trim(),
                     'phone': phoneController.text.trim(),
                   });
-
                   if (context.mounted) {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -861,7 +810,8 @@ class PersonalDetailsPage extends StatelessWidget {
                   if (context.mounted) {
                     String errorMessage = 'Error updating profile: ';
                     if (e.toString().contains('requires-recent-login')) {
-                      errorMessage = 'Please log out and log back in to update your email';
+                      errorMessage =
+                          'Please log out and log back in to update your email';
                     } else {
                       errorMessage += e.toString();
                     }
@@ -972,7 +922,7 @@ class _InfoItem {
   });
 }
 
-
+// SETTINGS PAGE - WITH BIOMETRIC FIX
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
@@ -981,6 +931,190 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  final LocalAuthentication _localAuth = LocalAuthentication();
+  final _secureStorage = const FlutterSecureStorage();
+  bool _isBiometricEnabled = false;
+  bool _isBiometricAvailable = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkBiometricStatus();
+  }
+
+  Future<void> _checkBiometricStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isAvailable = await _localAuth.canCheckBiometrics;
+    final isEnabled = prefs.getBool('biometric_enabled') ?? false;
+
+    if (mounted) {
+      setState(() {
+        _isBiometricAvailable = isAvailable;
+        _isBiometricEnabled = isEnabled;
+      });
+    }
+  }
+
+  Future<void> _toggleBiometric(bool value) async {
+    if (!value) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('biometric_enabled', false);
+      
+      await _secureStorage.delete(key: 'biometric_email');
+      await _secureStorage.delete(key: 'biometric_password');
+      
+      if (mounted) {
+        setState(() => _isBiometricEnabled = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Biometric authentication disabled. Credentials cleared.'),
+              backgroundColor: Colors.orange),
+        );
+      }
+      return;
+    }
+
+    try {
+      bool authenticated = await _localAuth.authenticate(
+        localizedReason: 'Authenticate to enable Biometric Login',
+        options: const AuthenticationOptions(
+            stickyAuth: true, 
+            useErrorDialogs: true,
+            biometricOnly: true),
+      );
+
+      if (authenticated) {
+        if (mounted) {
+          _showPasswordConfirmationDialog();
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isBiometricEnabled = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Biometric setup cancelled'),
+              backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
+  void _showPasswordConfirmationDialog() {
+    final passwordController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text("Confirm Your Password"),
+        content: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "Enter your password to enable biometric login. This will be stored securely.",
+                style: TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your password';
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              setState(() => _isBiometricEnabled = false);
+            },
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (formKey.currentState!.validate()) {
+                try {
+                  final user = FirebaseAuth.instance.currentUser;
+                  if (user == null) {
+                    throw Exception('No user logged in');
+                  }
+
+                  final credential = EmailAuthProvider.credential(
+                    email: user.email!,
+                    password: passwordController.text,
+                  );
+
+                  await user.reauthenticateWithCredential(credential);
+
+                  await _secureStorage.write(
+                      key: 'biometric_email', value: user.email);
+                  await _secureStorage.write(
+                      key: 'biometric_password', value: passwordController.text);
+
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.setBool('biometric_enabled', true);
+
+                  if (mounted) {
+                    Navigator.pop(context);
+                    setState(() => _isBiometricEnabled = true);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text(
+                              'Biometric authentication enabled successfully!'),
+                          backgroundColor: Colors.green),
+                    );
+                  }
+                } on FirebaseAuthException catch (e) {
+                  if (context.mounted) {
+                    String errorMessage = 'Authentication failed';
+                    if (e.code == 'wrong-password') {
+                      errorMessage = 'Incorrect password';
+                    }
+                    
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text(errorMessage),
+                          backgroundColor: Colors.red),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text('Error: ${e.toString()}'),
+                          backgroundColor: Colors.red),
+                    );
+                  }
+                }
+              }
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: primaryBlue),
+            child: const Text('Confirm',
+                style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1014,8 +1148,6 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             const SizedBox(height: 24),
-            
-            // Security Section
             const Text(
               "Security",
               style: TextStyle(
@@ -1024,7 +1156,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             const SizedBox(height: 12),
-            
+
             _buildSettingsCard([
               _buildSettingTile(
                 "Change Password",
@@ -1044,18 +1176,15 @@ class _SettingsPageState extends State<SettingsPage> {
                   _showPINDialog(context);
                 },
               ),
-              _buildSettingTile(
+              _buildSwitchTile(
                 "Biometric Authentication",
-                "Enable fingerprint or face unlock",
+                _isBiometricEnabled
+                    ? "Quick login with fingerprint enabled"
+                    : "Enable fingerprint or face unlock",
                 Icons.fingerprint,
-                Icon(Icons.chevron_right, color: Colors.grey[400]),
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Biometric authentication setup coming soon'),
-                    ),
-                  );
-                },
+                _isBiometricAvailable,
+                _isBiometricEnabled,
+                (val) => _toggleBiometric(val),
               ),
               _buildSettingTile(
                 "Two-Factor Authentication",
@@ -1083,16 +1212,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Trusted devices management coming soon'),
-                    ),
+                        content:
+                            Text('Trusted devices management coming soon')),
                   );
                 },
               ),
             ]),
-            
+
             const SizedBox(height: 24),
-            
-            // Account Section
             const Text(
               "Account",
               style: TextStyle(
@@ -1101,7 +1228,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             const SizedBox(height: 12),
-            
+
             _buildSettingsCard([
               _buildSettingTile(
                 "Account Information",
@@ -1109,7 +1236,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 Icons.account_circle_outlined,
                 Icon(Icons.chevron_right, color: Colors.grey[400]),
                 onTap: () {
-                  Navigator.pop(context); // Go back to More page
+                  Navigator.pop(context);
                   Navigator.pushNamed(context, '/account');
                 },
               ),
@@ -1123,10 +1250,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
             ]),
-            
+
             const SizedBox(height: 24),
-            
-            // About Section
             const Text(
               "About",
               style: TextStyle(
@@ -1135,7 +1260,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             const SizedBox(height: 12),
-            
+
             _buildSettingsCard([
               _buildSettingTile(
                 "Privacy Policy",
@@ -1144,9 +1269,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 Icon(Icons.chevron_right, color: Colors.grey[400]),
                 onTap: () {
                   _showInfoDialog(
-                    context, 
-                    'Privacy Policy', 
-                    'Your privacy is important to us. We collect and use your personal information only to provide and improve our banking services. We never share your data with third parties without your consent.'
+                    context,
+                    'Privacy Policy',
+                    'Your privacy is important to us. We collect and use your personal information only to provide and improve our banking services. We never share your data with third parties without your consent.',
                   );
                 },
               ),
@@ -1157,9 +1282,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 Icon(Icons.chevron_right, color: Colors.grey[400]),
                 onTap: () {
                   _showInfoDialog(
-                    context, 
-                    'Terms & Conditions', 
-                    'By using NouBank services, you agree to our terms and conditions. Please read them carefully before proceeding with any transactions.'
+                    context,
+                    'Terms & Conditions',
+                    'By using NouBank services, you agree to our terms and conditions. Please read them carefully before proceeding with any transactions.',
                   );
                 },
               ),
@@ -1242,6 +1367,66 @@ class _SettingsPageState extends State<SettingsPage> {
             trailing,
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildSwitchTile(String title, String subtitle, IconData icon,
+      bool isAvailable, bool isEnabled, ValueChanged<bool> onChanged) {
+    if (!isAvailable) {
+      return _buildSettingTile(
+        title,
+        subtitle,
+        icon,
+        const Icon(Icons.block, color: Colors.grey),
+        onTap: () {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('Biometrics not available on this device')));
+        },
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: primaryBlue.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, color: primaryBlue, size: 22),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Switch(
+            value: isEnabled,
+            onChanged: onChanged,
+            activeColor: primaryBlue,
+          ),
+        ],
       ),
     );
   }
@@ -1342,10 +1527,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     email: user!.email!,
                     password: currentPasswordController.text,
                   );
-                  
+
                   await user.reauthenticateWithCredential(credential);
                   await user.updatePassword(newPasswordController.text);
-                  
+
                   if (context.mounted) {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -1370,7 +1555,8 @@ class _SettingsPageState extends State<SettingsPage> {
             style: ElevatedButton.styleFrom(
               backgroundColor: primaryBlue,
             ),
-            child: const Text('Change Password', style: TextStyle(color: Colors.white)),
+            child: const Text('Change Password',
+                style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -1380,10 +1566,12 @@ class _SettingsPageState extends State<SettingsPage> {
   void _showPINDialog(BuildContext context) {
     final pinController = TextEditingController();
     final confirmPinController = TextEditingController();
+    final passwordController = TextEditingController();
     final formKey = GlobalKey<FormState>();
 
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
@@ -1391,55 +1579,87 @@ class _SettingsPageState extends State<SettingsPage> {
         title: const Text('Set Transaction PIN'),
         content: Form(
           key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: pinController,
-                obscureText: true,
-                keyboardType: TextInputType.number,
-                maxLength: 4,
-                decoration: InputDecoration(
-                  labelText: 'Enter 4-Digit PIN',
-                  prefixIcon: const Icon(Icons.pin),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Set a 4-digit PIN to quickly login to your account.',
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a PIN';
-                  }
-                  if (value.length != 4) {
-                    return 'PIN must be exactly 4 digits';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: confirmPinController,
-                obscureText: true,
-                keyboardType: TextInputType.number,
-                maxLength: 4,
-                decoration: InputDecoration(
-                  labelText: 'Confirm PIN',
-                  prefixIcon: const Icon(Icons.pin),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: pinController,
+                  obscureText: true,
+                  keyboardType: TextInputType.number,
+                  maxLength: 4,
+                  decoration: InputDecoration(
+                    labelText: 'Enter 4-Digit PIN',
+                    prefixIcon: const Icon(Icons.pin),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a PIN';
+                    }
+                    if (value.length != 4) {
+                      return 'PIN must be exactly 4 digits';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please confirm your PIN';
-                  }
-                  if (value != pinController.text) {
-                    return 'PINs do not match';
-                  }
-                  return null;
-                },
-              ),
-            ],
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: confirmPinController,
+                  obscureText: true,
+                  keyboardType: TextInputType.number,
+                  maxLength: 4,
+                  decoration: InputDecoration(
+                    labelText: 'Confirm PIN',
+                    prefixIcon: const Icon(Icons.pin),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please confirm your PIN';
+                    }
+                    if (value != pinController.text) {
+                      return 'PINs do not match';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                const Divider(),
+                const SizedBox(height: 8),
+                const Text(
+                  'Confirm your password to enable PIN login',
+                  style: TextStyle(fontSize: 13, color: Colors.grey),
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Account Password',
+                    prefixIcon: const Icon(Icons.lock_outline),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
           ),
         ),
         actions: [
@@ -1448,15 +1668,62 @@ class _SettingsPageState extends State<SettingsPage> {
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (formKey.currentState!.validate()) {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('PIN set successfully!'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
+                try {
+                  final user = FirebaseAuth.instance.currentUser;
+                  if (user == null) {
+                    throw Exception('No user logged in');
+                  }
+
+                  // Verify password
+                  final credential = EmailAuthProvider.credential(
+                    email: user.email!,
+                    password: passwordController.text,
+                  );
+
+                  await user.reauthenticateWithCredential(credential);
+
+                  // Store PIN and credentials securely
+                  const secureStorage = FlutterSecureStorage();
+                  await secureStorage.write(
+                      key: 'user_pin', value: pinController.text);
+                  await secureStorage.write(
+                      key: 'pin_email', value: user.email);
+                  await secureStorage.write(
+                      key: 'pin_password', value: passwordController.text);
+
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('PIN set successfully! You can now use PIN to login.'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  }
+                } on FirebaseAuthException catch (e) {
+                  if (context.mounted) {
+                    String errorMessage = 'Authentication failed';
+                    if (e.code == 'wrong-password') {
+                      errorMessage = 'Incorrect password';
+                    }
+                    
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text(errorMessage),
+                          backgroundColor: Colors.red),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text('Error: ${e.toString()}'),
+                          backgroundColor: Colors.red),
+                    );
+                  }
+                }
               }
             },
             style: ElevatedButton.styleFrom(
@@ -1493,22 +1760,13 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             const SizedBox(height: 16),
             _build2FAOption(
-              'SMS Authentication',
-              'Receive codes via text message',
-              Icons.sms,
-            ),
+                'SMS Authentication', 'Receive codes via text message', Icons.sms),
             const SizedBox(height: 12),
             _build2FAOption(
-              'Email Authentication',
-              'Receive codes via email',
-              Icons.email,
-            ),
+                'Email Authentication', 'Receive codes via email', Icons.email),
             const SizedBox(height: 12),
-            _build2FAOption(
-              'Authenticator App',
-              'Use Google Authenticator or similar',
-              Icons.phone_android,
-            ),
+            _build2FAOption('Authenticator App',
+                'Use Google Authenticator or similar', Icons.phone_android),
           ],
         ),
         actions: [
@@ -1570,29 +1828,14 @@ class _SettingsPageState extends State<SettingsPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildLoginHistoryItem(
-                'Current Session',
-                'Port Louis, Mauritius',
-                'Feb 3, 2026 - 2:30 PM',
-                Icons.check_circle,
-                Colors.green,
-              ),
+              _buildLoginHistoryItem('Current Session', 'Port Louis, Mauritius',
+                  'Feb 3, 2026 - 2:30 PM', Icons.check_circle, Colors.green),
               const Divider(),
-              _buildLoginHistoryItem(
-                'Mobile App',
-                'Port Louis, Mauritius',
-                'Feb 2, 2026 - 9:15 AM',
-                Icons.phone_android,
-                primaryBlue,
-              ),
+              _buildLoginHistoryItem('Mobile App', 'Port Louis, Mauritius',
+                  'Feb 2, 2026 - 9:15 AM', Icons.phone_android, primaryBlue),
               const Divider(),
-              _buildLoginHistoryItem(
-                'Web Browser',
-                'Port Louis, Mauritius',
-                'Feb 1, 2026 - 6:45 PM',
-                Icons.computer,
-                primaryBlue,
-              ),
+              _buildLoginHistoryItem('Web Browser', 'Port Louis, Mauritius',
+                  'Feb 1, 2026 - 6:45 PM', Icons.computer, primaryBlue),
             ],
           ),
         ),
@@ -1607,12 +1850,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _buildLoginHistoryItem(
-    String device,
-    String location,
-    String time,
-    IconData icon,
-    Color color,
-  ) {
+      String device, String location, String time, IconData icon, Color color) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -1722,6 +1960,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 }
 
+// CONTACT US PAGE
 class ContactUsPage extends StatelessWidget {
   const ContactUsPage({super.key});
 
@@ -1810,15 +2049,16 @@ class ContactUsPage extends StatelessWidget {
                 title,
                 style: const TextStyle(
                   fontSize: 14,
-                  color: Colors.grey,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
                 ),
               ),
               const SizedBox(height: 4),
               Text(
                 subtitle,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey[600],
                 ),
               ),
             ],

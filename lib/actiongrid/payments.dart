@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../bottom_nav.dart';
 
-const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
-const Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
+Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
+Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
 
 // Payment Option Model
 class PaymentOption {
@@ -13,7 +13,7 @@ class PaymentOption {
   final String subtitle;
   final String route;
 
-  const PaymentOption({
+  PaymentOption({
     required this.icon,
     required this.title,
     required this.subtitle,
@@ -29,7 +29,7 @@ class BankAccount {
   final IconData icon;
   final Color color;
 
-  const BankAccount({
+  BankAccount({
     required this.accountType,
     required this.accountNumber,
     required this.balance,
@@ -43,7 +43,7 @@ class PaymentsPage extends StatefulWidget {
   final double? accountBalance;
   final String? accountNumber;
 
-  const PaymentsPage({
+  PaymentsPage({
     super.key,
     this.accountType,
     this.accountBalance,
@@ -149,14 +149,14 @@ class _PaymentsPageState extends State<PaymentsPage> {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(24),
             topRight: Radius.circular(24),
           ),
         ),
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,10 +172,10 @@ class _PaymentsPageState extends State<PaymentsPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
 
             // Title
-            const Text(
+            Text(
               'Select Account',
               style: TextStyle(
                 fontSize: 20,
@@ -183,12 +183,12 @@ class _PaymentsPageState extends State<PaymentsPage> {
                 color: Colors.black87,
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
 
             // Account list
             ...availableAccounts.map((account) => _buildAccountSelectorItem(account)),
 
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
           ],
         ),
       ),
@@ -207,8 +207,8 @@ class _PaymentsPageState extends State<PaymentsPage> {
       },
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
+        margin: EdgeInsets.only(bottom: 12),
+        padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: isSelected ? primaryBlue.withOpacity(0.1) : Colors.grey[50],
           borderRadius: BorderRadius.circular(12),
@@ -221,7 +221,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
           children: [
             // Icon
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [account.color, account.color.withOpacity(0.7)],
@@ -233,7 +233,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
                   BoxShadow(
                     color: account.color.withOpacity(0.3),
                     blurRadius: 6,
-                    offset: const Offset(0, 2),
+                    offset: Offset(0, 2),
                   ),
                 ],
               ),
@@ -243,7 +243,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
                 size: 24,
               ),
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: 16),
 
             // Account info
             Expanded(
@@ -258,7 +258,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
                       color: isSelected ? primaryBlue : Colors.black87,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                   Text(
                     account.accountNumber,
                     style: TextStyle(
@@ -283,8 +283,8 @@ class _PaymentsPageState extends State<PaymentsPage> {
                   ),
                 ),
                 if (isSelected) ...[
-                  const SizedBox(height: 4),
-                  const Icon(
+                  SizedBox(height: 4),
+                  Icon(
                     Icons.check_circle,
                     color: primaryBlue,
                     size: 20,
@@ -298,7 +298,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
     );
   }
 
-  final List<PaymentOption> paymentOptions = const [
+  final List<PaymentOption> paymentOptions = [
     PaymentOption(
       icon: Icons.person_outline,
       title: 'Send to Contact',
@@ -361,7 +361,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Make Payment',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
         ),
@@ -369,21 +369,21 @@ class _PaymentsPageState extends State<PaymentsPage> {
         elevation: 0,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
       ),
       body: availableAccounts.isEmpty
-          ? const Center(child: CircularProgressIndicator(color: primaryBlue))
+          ? Center(child: CircularProgressIndicator(color: primaryBlue))
           : SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildHybridAccountHeader(),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   _buildQuickActions(),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24),
                   _buildPaymentOptions(),
-                  const SizedBox(height: 80),
+                  SizedBox(height: 80),
                 ],
               ),
             ),
@@ -396,10 +396,10 @@ class _PaymentsPageState extends State<PaymentsPage> {
 
   Widget _buildHybridAccountHeader() {
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      padding: const EdgeInsets.all(20),
+      margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: [primaryBlue, secondaryBlue],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -409,7 +409,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
           BoxShadow(
             color: primaryBlue.withOpacity(0.3),
             blurRadius: 12,
-            offset: const Offset(0, 6),
+            offset: Offset(0, 6),
           ),
         ],
       ),
@@ -447,7 +447,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(height: 6),
+                      SizedBox(height: 6),
                       Row(
                         children: [
                           Icon(
@@ -455,10 +455,10 @@ class _PaymentsPageState extends State<PaymentsPage> {
                             color: Colors.white,
                             size: 18,
                           ),
-                          const SizedBox(width: 8),
+                          SizedBox(width: 8),
                           Text(
                             selectedAccount.accountType,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -466,7 +466,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4),
                       Text(
                         selectedAccount.accountNumber,
                         style: TextStyle(
@@ -486,8 +486,8 @@ class _PaymentsPageState extends State<PaymentsPage> {
                     ),
                     child: TextButton.icon(
                       onPressed: _showAccountSelector,
-                      icon: const Icon(Icons.swap_horiz, size: 18, color: primaryBlue),
-                      label: const Text(
+                      icon: Icon(Icons.swap_horiz, size: 18, color: primaryBlue),
+                      label: Text(
                         'Change',
                         style: TextStyle(
                           color: primaryBlue,
@@ -496,15 +496,15 @@ class _PaymentsPageState extends State<PaymentsPage> {
                         ),
                       ),
                       style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               Divider(height: 1, color: Colors.white.withOpacity(0.2)),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -517,7 +517,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
                   ),
                   Text(
                     'Rs ${selectedAccount.balance.toStringAsFixed(2)}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -535,11 +535,11 @@ class _PaymentsPageState extends State<PaymentsPage> {
 
   Widget _buildQuickActions() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Quick Actions',
             style: TextStyle(
               fontSize: 18,
@@ -547,7 +547,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
               color: Colors.black87,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -588,11 +588,11 @@ class _PaymentsPageState extends State<PaymentsPage> {
       borderRadius: BorderRadius.circular(16),
       child: Container(
         width: 70,
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        padding: EdgeInsets.symmetric(vertical: 10),
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.all(14),
+              padding: EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: primaryBlue.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(16),
@@ -603,7 +603,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
                 size: 26,
               ),
             ),
-            const SizedBox(height: 6),
+            SizedBox(height: 6),
             Text(
               label,
               style: TextStyle(
@@ -620,11 +620,11 @@ class _PaymentsPageState extends State<PaymentsPage> {
 
   Widget _buildPaymentOptions() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'All Payment Options',
             style: TextStyle(
               fontSize: 18,
@@ -632,11 +632,11 @@ class _PaymentsPageState extends State<PaymentsPage> {
               color: Colors.black87,
             ),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           GridView.builder(
             shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               mainAxisSpacing: 10,
               crossAxisSpacing: 10,
@@ -684,11 +684,11 @@ class _PaymentsPageState extends State<PaymentsPage> {
               color: Colors.grey.withOpacity(0.1),
               spreadRadius: 1,
               blurRadius: 3,
-              offset: const Offset(0, 1),
+              offset: Offset(0, 1),
             ),
           ],
         ),
-        padding: const EdgeInsets.all(14),
+        padding: EdgeInsets.all(14),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -697,17 +697,17 @@ class _PaymentsPageState extends State<PaymentsPage> {
               color: primaryBlue,
               size: 30,
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
             Text(
               option.title,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: Colors.black87,
               ),
             ),
-            const SizedBox(height: 3),
+            SizedBox(height: 3),
             Text(
               option.subtitle,
               textAlign: TextAlign.center,
@@ -732,7 +732,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
           borderRadius: BorderRadius.circular(16),
         ),
         title: Row(
-          children: const [
+          children: [
             Icon(Icons.info_outline, color: primaryBlue),
             SizedBox(width: 10),
             Text('Coming Soon'),
@@ -745,7 +745,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text(
+            child: Text(
               'OK',
               style: TextStyle(color: primaryBlue, fontWeight: FontWeight.bold),
             ),

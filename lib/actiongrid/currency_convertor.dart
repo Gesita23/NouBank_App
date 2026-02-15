@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
-const Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
+Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
+Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
 
-const Map<String, double> _ratesFromUSD = {
+Map<String, double> _ratesFromUSD = {
   'USD': 1.0,
   'EUR': 0.92,
   'GBP': 0.79,
@@ -28,7 +28,7 @@ const Map<String, double> _ratesFromUSD = {
   'MUR': 45.50, 
 };
 
-const List<String> _currencyCodes = [
+List<String> _currencyCodes = [
   'USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF', 'CNY', 'INR', 'MXN',
   'BRL', 'KRW', 'SGD', 'HKD', 'NOK', 'SEK', 'DKK', 'NZD', 'ZAR', 'THB',
   'MUR',
@@ -40,7 +40,7 @@ double _convert(double amount, String from, String to) {
 }
 
 class CurrencyConverterPage extends StatefulWidget {
-  const CurrencyConverterPage({super.key});
+  CurrencyConverterPage({super.key});
 
   @override
   State<CurrencyConverterPage> createState() => _CurrencyConverterPageState();
@@ -95,24 +95,24 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Currency Converter',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: primaryBlue,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
         elevation: 0,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ── header icon ──
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Center(
               child: Container(
                 width: 72,
@@ -121,12 +121,12 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
                   color: primaryBlue.withOpacity(0.08),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Center(
+                child: Center(
                   child: Icon(Icons.currency_exchange, color: primaryBlue, size: 36),
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
 
             // ── FROM card ──
             _buildCurrencyCard(
@@ -135,14 +135,14 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
               isFrom: true,
             ),
 
-            const SizedBox(height: 6),
+            SizedBox(height: 6),
 
             // ── SWAP button (centred between the two cards) ──
             Center(
               child: _SwapButton(onTap: _swap),
             ),
 
-            const SizedBox(height: 6),
+            SizedBox(height: 6),
 
             // ── TO card ──
             _buildCurrencyCard(
@@ -151,12 +151,12 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
               isFrom: false,
             ),
 
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
 
             // ── live-rate pill ──
             _buildRateRow(),
 
-            const SizedBox(height: 28),
+            SizedBox(height: 28),
 
             // ── quick-amount chips ──
             _buildQuickAmounts(),
@@ -183,11 +183,11 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
             color: Colors.grey.withOpacity(0.12),
             spreadRadius: 1,
             blurRadius: 4,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),
-      padding: const EdgeInsets.all(18),
+      padding: EdgeInsets.all(18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -200,7 +200,7 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
               fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -209,17 +209,17 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
                 child: isFrom
                     ? TextFormField(
                         controller: _amountController,
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        keyboardType: TextInputType.numberWithOptions(decimal: true),
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
                         ],
                         onChanged: (_) => setState(() {}),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           isDense: true,
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.zero,
@@ -227,7 +227,7 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
                       )
                     : Text(
                         _convertedAmount.toStringAsFixed(4),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
@@ -238,7 +238,7 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
               GestureDetector(
                 onTap: () => _pickCurrency(isFrom),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   decoration: BoxDecoration(
                     color: primaryBlue.withOpacity(0.07),
                     borderRadius: BorderRadius.circular(10),
@@ -247,14 +247,14 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
                     children: [
                       Text(
                         currency,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                           color: primaryBlue,
                         ),
                       ),
-                      const SizedBox(width: 4),
-                      const Icon(Icons.expand_more, color: primaryBlue, size: 18),
+                      SizedBox(width: 4),
+                      Icon(Icons.expand_more, color: primaryBlue, size: 18),
                     ],
                   ),
                 ),
@@ -272,7 +272,7 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
   Widget _buildRateRow() {
     return Center(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -280,7 +280,7 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
             BoxShadow(
               color: Colors.grey.withOpacity(0.1),
               blurRadius: 3,
-              offset: const Offset(0, 1),
+              offset: Offset(0, 1),
             ),
           ],
         ),
@@ -288,7 +288,7 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(Icons.info_outline, size: 16, color: Colors.grey[500]),
-            const SizedBox(width: 6),
+            SizedBox(width: 6),
             Text(
               '1 $_fromCurrency = ${_currentRate.toStringAsFixed(4)} $_toCurrency',
               style: TextStyle(
@@ -319,7 +319,7 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: amounts
@@ -331,7 +331,7 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
                     });
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
@@ -340,13 +340,13 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
                           color: Colors.grey.withOpacity(0.1),
                           spreadRadius: 1,
                           blurRadius: 2,
-                          offset: const Offset(0, 1),
+                          offset: Offset(0, 1),
                         ),
                       ],
                     ),
                     child: Text(
                       'Rs $a',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                         color: Colors.black87,
@@ -367,7 +367,7 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
 // ==========================================================================
 class _SwapButton extends StatelessWidget {
   final VoidCallback onTap;
-  const _SwapButton({super.key, required this.onTap});
+  _SwapButton({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -383,11 +383,11 @@ class _SwapButton extends StatelessWidget {
             BoxShadow(
               color: primaryBlue.withOpacity(0.35),
               blurRadius: 6,
-              offset: const Offset(0, 2),
+              offset: Offset(0, 2),
             ),
           ],
         ),
-        child: const Center(
+        child: Center(
           child: Icon(Icons.swap_vert, color: Colors.white, size: 22),
         ),
       ),
@@ -409,7 +409,7 @@ Future<String?> _showCurrencyPicker(BuildContext context, String current) {
 
 class _CurrencyPickerSheet extends StatefulWidget {
   final String current;
-  const _CurrencyPickerSheet({super.key, required this.current});
+  _CurrencyPickerSheet({super.key, required this.current});
 
   @override
   State<_CurrencyPickerSheet> createState() => _CurrencyPickerSheetState();
@@ -436,14 +436,14 @@ class _CurrencyPickerSheetState extends State<_CurrencyPickerSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(24),
           topRight: Radius.circular(24),
         ),
       ),
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       height: MediaQuery.of(context).size.height * 0.55,
       child: Column(
         children: [
@@ -456,19 +456,19 @@ class _CurrencyPickerSheetState extends State<_CurrencyPickerSheet> {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          const SizedBox(height: 16),
-          const Text(
+          SizedBox(height: 16),
+          Text(
             'Select Currency',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           // search field
           TextField(
             controller: _searchController,
             onChanged: _filter,
             decoration: InputDecoration(
               hintText: 'Search…',
-              prefixIcon: const Icon(Icons.search, color: primaryBlue),
+              prefixIcon: Icon(Icons.search, color: primaryBlue),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -481,10 +481,10 @@ class _CurrencyPickerSheetState extends State<_CurrencyPickerSheet> {
               filled: true,
               fillColor: Colors.grey[50],
               isDense: true,
-              contentPadding: const EdgeInsets.symmetric(vertical: 12),
+              contentPadding: EdgeInsets.symmetric(vertical: 12),
             ),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
           // list
           Expanded(
             child: ListView.builder(
@@ -493,7 +493,7 @@ class _CurrencyPickerSheetState extends State<_CurrencyPickerSheet> {
                 final code = _filtered[i];
                 final isSelected = code == widget.current;
                 return ListTile(
-                  contentPadding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                  contentPadding: EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                   leading: Container(
                     width: 40,
                     height: 40,
@@ -523,7 +523,7 @@ class _CurrencyPickerSheetState extends State<_CurrencyPickerSheet> {
                     style: TextStyle(fontSize: 13, color: Colors.grey[500]),
                   ),
                   trailing: isSelected
-                      ? const Icon(Icons.check_circle, color: primaryBlue)
+                      ? Icon(Icons.check_circle, color: primaryBlue)
                       : null,
                   onTap: () => Navigator.pop(ctx, code),
                 );

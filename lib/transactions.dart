@@ -5,11 +5,11 @@ import 'package:intl/intl.dart';
 import 'bottom_nav.dart';
 import 'transaction_receipt.dart';
 
-const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
-const Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
+Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
+Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
 
 class TransactionPage extends StatefulWidget {
-  const TransactionPage({super.key});
+  TransactionPage({super.key});
 
   @override
   State<TransactionPage> createState() => _TransactionPageState();
@@ -63,10 +63,10 @@ class _TransactionPageState extends State<TransactionPage> {
     if (user == null) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Transaction History'),
+          title: Text('Transaction History'),
           backgroundColor: primaryBlue,
         ),
-        body: const Center(
+        body: Center(
           child: Text('Please log in to view transactions'),
         ),
       );
@@ -75,14 +75,14 @@ class _TransactionPageState extends State<TransactionPage> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Transaction History',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: primaryBlue,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
         elevation: 0,
       ),
@@ -94,7 +94,7 @@ class _TransactionPageState extends State<TransactionPage> {
               stream: _getTransactionsStream(user.uid),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
+                  return Center(
                     child: CircularProgressIndicator(color: primaryBlue),
                   );
                 }
@@ -106,7 +106,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       children: [
                         Icon(Icons.error_outline, color: Colors.red[300],
                             size: 60),
-                        const SizedBox(height: 15),
+                        SizedBox(height: 15),
                         Text(
                           'Error loading transactions',
                           style: TextStyle(color: Colors.grey[600],
@@ -127,7 +127,7 @@ class _TransactionPageState extends State<TransactionPage> {
                           size: 80,
                           color: Colors.grey[400],
                         ),
-                        const SizedBox(height: 15),
+                        SizedBox(height: 15),
                         Text(
                           'No transactions yet',
                           style: TextStyle(
@@ -135,7 +135,7 @@ class _TransactionPageState extends State<TransactionPage> {
                             fontSize: 18,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8),
                         Text(
                           'Your transactions will appear here',
                           style: TextStyle(
@@ -163,7 +163,7 @@ class _TransactionPageState extends State<TransactionPage> {
                 });
 
                 return ListView.builder(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16),
                     itemCount: transactions.length,
                     itemBuilder: (context, index) {
                       final doc = transactions[index];
@@ -197,17 +197,17 @@ class _TransactionPageState extends State<TransactionPage> {
   Widget _buildFilterButtons() {
     return Container(
       color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
           Expanded(
               child: _buildFilterButton('All', 'all')
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           Expanded(
               child: _buildFilterButton('Sent', 'debit')
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           Expanded(
               child: _buildFilterButton('Received', 'credit')
           ),
@@ -226,7 +226,7 @@ class _TransactionPageState extends State<TransactionPage> {
         });
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        padding: EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
             color: isSelected ? primaryBlue : Colors.white,
             borderRadius: BorderRadius.circular(10),
@@ -261,7 +261,7 @@ class TransactionCard extends StatelessWidget {
   final String? recipient;
   final String? sender;
 
-  const TransactionCard({
+  TransactionCard({
     super.key,
     required this.transactionId,
     required this.type,
@@ -290,7 +290,7 @@ class TransactionCard extends StatelessWidget {
     }
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.only(bottom: 12),
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
@@ -301,11 +301,11 @@ class TransactionCard extends StatelessWidget {
         },
         borderRadius: BorderRadius.circular(15),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16),
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: iconColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
@@ -318,14 +318,14 @@ class TransactionCard extends StatelessWidget {
                   size: 24,
                 ),
               ),
-              const SizedBox(width: 15),
+              SizedBox(width: 15),
               Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         description,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: Colors.black87,
@@ -333,7 +333,7 @@ class TransactionCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4),
                       Text(
                         formattedDate,
                         style: TextStyle(
@@ -342,7 +342,7 @@ class TransactionCard extends StatelessWidget {
                         ),
                       ),
                       if (note != null && note!.isNotEmpty) ...[
-                        const SizedBox(height: 4),
+                        SizedBox(height: 4),
                         Text(
                           note!,
                           style: TextStyle(
@@ -357,7 +357,7 @@ class TransactionCard extends StatelessWidget {
                     ],
                   )
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -369,9 +369,9 @@ class TransactionCard extends StatelessWidget {
                       color: amountColor,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8,
+                    padding: EdgeInsets.symmetric(horizontal: 8,
                         vertical: 3),
                     decoration: BoxDecoration(
                       color: Colors.grey[200],
@@ -416,7 +416,7 @@ class TransactionCard extends StatelessWidget {
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
         builder: (context) => Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(25),
@@ -425,7 +425,7 @@ class TransactionCard extends StatelessWidget {
           ),
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.all(24),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -438,10 +438,10 @@ class TransactionCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24),
                   //Icon
                   Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       color: iconColor.withOpacity(0.1),
                       shape: BoxShape.circle,
@@ -454,7 +454,7 @@ class TransactionCard extends StatelessWidget {
                       size: 40,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   //Amount
                   Text(
                     amountText,
@@ -464,10 +464,10 @@ class TransactionCard extends StatelessWidget {
                         color: amountColor
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   //Status
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16,
+                    padding: EdgeInsets.symmetric(horizontal: 16,
                         vertical: 6),
                     decoration: BoxDecoration(
                       color: Colors.green.withOpacity(0.1),
@@ -475,7 +475,7 @@ class TransactionCard extends StatelessWidget {
                       border: Border.all(color:
                       Colors.green.withOpacity(0.3)),
                     ),
-                    child: const Text(
+                    child: Text(
                       'Completed',
                       style: TextStyle(
                         color: Colors.green,
@@ -484,10 +484,10 @@ class TransactionCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  SizedBox(height: 30),
                   //Details
                   Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       color: Colors.grey[100],
                       borderRadius: BorderRadius.circular(15),
@@ -496,52 +496,52 @@ class TransactionCard extends StatelessWidget {
                       children: [
                         _buildDetailRow('Transaction Type', isDebit ? 'Sent'
                             : 'Received', Icons.swap_horiz),
-                        const Divider(height: 24),
+                        Divider(height: 24),
                         _buildDetailRow('Description', description,
                             Icons.description_outlined),
-                        const Divider(height: 24),
+                        Divider(height: 24),
                         _buildDetailRow('Category', category,
                             Icons.category_outlined),
                         if (recipient != null) ...[
-                          const Divider(height: 24),
+                          Divider(height: 24),
                           _buildDetailRow('Recipient', recipient!,
                               Icons.person_outline),
                         ],
                         if (sender != null) ...[
-                          const Divider(height: 24),
+                          Divider(height: 24),
                           _buildDetailRow('Sender', sender!,
                               Icons.person_outline),
                         ],
-                        const Divider(height: 24),
+                        Divider(height: 24),
                         _buildDetailRow('Date', formattedDate,
                             Icons.calendar_today),
-                        const Divider(height: 24),
+                        Divider(height: 24),
                         _buildDetailRow('Time', formattedTime,
                             Icons.access_time),
                         if (note != null && note!.isNotEmpty) ...[
-                          const Divider(height: 24),
+                          Divider(height: 24),
                           _buildDetailRow('Note', note!,
                               Icons.note_outlined),
                         ],
-                        const Divider(height: 24),
+                        Divider(height: 24),
                         _buildDetailRow('Transaction ID',
                             transactionId.substring(0, 16) + '...', Icons.tag),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24),
                   //Close & share button
                   Row(
                     children: [
                       Expanded(
                           child: OutlinedButton.icon(
                             onPressed: () => Navigator.pop(context),
-                            icon: const Icon(Icons.close),
-                            label: const Text('Close'),
+                            icon: Icon(Icons.close),
+                            label: Text('Close'),
                             style: OutlinedButton.styleFrom(
                                 foregroundColor: Colors.grey[700],
                                 side: BorderSide(color: Colors.grey[300]!),
-                                padding: const EdgeInsets.symmetric(vertical:
+                                padding: EdgeInsets.symmetric(vertical:
                                 14),
                                 shape: RoundedRectangleBorder(
                                   borderRadius:
@@ -550,7 +550,7 @@ class TransactionCard extends StatelessWidget {
                             ),
                           )
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12),
                       Expanded(
                           child: ElevatedButton.icon(
                             onPressed: () {
@@ -573,13 +573,13 @@ class TransactionCard extends StatelessWidget {
                                   )
                               );
                             },
-                            icon: const Icon(Icons.share, color:
+                            icon: Icon(Icons.share, color:
                             Colors.white),
-                            label: const Text('Share', style: TextStyle(color:
+                            label: Text('Share', style: TextStyle(color:
                             Colors.white)),
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryBlue,
-                                padding: const EdgeInsets.symmetric(vertical:
+                                padding: EdgeInsets.symmetric(vertical:
                                 14),
                                 shape: RoundedRectangleBorder(
                                   borderRadius:
@@ -602,7 +602,7 @@ class TransactionCard extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, size: 20, color: Colors.grey[600]),
-        const SizedBox(width: 12),
+        SizedBox(width: 12),
         Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -615,10 +615,10 @@ class TransactionCard extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Text(
                   value,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
                     color: Colors.black87,
                     fontWeight: FontWeight.w600,

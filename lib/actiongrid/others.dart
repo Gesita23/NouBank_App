@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
 
-const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
-const Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
+Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
+Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
 
 class OtherPage extends StatelessWidget {
-  const OtherPage({super.key});
+  OtherPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Other',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: primaryBlue,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
         elevation: 0,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20),
-            const Text(
+            SizedBox(height: 20),
+            Text(
               'What would you like to do today',
               style: TextStyle(
                 fontSize: 18,
@@ -36,10 +36,10 @@ class OtherPage extends StatelessWidget {
                 color: Colors.black,
               ),
             ),
-            const SizedBox(height: 14),
+            SizedBox(height: 14),
             // FIXED: Grid spacing and aspect ratio to prevent overflow
             GridView.count(
-              physics: const NeverScrollableScrollPhysics(),
+              physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               crossAxisCount: 2,
               mainAxisSpacing: 14,
@@ -71,7 +71,7 @@ class _OtherOptionCard extends StatelessWidget {
   final String label;
   final String route;
 
-  const _OtherOptionCard({
+  _OtherOptionCard({
     super.key,
     required this.icon,
     required this.label,
@@ -94,11 +94,11 @@ class _OtherOptionCard extends StatelessWidget {
               color: Colors.grey.withOpacity(0.1),
               spreadRadius: 1,
               blurRadius: 3,
-              offset: const Offset(0, 1),
+              offset: Offset(0, 1),
             ),
           ],
         ),
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 12),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -114,12 +114,12 @@ class _OtherOptionCard extends StatelessWidget {
                 child: Icon(icon, color: primaryBlue, size: 28),
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             Flexible(
               child: Text(
                 label,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: Colors.black87,

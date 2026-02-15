@@ -7,11 +7,11 @@ import '../bottom_nav.dart';
 import 'dart:convert';
 import '../transaction_receipt.dart';
 
-const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
-const Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
+Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
+Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
 
 class QrPaymentPage extends StatefulWidget {
-  const QrPaymentPage({super.key});
+  QrPaymentPage({super.key});
 
   @override
   State<QrPaymentPage> createState() => _QrPaymentPageState();
@@ -68,7 +68,7 @@ class _QrPaymentPageState extends State<QrPaymentPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'QR Payment',
           style: TextStyle(color: Colors.white),
         ),
@@ -77,14 +77,14 @@ class _QrPaymentPageState extends State<QrPaymentPage>
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
         bottom: TabBar(
           controller: _tabController,
           indicatorColor: Colors.white,
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white70,
-          tabs: const [
+          tabs: [
             Tab(
               icon: Icon(Icons.qr_code),
               text: 'My QR Code',
@@ -98,7 +98,7 @@ class _QrPaymentPageState extends State<QrPaymentPage>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [
+        children: [
           GenerateQrTab(),
           ScanQrTab(),
         ],
@@ -113,7 +113,7 @@ class _QrPaymentPageState extends State<QrPaymentPage>
 
 // Tab 1: Generate QR Code (Simplified - No amount needed)
 class GenerateQrTab extends StatefulWidget {
-  const GenerateQrTab({super.key});
+  GenerateQrTab({super.key});
 
   @override
   State<GenerateQrTab> createState() => _GenerateQrTabState();
@@ -188,25 +188,25 @@ class _GenerateQrTabState extends State<GenerateQrTab> {
       ),
       child: Center(
         child: _isLoading
-            ? const CircularProgressIndicator(color: primaryBlue)
+            ? CircularProgressIndicator(color: primaryBlue)
             : SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 40),
-                    const Icon(
+                    SizedBox(height: 40),
+                    Icon(
                       Icons.account_circle,
                       size: 80,
                       color: primaryBlue,
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
                     FutureBuilder<Map<String, dynamic>?>(
                       future: _getUserData(),
                       builder: (context, snapshot) {
                         final userName = snapshot.data?['name'] ?? 'User';
                         return Text(
                           userName,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
                             color: primaryBlue,
@@ -214,16 +214,16 @@ class _GenerateQrTabState extends State<GenerateQrTab> {
                         );
                       },
                     ),
-                    const SizedBox(height: 10),
-                    const Text(
+                    SizedBox(height: 10),
+                    Text(
                       'Show this QR code to receive payment',
                       style: TextStyle(fontSize: 16, color: Colors.grey),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 40),
+                    SizedBox(height: 40),
                     Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 30),
-                      padding: const EdgeInsets.all(30),
+                      margin: EdgeInsets.symmetric(horizontal: 30),
+                      padding: EdgeInsets.all(30),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
@@ -231,7 +231,7 @@ class _GenerateQrTabState extends State<GenerateQrTab> {
                           BoxShadow(
                             color: primaryBlue.withOpacity(0.1),
                             blurRadius: 20,
-                            offset: const Offset(0, 10),
+                            offset: Offset(0, 10),
                           ),
                         ],
                       ),
@@ -241,32 +241,32 @@ class _GenerateQrTabState extends State<GenerateQrTab> {
                               version: QrVersions.auto,
                               size: 250.0,
                               backgroundColor: Colors.white,
-                              eyeStyle: const QrEyeStyle(
+                              eyeStyle: QrEyeStyle(
                                 eyeShape: QrEyeShape.square,
                                 color: primaryBlue,
                               ),
-                              dataModuleStyle: const QrDataModuleStyle(
+                              dataModuleStyle: QrDataModuleStyle(
                                 dataModuleShape: QrDataModuleShape.square,
                                 color: primaryBlue,
                               ),
                             )
-                          : const SizedBox(
+                          : SizedBox(
                               width: 250,
                               height: 250,
                               child: Center(child: Text('Unable to generate QR')),
                             ),
                     ),
-                    const SizedBox(height: 30),
+                    SizedBox(height: 30),
                     Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 40),
-                      padding: const EdgeInsets.all(15),
+                      margin: EdgeInsets.symmetric(horizontal: 40),
+                      padding: EdgeInsets.all(15),
                       decoration: BoxDecoration(
                         color: primaryBlue.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
-                        children: const [
+                        children: [
                           Icon(Icons.info_outline, color: primaryBlue, size: 20),
                           SizedBox(width: 10),
                           Flexible(
@@ -283,7 +283,7 @@ class _GenerateQrTabState extends State<GenerateQrTab> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    SizedBox(height: 40),
                   ],
                 ),
               ),
@@ -294,7 +294,7 @@ class _GenerateQrTabState extends State<GenerateQrTab> {
 
 // Tab 2: Scan QR Code
 class ScanQrTab extends StatefulWidget {
-  const ScanQrTab({super.key});
+  ScanQrTab({super.key});
 
   @override
   State<ScanQrTab> createState() => _ScanQrTabState();
@@ -387,7 +387,7 @@ class _ScanQrTabState extends State<ScanQrTab> {
           ),
           child: Column(
             children: [
-              const Spacer(),
+              Spacer(),
               Center(
                 child: Container(
                   width: 250,
@@ -405,7 +405,7 @@ class _ScanQrTabState extends State<ScanQrTab> {
                         child: Container(
                           width: 30,
                           height: 30,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             border: Border(
                               top: BorderSide(color: Colors.greenAccent, width: 4),
                               left: BorderSide(color: Colors.greenAccent, width: 4),
@@ -419,7 +419,7 @@ class _ScanQrTabState extends State<ScanQrTab> {
                         child: Container(
                           width: 30,
                           height: 30,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             border: Border(
                               top: BorderSide(color: Colors.greenAccent, width: 4),
                               right: BorderSide(color: Colors.greenAccent, width: 4),
@@ -433,7 +433,7 @@ class _ScanQrTabState extends State<ScanQrTab> {
                         child: Container(
                           width: 30,
                           height: 30,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             border: Border(
                               bottom: BorderSide(color: Colors.greenAccent, width: 4),
                               left: BorderSide(color: Colors.greenAccent, width: 4),
@@ -447,7 +447,7 @@ class _ScanQrTabState extends State<ScanQrTab> {
                         child: Container(
                           width: 30,
                           height: 30,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             border: Border(
                               bottom: BorderSide(color: Colors.greenAccent, width: 4),
                               right: BorderSide(color: Colors.greenAccent, width: 4),
@@ -459,17 +459,17 @@ class _ScanQrTabState extends State<ScanQrTab> {
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              SizedBox(height: 30),
               Container(
-                margin: const EdgeInsets.symmetric(horizontal: 40),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                margin: EdgeInsets.symmetric(horizontal: 40),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.9),
                   borderRadius: BorderRadius.circular(25),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: const [
+                  children: [
                     Icon(Icons.qr_code_scanner, color: primaryBlue, size: 24),
                     SizedBox(width: 10),
                     Text(
@@ -483,17 +483,17 @@ class _ScanQrTabState extends State<ScanQrTab> {
                   ],
                 ),
               ),
-              const Spacer(),
+              Spacer(),
               if (_isProcessing)
                 Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: const [
+                    children: [
                       CircularProgressIndicator(color: primaryBlue),
                       SizedBox(height: 10),
                       Text(
@@ -503,7 +503,7 @@ class _ScanQrTabState extends State<ScanQrTab> {
                     ],
                   ),
                 ),
-              const SizedBox(height: 50),
+              SizedBox(height: 50),
             ],
           ),
         ),
@@ -517,7 +517,7 @@ class PaymentConfirmationScreen extends StatefulWidget {
   final String receiverUserId;
   final String receiverUserName;
 
-  const PaymentConfirmationScreen({
+  PaymentConfirmationScreen({
     super.key,
     required this.receiverUserId,
     required this.receiverUserName,
@@ -565,7 +565,7 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
   Future<void> _confirmPayment() async {
     if (_amountController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter an amount')),
+        SnackBar(content: Text('Please enter an amount')),
       );
       return;
     }
@@ -573,14 +573,14 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
     final amount = double.tryParse(_amountController.text);
     if (amount == null || amount <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid amount')),
+        SnackBar(content: Text('Please enter a valid amount')),
       );
       return;
     }
 
     if (_senderBalance != null && amount > _senderBalance!) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Insufficient balance')),
+        SnackBar(content: Text('Insufficient balance')),
       );
       return;
     }
@@ -604,7 +604,7 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
       if (!mounted) return;
       
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Payment successful!'),
           backgroundColor: Colors.green,
         ),
@@ -716,14 +716,14 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Confirm Payment',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: primaryBlue,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
       ),
       body: SingleChildScrollView(
@@ -731,10 +731,10 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
           children: [
             // Recipient Info Card
             Container(
-              margin: const EdgeInsets.all(20),
-              padding: const EdgeInsets.all(25),
+              margin: EdgeInsets.all(20),
+              padding: EdgeInsets.all(25),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
+                gradient: LinearGradient(
                   colors: [primaryBlue, secondaryBlue],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -744,29 +744,29 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
                   BoxShadow(
                     color: primaryBlue.withOpacity(0.3),
                     blurRadius: 15,
-                    offset: const Offset(0, 8),
+                    offset: Offset(0, 8),
                   ),
                 ],
               ),
               child: Column(
                 children: [
-                  const Text(
+                  Text(
                     'Pay to',
                     style: TextStyle(
                       color: Colors.white70,
                       fontSize: 14,
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  const Icon(
+                  SizedBox(height: 10),
+                  Icon(
                     Icons.account_circle,
                     size: 70,
                     color: Colors.white,
                   ),
-                  const SizedBox(height: 15),
+                  SizedBox(height: 15),
                   Text(
                     widget.receiverUserName,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -778,8 +778,8 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
 
             // Amount Input Card
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              padding: const EdgeInsets.all(25),
+              margin: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.all(25),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
@@ -787,14 +787,14 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
                   BoxShadow(
                     color: Colors.grey.withOpacity(0.1),
                     blurRadius: 10,
-                    offset: const Offset(0, 5),
+                    offset: Offset(0, 5),
                   ),
                 ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Enter Amount',
                     style: TextStyle(
                       fontSize: 18,
@@ -802,18 +802,18 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
                       color: primaryBlue,
                     ),
                   ),
-                  const SizedBox(height: 15),
+                  SizedBox(height: 15),
                   TextField(
                     controller: _amountController,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    style: const TextStyle(
+                    keyboardType: TextInputType.numberWithOptions(decimal: true),
+                    style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
                       color: primaryBlue,
                     ),
                     decoration: InputDecoration(
                       prefixText: 'Rs ',
-                      prefixStyle: const TextStyle(
+                      prefixStyle: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
                         color: primaryBlue,
@@ -825,13 +825,13 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(color: primaryBlue, width: 2),
+                        borderSide: BorderSide(color: primaryBlue, width: 2),
                       ),
                       filled: true,
                       fillColor: Colors.grey[50],
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   if (_senderBalance != null)
                     Text(
                       'Available balance: Rs ${_senderBalance!.toStringAsFixed(2)}',
@@ -840,8 +840,8 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
                         color: Colors.grey[600],
                       ),
                     ),
-                  const SizedBox(height: 20),
-                  const Text(
+                  SizedBox(height: 20),
+                  Text(
                     'Note (Optional)',
                     style: TextStyle(
                       fontSize: 16,
@@ -849,7 +849,7 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
                       color: Colors.black87,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   TextField(
                     controller: _noteController,
                     maxLines: 3,
@@ -861,7 +861,7 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(color: primaryBlue, width: 2),
+                        borderSide: BorderSide(color: primaryBlue, width: 2),
                       ),
                       filled: true,
                       fillColor: Colors.grey[50],
@@ -871,11 +871,11 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
               ),
             ),
 
-            const SizedBox(height: 30),
+            SizedBox(height: 30),
 
             // Confirm Button
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: SizedBox(
                 width: double.infinity,
                 height: 55,
@@ -889,7 +889,7 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
                     elevation: 5,
                   ),
                   child: _isProcessing
-                      ? const SizedBox(
+                      ? SizedBox(
                           height: 20,
                           width: 20,
                           child: CircularProgressIndicator(
@@ -897,7 +897,7 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
                             strokeWidth: 2,
                           ),
                         )
-                      : const Text(
+                      : Text(
                           'Confirm Payment',
                           style: TextStyle(
                             fontSize: 18,
@@ -909,12 +909,12 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
               ),
             ),
 
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
 
             // Cancel Button
             TextButton(
               onPressed: _isProcessing ? null : () => Navigator.pop(context),
-              child: const Text(
+              child: Text(
                 'Cancel',
                 style: TextStyle(
                   fontSize: 16,
@@ -923,7 +923,7 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
               ),
             ),
 
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
           ],
         ),
       ),

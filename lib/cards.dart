@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const CardScreen(),
+      home: CardScreen(),
     );
   }
 }
 
 class CardScreen extends StatefulWidget {
-  const CardScreen({super.key});
+  CardScreen({super.key});
 
   @override
   State<CardScreen> createState() => _CardScreenState();
@@ -30,7 +30,7 @@ class _CardScreenState extends State<CardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F8),
+      backgroundColor: Color(0xFFF4F6F8),
 
       body: Column(
         children: [
@@ -40,8 +40,8 @@ class _CardScreenState extends State<CardScreen> {
             children: [
               Container(
                 height: 170,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                decoration: const BoxDecoration(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
                       Color.fromARGB(255, 21, 58, 110),
@@ -57,7 +57,7 @@ class _CardScreenState extends State<CardScreen> {
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
+                  children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -91,11 +91,11 @@ class _CardScreenState extends State<CardScreen> {
             ],
           ),
 
-          const SizedBox(height: 110),
+          SizedBox(height: 110),
 
           /// ===== ACTION LIST =====
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 16),
             child: Card(
               elevation: 2,
               shape: RoundedRectangleBorder(
@@ -105,25 +105,25 @@ class _CardScreenState extends State<CardScreen> {
                 children: [
                   _buildSwitchTile(
                     icon: Icons.lock,
-                    color: const Color.fromARGB(255, 21, 58, 110),
+                    color: Color.fromARGB(255, 21, 58, 110),
                     title: "Lock card",
                     subtitle: "Temporarily stop transactions.",
                     value: lockCard,
                     onChanged: (v) => setState(() => lockCard = v),
                   ),
-                  const Divider(height: 0),
+                  Divider(height: 0),
 
                   _buildArrowTile(
                     icon: Icons.grid_view,
-                    color: const Color.fromARGB(255, 21, 58, 110),
+                    color: Color.fromARGB(255, 21, 58, 110),
                     title: "Change card PIN",
                     subtitle: "Choose a new PIN for your card.",
                   ),
-                  const Divider(height: 0),
+                  Divider(height: 0),
 
                   _buildSwitchTile(
                     icon: Icons.credit_card,
-                    color: const Color.fromARGB(255, 21, 58, 110),
+                    color: Color.fromARGB(255, 21, 58, 110),
                     title: "Manage card activity",
                     subtitle: "Set your card preferences.",
                     value: manageActivity,
@@ -139,9 +139,9 @@ class _CardScreenState extends State<CardScreen> {
       /// ===== BOTTOM NAV =====
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 3,
-        selectedItemColor: const Color.fromARGB(255, 21, 58, 110),
+        selectedItemColor: Color.fromARGB(255, 21, 58, 110),
         unselectedItemColor: Colors.grey,
-        items: const [
+        items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.account_balance), label: "Accounts"),
           BottomNavigationBarItem(icon: Icon(Icons.swap_horiz), label: "Transact"),
@@ -156,10 +156,10 @@ class _CardScreenState extends State<CardScreen> {
   Widget _buildDebitCard() {
     return Container(
       height: 200,
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(22),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: [
             Color.fromARGB(255, 21, 58, 110),
             Color.fromARGB(255, 19, 72, 119),
@@ -169,7 +169,7 @@ class _CardScreenState extends State<CardScreen> {
           BoxShadow(
             color: Colors.black.withOpacity(0.25),
             blurRadius: 18,
-            offset: const Offset(0, 10),
+            offset: Offset(0, 10),
           ),
         ],
       ),
@@ -178,7 +178,7 @@ class _CardScreenState extends State<CardScreen> {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children: [
               Text("NouBank",
                   style: TextStyle(
                       color: Colors.white,
@@ -187,8 +187,8 @@ class _CardScreenState extends State<CardScreen> {
               Text("Debit", style: TextStyle(color: Colors.white70)),
             ],
           ),
-          const Spacer(),
-          const Text(
+          Spacer(),
+          Text(
             "User",
             style: TextStyle(
               color: Colors.white,
@@ -197,15 +197,15 @@ class _CardScreenState extends State<CardScreen> {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text("Valid Thru\n05/2027",
+              Text("Valid Thru\n05/2027",
                   style: TextStyle(color: Colors.white70, fontSize: 12)),
-              const Icon(Icons.wifi, color: Colors.white),
+              Icon(Icons.wifi, color: Colors.white),
               Row(
-                children: const [
+                children: [
                   CircleAvatar(radius: 12, backgroundColor: Colors.red),
                   SizedBox(width: 4),
                   CircleAvatar(radius: 12, backgroundColor: Colors.orange),
@@ -254,7 +254,7 @@ class _CardScreenState extends State<CardScreen> {
       ),
       title: Text(title),
       subtitle: Text(subtitle),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+      trailing: Icon(Icons.arrow_forward_ios, size: 16),
     );
   }
-}  
+}

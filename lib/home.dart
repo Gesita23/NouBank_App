@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'bottom_nav.dart';
 
 // DESIGN CONSTANTS
-const Color primarypurple = Color.fromARGB(255, 13, 71, 161);
-const Color secondarypurple = Color.fromARGB(255, 21, 101, 192);
+Color primarypurple = Color.fromARGB(255, 13, 71, 161);
+Color secondarypurple = Color.fromARGB(255, 21, 101, 192);
 
 // ACTION GRID MODEL
 class ActionItem {
@@ -14,7 +14,7 @@ class ActionItem {
   final Color iconColor;
   final String route;
 
-  const ActionItem({
+  ActionItem({
     required this.icon,
     required this.label,
     required this.iconColor,
@@ -22,7 +22,7 @@ class ActionItem {
   });
 }
 
-const List<ActionItem> actionItems = [
+List<ActionItem> actionItems = [
   ActionItem(
     icon: Icons.qr_code_scanner,
     label: 'Scan to Pay',
@@ -51,7 +51,7 @@ const List<ActionItem> actionItems = [
 
 /// navbar
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  MyHomePage({super.key, required this.title});
   final String title;
 
   @override
@@ -88,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      body: const HomePageContent(),
+      body: HomePageContent(),
       bottomNavigationBar: CustomBottomNavBar(
         selectedIndex: _selectedIndex,
         onItemTapped: _onItemTapped,
@@ -99,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 /// content - FIXED VERSION WITH STREAMBUILDER
 class HomePageContent extends StatefulWidget {
-  const HomePageContent({super.key});
+  HomePageContent({super.key});
 
   @override
   State<HomePageContent> createState() => _HomePageContentState();
@@ -111,7 +111,7 @@ class _HomePageContentState extends State<HomePageContent> {
     final user = FirebaseAuth.instance.currentUser;
 
     if (user == null) {
-      return const Center(
+      return Center(
         child: Text('Please log in to view your account'),
       );
     }
@@ -123,7 +123,7 @@ class _HomePageContentState extends State<HomePageContent> {
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
+          return Center(
             child: CircularProgressIndicator(color: primarypurple),
           );
         }
@@ -143,7 +143,7 @@ class _HomePageContentState extends State<HomePageContent> {
         final expenses = (data['expenses'] ?? 0).toString();
 
         return SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 16),
+          padding: EdgeInsets.only(bottom: 16),
           child: Column(
             children: [
               HeaderSection(
@@ -152,8 +152,8 @@ class _HomePageContentState extends State<HomePageContent> {
                 income: income,
                 expenses: expenses,
               ),
-              const ActionGridSection(),
-              const TransactionHistorySection(),
+              ActionGridSection(),
+              TransactionHistorySection(),
             ],
           ),
         );
@@ -169,7 +169,7 @@ class HeaderSection extends StatelessWidget {
   final String income;
   final String expenses;
 
-  const HeaderSection({
+  HeaderSection({
     super.key,
     required this.name,
     required this.balance,
@@ -187,7 +187,7 @@ class HeaderSection extends StatelessWidget {
         children: [
           Container(
             height: 200 + topPadding,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [Color(0xFF2575CF), Color(0xFF264779)],
                 begin: Alignment.topCenter,
@@ -201,7 +201,7 @@ class HeaderSection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _topBar(),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 _greeting()
               ],
             ),
@@ -216,7 +216,7 @@ class HeaderSection extends StatelessWidget {
   Widget _topBar() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: const [
+      children: [
         Text(
           'NouBank',
           style: TextStyle(
@@ -233,17 +233,17 @@ class HeaderSection extends StatelessWidget {
   Widget _greeting() {
     return Row(
       children: [
-        const Icon(Icons.lock_outline, color: Colors.white),
-        const SizedBox(width: 8),
+        Icon(Icons.lock_outline, color: Colors.white),
+        SizedBox(width: 8),
         Flexible(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Welcome!',
+              Text('Welcome!',
                   style: TextStyle(color: Colors.white70)),
               Text(
                 name,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                   fontSize: 21,
                   fontWeight: FontWeight.bold,
@@ -260,29 +260,29 @@ class HeaderSection extends StatelessWidget {
   Widget _balanceCard() {
     return Container(
       height: 170,
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: primarypurple,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(color: Colors.black26, blurRadius: 10)
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Total Balance',
+          Text('Total Balance',
               style: TextStyle(color: Colors.white70)),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Text(
             'Rs $balance',
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
               fontSize: 28,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const Spacer(),
+          Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -309,7 +309,7 @@ class IncomeExpenseSummary extends StatelessWidget {
   final String income;
   final String expenses;
 
-  const IncomeExpenseSummary({
+  IncomeExpenseSummary({
     super.key,
     required this.income,
     required this.expenses,
@@ -318,7 +318,7 @@ class IncomeExpenseSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -336,14 +336,14 @@ class IncomeExpenseSummary extends StatelessWidget {
           backgroundColor: color.withOpacity(0.2),
           child: Icon(icon, color: color),
         ),
-        const SizedBox(width: 8),
+        SizedBox(width: 8),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(label),
             Text(
               'Rs $amount',
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -357,7 +357,7 @@ class BalanceMiniItem extends StatelessWidget {
   final String label;
   final String amount;
 
-  const BalanceMiniItem({
+  BalanceMiniItem({
     super.key,
     required this.icon,
     required this.label,
@@ -369,15 +369,15 @@ class BalanceMiniItem extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, color: Colors.white),
-        const SizedBox(width: 6),
+        SizedBox(width: 6),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               label,
-              style: const TextStyle(color: Colors.white70, fontSize: 12),
+              style: TextStyle(color: Colors.white70, fontSize: 12),
             ),
-            Text(amount, style: const TextStyle(color: Colors.white)),
+            Text(amount, style: TextStyle(color: Colors.white)),
           ],
         ),
       ],
@@ -387,18 +387,18 @@ class BalanceMiniItem extends StatelessWidget {
 
 // FIXED: Action Grid Section - increased spacing and aspect ratio
 class ActionGridSection extends StatelessWidget {
-  const ActionGridSection({super.key});
+  ActionGridSection({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.grey[100],
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'What would you like to do today',
               style: TextStyle(
                 fontSize: 18,
@@ -406,9 +406,9 @@ class ActionGridSection extends StatelessWidget {
                 color: Colors.black,
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             GridView.count(
-              physics: const NeverScrollableScrollPhysics(),
+              physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               crossAxisCount: 4,
               mainAxisSpacing: 10,
@@ -427,7 +427,7 @@ class ActionGridSection extends StatelessWidget {
 //FIXED: individual actionbutton in the grid - reduced font size and padding
 class ActionButton extends StatelessWidget {
   final ActionItem item;
-  const ActionButton({super.key, required this.item});
+  ActionButton({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -445,21 +445,21 @@ class ActionButton extends StatelessWidget {
               color: Colors.grey.withOpacity(0.1),
               spreadRadius: 1,
               blurRadius: 3,
-              offset: const Offset(0, 1),
+              offset: Offset(0, 1),
             ),
           ],
         ),
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(item.icon, color: item.iconColor, size: 26),
-            const SizedBox(height: 4),
+            SizedBox(height: 4),
             Flexible(
               child: Text(
                 item.label,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w500,
                   color: Colors.black87,
@@ -477,7 +477,7 @@ class ActionButton extends StatelessWidget {
 
 //Transaction History Section
 class TransactionHistorySection extends StatelessWidget {
-  const TransactionHistorySection({super.key});
+  TransactionHistorySection({super.key});
 
   Stream<QuerySnapshot> _getTransactionsStream(String userId) {
     // Query without orderBy to avoid index requirement
@@ -493,18 +493,18 @@ class TransactionHistorySection extends StatelessWidget {
     final user = FirebaseAuth.instance.currentUser;
 
     if (user == null) {
-      return const SizedBox.shrink();
+      return SizedBox.shrink();
     }
 
     return Container(
       color: Colors.white,
-      margin: const EdgeInsets.only(top: 4),
+      margin: EdgeInsets.only(top: 4),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: Column(
           children: [
             _buildSectionHeader(context),
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
             StreamBuilder<QuerySnapshot>(
               stream: _getTransactionsStream(user.uid),
               builder: (context, snapshot) {
@@ -512,7 +512,7 @@ class TransactionHistorySection extends StatelessWidget {
                   return Column(
                     children: List.generate(
                       3,
-                      (index) => const _TransactionRowSkeleton(),
+                      (index) => _TransactionRowSkeleton(),
                     ),
                   );
                 }
@@ -520,7 +520,7 @@ class TransactionHistorySection extends StatelessWidget {
                 if (snapshot.hasError) {
                   print('Transaction error: ${snapshot.error}');
                   return Padding(
-                    padding: const EdgeInsets.all(20),
+                    padding: EdgeInsets.all(20),
                     child: Column(
                       children: [
                         Icon(
@@ -528,12 +528,12 @@ class TransactionHistorySection extends StatelessWidget {
                           color: Colors.red[300],
                           size: 40,
                         ),
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10),
                         Text(
                           'Error loading transactions',
                           style: TextStyle(color: Colors.grey[600]),
                         ),
-                        const SizedBox(height: 5),
+                        SizedBox(height: 5),
                         Text(
                           '${snapshot.error}',
                           style: TextStyle(
@@ -549,7 +549,7 @@ class TransactionHistorySection extends StatelessWidget {
 
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                   return Padding(
-                    padding: const EdgeInsets.all(30),
+                    padding: EdgeInsets.all(30),
                     child: Column(
                       children: [
                         Icon(
@@ -557,7 +557,7 @@ class TransactionHistorySection extends StatelessWidget {
                           size: 50,
                           color: Colors.grey[400],
                         ),
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10),
                         Text(
                           'No transactions yet',
                           style: TextStyle(
@@ -597,7 +597,7 @@ class TransactionHistorySection extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text(
+        Text(
           'Transaction History',
           style: TextStyle(
               fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
@@ -606,7 +606,7 @@ class TransactionHistorySection extends StatelessWidget {
           onPressed: () {
             Navigator.pushNamed(context, '/transactions');
           },
-          child: const Text(
+          child: Text(
             'See All',
             style: TextStyle(
                 fontSize: 16, color: primarypurple, fontWeight: FontWeight.w600),
@@ -625,7 +625,7 @@ class TransactionRow extends StatelessWidget {
   final double amount;
   final Timestamp? timestamp;
 
-  const TransactionRow({
+  TransactionRow({
     super.key,
     required this.type,
     required this.description,
@@ -643,11 +643,11 @@ class TransactionRow extends StatelessWidget {
     final amountColor = isDebit ? Colors.red : Colors.green;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
           _buildIcon(icon, iconColor),
-          const SizedBox(width: 15),
+          SizedBox(width: 15),
           _buildDetails(description, category),
           Text(
             amountText,
@@ -664,7 +664,7 @@ class TransactionRow extends StatelessWidget {
 
   Widget _buildIcon(IconData icon, Color color) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
@@ -685,7 +685,7 @@ class TransactionRow extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
               color: Colors.black87,
@@ -693,7 +693,7 @@ class TransactionRow extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4),
           Text(
             subtitle,
             style: TextStyle(
@@ -709,18 +709,18 @@ class TransactionRow extends StatelessWidget {
 
 // Skeleton loading for transactions
 class _TransactionRowSkeleton extends StatelessWidget {
-  const _TransactionRowSkeleton();
+  _TransactionRowSkeleton();
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
           _buildIconPlaceholder(),
-          const SizedBox(width: 15),
+          SizedBox(width: 15),
           _buildDetailsPlaceholder(),
-          const SkeletonContainer(width: 70, height: 16, radius: 4),
+          SkeletonContainer(width: 70, height: 16, radius: 4),
         ],
       ),
     );
@@ -728,7 +728,7 @@ class _TransactionRowSkeleton extends StatelessWidget {
 
   Widget _buildIconPlaceholder() {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -737,16 +737,16 @@ class _TransactionRowSkeleton extends StatelessWidget {
             color: Colors.grey.withOpacity(0.2),
             spreadRadius: 1,
             blurRadius: 3,
-            offset: const Offset(0, 1),
+            offset: Offset(0, 1),
           )
         ],
       ),
-      child: const SkeletonContainer(width: 24, height: 24, radius: 4),
+      child: SkeletonContainer(width: 24, height: 24, radius: 4),
     );
   }
 
   Widget _buildDetailsPlaceholder() {
-    return const Expanded(
+    return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -765,7 +765,7 @@ class SkeletonContainer extends StatelessWidget {
   final double height;
   final double radius;
 
-  const SkeletonContainer({
+  SkeletonContainer({
     super.key,
     required this.width,
     required this.height,

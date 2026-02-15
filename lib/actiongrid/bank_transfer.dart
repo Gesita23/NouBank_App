@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
-const Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
+Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
+Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
 
 class BankTransferPage extends StatefulWidget {
-  const BankTransferPage({super.key});
+  BankTransferPage({super.key});
 
   @override
   State<BankTransferPage> createState() => _BankTransferPageState();
@@ -161,20 +161,20 @@ class _BankTransferPageState extends State<BankTransferPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        title: const Text('Confirm Transfer'),
+        title: Text('Confirm Transfer'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Transfer Details:', style: TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
+            Text('Transfer Details:', style: TextStyle(fontWeight: FontWeight.bold)),
+            SizedBox(height: 12),
             _buildConfirmRow('Amount', 'Rs ${amount.toStringAsFixed(2)}'),
             _buildConfirmRow('Processing Fee', 'Rs ${fee.toStringAsFixed(2)}'),
-            const Divider(height: 20),
+            Divider(height: 20),
             _buildConfirmRow('Total', 'Rs ${total.toStringAsFixed(2)}', bold: true),
-            const SizedBox(height: 16),
-            const Text('To:', style: TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
+            SizedBox(height: 16),
+            Text('To:', style: TextStyle(fontWeight: FontWeight.bold)),
+            SizedBox(height: 8),
             Text(_accountHolderController.text.trim()),
             Text(
               _bankNameController.text.trim(),
@@ -184,9 +184,9 @@ class _BankTransferPageState extends State<BankTransferPage> {
               'Account: ****${_accountNumberController.text.trim().substring(_accountNumberController.text.trim().length - 4)}',
               style: TextStyle(color: Colors.grey[600], fontSize: 13),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Colors.orange.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
@@ -195,7 +195,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
               child: Row(
                 children: [
                   Icon(Icons.info_outline, color: Colors.orange, size: 18),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       'Processing time: ${_transferType == 'domestic' ? '1-3' : '3-5'} business days',
@@ -223,7 +223,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text(
+            child: Text(
               'Confirm',
               style: TextStyle(color: Colors.white),
             ),
@@ -235,7 +235,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
 
   Widget _buildConfirmRow(String label, String value, {bool bold = false}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -271,26 +271,26 @@ class _BankTransferPageState extends State<BankTransferPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.green.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.check_circle,
                 color: Colors.green,
                 size: 60,
               ),
             ),
-            const SizedBox(height: 20),
-            const Text(
+            SizedBox(height: 20),
+            Text(
               'Transfer Initiated!',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             Text(
               'Rs ${amount.toStringAsFixed(2)} + Rs ${fee.toStringAsFixed(2)} fee',
               style: TextStyle(
@@ -298,18 +298,18 @@ class _BankTransferPageState extends State<BankTransferPage> {
                 fontSize: 15,
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Text(
               'Transfer to ${_accountHolderController.text.trim()}',
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 15,
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Colors.blue.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
@@ -317,7 +317,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
               child: Column(
                 children: [
                   Icon(Icons.schedule, color: primaryBlue, size: 20),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   Text(
                     'Processing time: ${_transferType == 'domestic' ? '1-3' : '3-5'} business days',
                     textAlign: TextAlign.center,
@@ -337,7 +337,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
               Navigator.pop(context); // Close dialog
               Navigator.pop(context); // Go back to payments
             },
-            child: const Text(
+            child: Text(
               'Done',
               style: TextStyle(
                 color: primaryBlue,
@@ -359,7 +359,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
           borderRadius: BorderRadius.circular(16),
         ),
         title: Row(
-          children: const [
+          children: [
             Icon(Icons.error_outline, color: Colors.red),
             SizedBox(width: 10),
             Text('Error'),
@@ -369,7 +369,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
+            child: Text('OK'),
           ),
         ],
       ),
@@ -381,39 +381,39 @@ class _BankTransferPageState extends State<BankTransferPage> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Bank Transfer',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: primaryBlue,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
         elevation: 0,
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildInfoCard(),
-                const SizedBox(height: 24),
+                SizedBox(height: 24),
                 _buildTransferTypeSelector(),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 _buildRecipientSection(),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 _buildBankDetailsSection(),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 _buildAmountSection(),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 _buildNoteSection(),
-                const SizedBox(height: 30),
+                SizedBox(height: 30),
                 _buildTransferButton(),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 _buildInfoNotice(),
               ],
             ),
@@ -425,9 +425,9 @@ class _BankTransferPageState extends State<BankTransferPage> {
 
   Widget _buildInfoCard() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: [primaryBlue, secondaryBlue],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -437,30 +437,30 @@ class _BankTransferPageState extends State<BankTransferPage> {
           BoxShadow(
             color: primaryBlue.withOpacity(0.3),
             blurRadius: 12,
-            offset: const Offset(0, 6),
+            offset: Offset(0, 6),
           ),
         ],
       ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.2),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.account_balance,
               color: Colors.white,
               size: 32,
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Bank Transfer',
                   style: TextStyle(
                     color: Colors.white,
@@ -468,7 +468,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Text(
                   'Transfer funds to any bank account',
                   style: TextStyle(
@@ -486,7 +486,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
 
   Widget _buildTransferTypeSelector() {
     return Container(
-      padding: const EdgeInsets.all(4),
+      padding: EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -513,7 +513,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
         });
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        padding: EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
           color: isSelected ? primaryBlue : Colors.transparent,
           borderRadius: BorderRadius.circular(10),
@@ -532,7 +532,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
 
   Widget _buildRecipientSection() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -540,19 +540,19 @@ class _BankTransferPageState extends State<BankTransferPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Recipient Information',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           TextFormField(
             controller: _accountHolderController,
             decoration: InputDecoration(
               labelText: 'Account Holder Name',
-              prefixIcon: const Icon(Icons.person_outline, color: primaryBlue),
+              prefixIcon: Icon(Icons.person_outline, color: primaryBlue),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -562,7 +562,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: primaryBlue, width: 2),
+                borderSide: BorderSide(color: primaryBlue, width: 2),
               ),
               filled: true,
               fillColor: Colors.grey[50],
@@ -581,7 +581,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
 
   Widget _buildBankDetailsSection() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -589,19 +589,19 @@ class _BankTransferPageState extends State<BankTransferPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Bank Details',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           TextFormField(
             controller: _bankNameController,
             decoration: InputDecoration(
               labelText: 'Bank Name',
-              prefixIcon: const Icon(Icons.account_balance, color: primaryBlue),
+              prefixIcon: Icon(Icons.account_balance, color: primaryBlue),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -611,7 +611,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: primaryBlue, width: 2),
+                borderSide: BorderSide(color: primaryBlue, width: 2),
               ),
               filled: true,
               fillColor: Colors.grey[50],
@@ -623,13 +623,13 @@ class _BankTransferPageState extends State<BankTransferPage> {
               return null;
             },
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           TextFormField(
             controller: _accountNumberController,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               labelText: 'Account Number',
-              prefixIcon: const Icon(Icons.numbers, color: primaryBlue),
+              prefixIcon: Icon(Icons.numbers, color: primaryBlue),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -639,7 +639,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: primaryBlue, width: 2),
+                borderSide: BorderSide(color: primaryBlue, width: 2),
               ),
               filled: true,
               fillColor: Colors.grey[50],
@@ -662,7 +662,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
   Widget _buildAmountSection() {
     final fee = _transferType == 'domestic' ? '1%' : '2%';
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -670,20 +670,20 @@ class _BankTransferPageState extends State<BankTransferPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Transfer Amount',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           TextFormField(
             controller: _amountController,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
             decoration: InputDecoration(
               hintText: '0.00',
-              prefixIcon: const Icon(Icons.toll_rounded, color: primaryBlue),
+              prefixIcon: Icon(Icons.toll_rounded, color: primaryBlue),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -693,7 +693,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: primaryBlue, width: 2),
+                borderSide: BorderSide(color: primaryBlue, width: 2),
               ),
               filled: true,
               fillColor: Colors.grey[50],
@@ -712,9 +712,9 @@ class _BankTransferPageState extends State<BankTransferPage> {
               return null;
             },
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.blue.withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
@@ -722,7 +722,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
             child: Row(
               children: [
                 Icon(Icons.info_outline, color: primaryBlue, size: 18),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     'Processing fee: $fee of transfer amount',
@@ -742,7 +742,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
 
   Widget _buildNoteSection() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -750,14 +750,14 @@ class _BankTransferPageState extends State<BankTransferPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Transfer Note (Optional)',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           TextFormField(
             controller: _noteController,
             maxLines: 3,
@@ -772,7 +772,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: primaryBlue, width: 2),
+                borderSide: BorderSide(color: primaryBlue, width: 2),
               ),
               filled: true,
               fillColor: Colors.grey[50],
@@ -797,7 +797,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
           elevation: 2,
         ),
         child: _isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 width: 24,
                 height: 24,
                 child: CircularProgressIndicator(
@@ -805,7 +805,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
                   strokeWidth: 2,
                 ),
               )
-            : const Text(
+            : Text(
                 'Initiate Transfer',
                 style: TextStyle(
                   fontSize: 16,
@@ -819,7 +819,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
 
   Widget _buildInfoNotice() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -831,8 +831,8 @@ class _BankTransferPageState extends State<BankTransferPage> {
           Row(
             children: [
               Icon(Icons.info_outline, color: primaryBlue, size: 20),
-              const SizedBox(width: 8),
-              const Text(
+              SizedBox(width: 8),
+              Text(
                 'Important Information',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -841,7 +841,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           _buildInfoRow('• Processing time: ${_transferType == 'domestic' ? '1-3' : '3-5'} business days'),
           _buildInfoRow('• Double-check all account details before confirming'),
           _buildInfoRow('• Transfer fees are non-refundable'),
@@ -853,7 +853,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
 
   Widget _buildInfoRow(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: EdgeInsets.only(bottom: 6),
       child: Text(
         text,
         style: TextStyle(

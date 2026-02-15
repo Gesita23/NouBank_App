@@ -3,24 +3,24 @@ import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
+Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
 
 class _Carrier {
   final String name;
   final IconData icon;
-  const _Carrier({required this.name, required this.icon});
+  _Carrier({required this.name, required this.icon});
 }
 
-const List<_Carrier> _carriers = [
+List<_Carrier> _carriers = [
   _Carrier(name: 'MyT', icon: Icons.wifi),
   _Carrier(name: 'Chilli', icon: Icons.cell_tower),
   _Carrier(name: 'Emtel', icon: Icons.network_cell),
 ];
 
-const List<double> _presetAmounts = [50, 100, 200, 500, 1000];
+List<double> _presetAmounts = [50, 100, 200, 500, 1000];
 
 class MobileTopUpPage extends StatefulWidget {
-  const MobileTopUpPage({super.key});
+  MobileTopUpPage({super.key});
 
   @override
   State<MobileTopUpPage> createState() => _MobileTopUpPageState();
@@ -62,27 +62,27 @@ class _MobileTopUpPageState extends State<MobileTopUpPage> {
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         backgroundColor: primaryBlue,
-        title: const Text('Mobile Top-Up', style: TextStyle(color: Colors.white)),
-        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text('Mobile Top-Up', style: TextStyle(color: Colors.white)),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _section('Select Carrier'),
             _carrierRow(),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             _section('Phone Number'),
             _phoneField(),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             _section('Select Amount'),
             _presetWrap(),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             _customAmountField(),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             if ((_finalAmount ?? 0) > 0) _summary(),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             _topUpButton(),
           ],
         ),
@@ -92,7 +92,7 @@ class _MobileTopUpPageState extends State<MobileTopUpPage> {
 
   Widget _section(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: EdgeInsets.only(bottom: 10),
       child: Text(
         text,
         style: TextStyle(
@@ -112,7 +112,7 @@ class _MobileTopUpPageState extends State<MobileTopUpPage> {
             onTap: () => setState(() => _selectedCarrierIndex = i),
             child: Container(
               margin: EdgeInsets.only(right: i < 2 ? 10 : 0),
-              padding: const EdgeInsets.symmetric(vertical: 18),
+              padding: EdgeInsets.symmetric(vertical: 18),
               decoration: BoxDecoration(
                 color: selected ? primaryBlue : Colors.white,
                 borderRadius: BorderRadius.circular(14),
@@ -124,7 +124,7 @@ class _MobileTopUpPageState extends State<MobileTopUpPage> {
                     _carriers[i].icon,
                     color: selected ? Colors.white : primaryBlue,
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6),
                   Text(
                     _carriers[i].name,
                     style: TextStyle(
@@ -151,7 +151,7 @@ class _MobileTopUpPageState extends State<MobileTopUpPage> {
           LengthLimitingTextInputFormatter(15),
         ],
         onChanged: (_) => setState(() {}),
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           prefixIcon: Icon(Icons.phone, color: primaryBlue),
           hintText: 'Enter phone number',
           border: InputBorder.none,
@@ -176,7 +176,7 @@ class _MobileTopUpPageState extends State<MobileTopUpPage> {
           },
           child: Container(
             width: (MediaQuery.of(context).size.width - 40 - 32) / 5,
-            padding: const EdgeInsets.symmetric(vertical: 10),
+            padding: EdgeInsets.symmetric(vertical: 10),
             decoration: BoxDecoration(
               color: selected ? primaryBlue : Colors.white,
               borderRadius: BorderRadius.circular(10),
@@ -209,7 +209,7 @@ class _MobileTopUpPageState extends State<MobileTopUpPage> {
             _selectedAmount = null;
           });
         },
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           prefixIcon: Icon(Icons.toll_rounded, color: primaryBlue),
           hintText: 'Custom amount (Rs)',
           border: InputBorder.none,
@@ -220,7 +220,7 @@ class _MobileTopUpPageState extends State<MobileTopUpPage> {
 
   Widget _summary() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
@@ -231,11 +231,11 @@ class _MobileTopUpPageState extends State<MobileTopUpPage> {
         children: [
           Text(
             '${_carriers[_selectedCarrierIndex].name} • ${_phoneController.text}',
-            style: const TextStyle(fontWeight: FontWeight.w600),
+            style: TextStyle(fontWeight: FontWeight.w600),
           ),
           Text(
             'Rs ${(_finalAmount ?? 0).toStringAsFixed(2)}',
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.bold,
               color: primaryBlue,
               fontSize: 18,
@@ -258,8 +258,8 @@ class _MobileTopUpPageState extends State<MobileTopUpPage> {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         ),
         child: _loading
-            ? const CircularProgressIndicator(color: Colors.white)
-            : const Text(
+            ? CircularProgressIndicator(color: Colors.white)
+            : Text(
                 'Top Up Now',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
@@ -269,7 +269,7 @@ class _MobileTopUpPageState extends State<MobileTopUpPage> {
 
   Widget _inputBox(Widget child) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
@@ -317,7 +317,7 @@ class _MobileTopUpPageState extends State<MobileTopUpPage> {
       _successDialog(amount, carrier.name);
     } catch (_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Insufficient balance or error')),
+        SnackBar(content: Text('Insufficient balance or error')),
       );
     }
 
@@ -332,11 +332,11 @@ class _MobileTopUpPageState extends State<MobileTopUpPage> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.check_circle, color: Colors.green, size: 48),
-            const SizedBox(height: 12),
-            const Text('Top-Up Successful',
+            Icon(Icons.check_circle, color: Colors.green, size: 48),
+            SizedBox(height: 12),
+            Text('Top-Up Successful',
                 style: TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Text('Rs ${amount.toStringAsFixed(2)} sent via $carrier'),
           ],
         ),
@@ -346,7 +346,7 @@ class _MobileTopUpPageState extends State<MobileTopUpPage> {
               Navigator.pop(ctx);
               Navigator.pop(context);
             },
-            child: const Text('Done'),
+            child: Text('Done'),
           ),
         ],
       ),

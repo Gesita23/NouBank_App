@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'home.dart';
 import 'auth_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -21,6 +22,14 @@ import 'actiongrid/statistics.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Enable all orientations for responsive support
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
@@ -46,23 +55,23 @@ class MyApp extends StatelessWidget {
       //routes baby
       routes: {
         //navbar
-        '/home': (context) => const MyHomePage(title: ''),
-        '/account': (context) => const AccountScreen(),
-        '/transactions': (context) => const TransactionPage(),
-        '/more': (context) => const MorePage(),
-        '/cards': (context) => const CardScreen(),
+        '/home': (context) => MyHomePage(title: ''),
+        '/account': (context) => AccountScreen(),
+        '/transactions': (context) => TransactionPage(),
+        '/more': (context) => MorePage(),
+        '/cards': (context) => CardScreen(),
 
         /////FOR ACTIONGRID/////
-        '/scan': (context) => const QrPaymentPage(),
-        '/payments': (context) => const PaymentsPage(),
-        '/send_to_contact': (context) => const SendToContactPage(),
-        '/request_money': (context) => const RequestMoneyPage(),
-        '/pay_bills': (context) => const PayBillsPage(),
-        '/bank_transfer': (context) => const BankTransferPage(),
-        '/statistics':(context) => const StatisticsScreen(),
-        '/other': (context) => const OtherPage(),
-        '/currency_converter': (context) => const CurrencyConverterPage(),
-        '/mobile_topup': (context) => const MobileTopUpPage(),
+        '/scan': (context) => QrPaymentPage(),
+        '/payments': (context) => PaymentsPage(),
+        '/send_to_contact': (context) => SendToContactPage(),
+        '/request_money': (context) => RequestMoneyPage(),
+        '/pay_bills': (context) => PayBillsPage(),
+        '/bank_transfer': (context) => BankTransferPage(),
+        '/statistics':(context) => StatisticsScreen(),
+        '/other': (context) => OtherPage(),
+        '/currency_converter': (context) => CurrencyConverterPage(),
+        '/mobile_topup': (context) => MobileTopUpPage(),
       },
     );
   }
@@ -87,11 +96,11 @@ class AuthWrapper extends StatelessWidget {
 
         //if user is logged in , show hscreen
         if (snapshot.hasData && snapshot.data != null) {
-          return const MyHomePage(title: 'Banking App');
+          return MyHomePage(title: 'Banking App');
         }
 
         //if user is not logged in , show auth screen
-        return const AuthScreen();
+        return AuthScreen();
       },
     );
   }

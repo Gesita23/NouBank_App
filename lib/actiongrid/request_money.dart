@@ -3,11 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
 
-const Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
-const Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
+Color primaryBlue = Color.fromARGB(255, 13, 71, 161);
+Color secondaryBlue = Color.fromARGB(255, 21, 101, 192);
 
 class RequestMoneyPage extends StatefulWidget {
-  const RequestMoneyPage({super.key});
+  RequestMoneyPage({super.key});
 
   @override
   State<RequestMoneyPage> createState() => _RequestMoneyPageState();
@@ -62,7 +62,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
 
   void _onRecipientTextChanged() {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () {
+    _debounce = Timer(Duration(milliseconds: 500), () {
       final trimmed = _recipientController.text.trim();
       if (trimmed.isEmpty) {
         setState(() {
@@ -197,16 +197,16 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
-            title: const Text('Confirm Request'),
+            title: Text('Confirm Request'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Request Rs ${amount.toStringAsFixed(2)} from:'),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 Text(
                   _selectedRecipient!['name'],
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
@@ -219,7 +219,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
                   ),
                 ),
                 if (_reasonController.text.trim().isNotEmpty) ...[
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   Text(
                     'Reason: ${_reasonController.text.trim()}',
                     style: TextStyle(
@@ -229,9 +229,9 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
                     ),
                   ),
                 ],
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: Colors.blue.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
@@ -240,7 +240,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
                   child: Row(
                     children: [
                       Icon(Icons.info_outline, color: primaryBlue, size: 18),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           'The recipient will receive a notification and can choose to accept or decline',
@@ -268,7 +268,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: const Text(
+                child: Text(
                   'Send Request',
                   style: TextStyle(color: Colors.white),
                 ),
@@ -291,26 +291,26 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.green.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.check_circle,
                 color: Colors.green,
                 size: 60,
               ),
             ),
-            const SizedBox(height: 20),
-            const Text(
+            SizedBox(height: 20),
+            Text(
               'Request Sent!',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             Text(
               'Requesting Rs ${amount.toStringAsFixed(2)} from',
               style: TextStyle(
@@ -320,14 +320,14 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
             ),
             Text(
               _selectedRecipient!['name'],
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Colors.blue.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
@@ -349,7 +349,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
               Navigator.pop(context); // Close dialog
               Navigator.pop(context); // Go back to payments
             },
-            child: const Text(
+            child: Text(
               'Done',
               style: TextStyle(
                 color: primaryBlue,
@@ -371,7 +371,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
           borderRadius: BorderRadius.circular(16),
         ),
         title: Row(
-          children: const [
+          children: [
             Icon(Icons.error_outline, color: Colors.red),
             SizedBox(width: 10),
             Text('Error'),
@@ -381,7 +381,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
+            child: Text('OK'),
           ),
         ],
       ),
@@ -403,39 +403,39 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Request Money',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: primaryBlue,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
         elevation: 0,
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildInfoCard(),
-                const SizedBox(height: 24),
+                SizedBox(height: 24),
                 _buildSearchTypeSelector(),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 _buildRecipientSection(),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 if (_selectedRecipient != null) ...[
                   _buildRecipientCard(),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                 ],
                 _buildAmountSection(),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 _buildReasonSection(),
-                const SizedBox(height: 30),
+                SizedBox(height: 30),
                 _buildRequestButton(),
               ],
             ),
@@ -447,9 +447,9 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
 
   Widget _buildInfoCard() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: [primaryBlue, secondaryBlue],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -459,30 +459,30 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
           BoxShadow(
             color: primaryBlue.withOpacity(0.3),
             blurRadius: 12,
-            offset: const Offset(0, 6),
+            offset: Offset(0, 6),
           ),
         ],
       ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.2),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.request_page,
               color: Colors.white,
               size: 32,
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Request Payment',
                   style: TextStyle(
                     color: Colors.white,
@@ -490,7 +490,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Text(
                   'Send a payment request to anyone',
                   style: TextStyle(
@@ -508,7 +508,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
 
   Widget _buildSearchTypeSelector() {
     return Container(
-      padding: const EdgeInsets.all(4),
+      padding: EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -540,7 +540,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
         });
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
           color: isSelected ? primaryBlue : Colors.transparent,
           borderRadius: BorderRadius.circular(10),
@@ -552,7 +552,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
               color: isSelected ? Colors.white : Colors.grey[600],
               size: 20,
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
@@ -586,7 +586,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
     }
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -594,14 +594,14 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Request From',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           TextFormField(
             controller: _recipientController,
             keyboardType: keyboardType,
@@ -616,7 +616,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
                 color: primaryBlue,
               ),
               suffixIcon: _isLoading
-                  ? const SizedBox(
+                  ? SizedBox(
                       width: 20,
                       height: 20,
                       child: CircularProgressIndicator(
@@ -635,7 +635,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: primaryBlue, width: 2),
+                borderSide: BorderSide(color: primaryBlue, width: 2),
               ),
               filled: true,
               fillColor: Colors.grey[50],
@@ -654,7 +654,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
 
   Widget _buildRecipientCard() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.green.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
@@ -663,25 +663,25 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.green.withOpacity(0.2),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.person,
               color: Colors.green,
               size: 24,
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   _selectedRecipient!['name'],
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -696,7 +696,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
               ],
             ),
           ),
-          const Icon(Icons.check_circle, color: Colors.green),
+          Icon(Icons.check_circle, color: Colors.green),
         ],
       ),
     );
@@ -704,7 +704,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
 
   Widget _buildAmountSection() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -712,20 +712,20 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Amount to Request',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           TextFormField(
             controller: _amountController,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
             decoration: InputDecoration(
               hintText: '0.00',
-              prefixIcon: const Icon(Icons.toll_rounded, color: primaryBlue),
+              prefixIcon: Icon(Icons.toll_rounded, color: primaryBlue),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(color: Colors.grey[300]!),
@@ -736,7 +736,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: primaryBlue, width: 2),
+                borderSide: BorderSide(color: primaryBlue, width: 2),
               ),
               filled: true,
               fillColor: Colors.grey[50],
@@ -752,7 +752,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
               return null;
             },
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Wrap(
             spacing: 8,
             children: [10, 20, 50, 100].map((amount) {
@@ -762,7 +762,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
                   _amountController.text = amount.toString();
                 },
                 backgroundColor: Colors.grey[100],
-                labelStyle: const TextStyle(color: primaryBlue),
+                labelStyle: TextStyle(color: primaryBlue),
               );
             }).toList(),
           ),
@@ -773,7 +773,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
 
   Widget _buildReasonSection() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -781,14 +781,14 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Reason (Optional)',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           TextFormField(
             controller: _reasonController,
             maxLines: 3,
@@ -804,7 +804,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: primaryBlue, width: 2),
+                borderSide: BorderSide(color: primaryBlue, width: 2),
               ),
               filled: true,
               fillColor: Colors.grey[50],
@@ -829,7 +829,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
           elevation: 2,
         ),
         child: _isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 width: 24,
                 height: 24,
                 child: CircularProgressIndicator(
@@ -837,7 +837,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
                   strokeWidth: 2,
                 ),
               )
-            : const Text(
+            : Text(
                 'Send Request',
                 style: TextStyle(
                   fontSize: 16,
